@@ -1,0 +1,73 @@
+{% extends "project/base.html" %}
+
+{% load account socialaccount %}
+
+{% block content %}
+
+<div id="intro" class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="ui huge header">Entre na sua conta
+                <div class="sub header">Não tem conta? <a onclick="add_search_query(event, this)" href="{% url 'account_signup' %}">Cadastre-se</a></div>
+            </div>
+        </div>
+        <div class="ui hidden divider"></div>
+        <div class="row">
+            {% get_providers as socialaccount_providers %}
+            <div class="column eight wide">
+                <div class="ui center aligned grid">
+                    <div class="row">
+                        <div class="column twelve wide">
+                            {% if socialaccount_providers %}
+                            <div class="socialaccount_ballot">
+                                <div class="socialaccount_providers">
+                                    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                                </div>
+                            </div>
+
+                            {% include "socialaccount/snippets/login_extra.html" %}
+                            {% else %}
+                            <p>If you have not created an account yet, then please
+                                <a href="{{ signup_url }}" onclick="add_search_query(event, this)">sign up</a> first.
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column eight wide left aligned">
+
+                <form class="login ui form" method="POST" action="{% url 'account_login' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <div class="ui center aligned grid">
+                        <div class="column">
+                            <button class="primaryAction ui button primary large fluid" type="submit">Entrar</button>
+                        </div>
+                    </div>
+                    <br>
+                    <a class="button secondaryAction" href="{% url 'account_reset_password' %}">Esqueceu sua senha?</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function add_search_query(event, element) {
+        event.preventDefault();
+        window.location = element.href + window.location.search;
+    }
+    function add_search_query_form(form) {
+        form.attr('action', form.attr('action') + window.location.search);
+    }
+
+    $("form").each(function(i, form) {
+        add_search_query_form($(form));
+    })
+
+</script>
+{% endblock %}

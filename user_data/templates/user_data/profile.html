@@ -1,0 +1,94 @@
+{% extends "project/base.html" %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="column">
+                <div class="ui huge header">Olá, {{ user.get_short_name }}!
+                    <div class="sub header">Como vai você?</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui three column grid stackable container">
+    <div class="row">
+        <div class="column center aligned">
+            <h2 class="ui icon header">
+                <a href="{% url 'profile_edit' %}">
+                    <i class="fas fa-user fa-4x"></i>
+                </a>
+                <div class="content">
+                    Seus dados
+                    <div class="sub header">Altere seus dados e preferências</div>
+                </div>
+            </h2>
+        </div>
+
+        <div class="column center aligned">
+            <h2 class="ui icon header">
+                <a href="{% url 'account_email' %}">
+                    <i class="fas fa-at fa-4x"></i>
+                </a>
+                <div class="content">
+                    Seus emails
+                    <div class="sub header">Altere os emails associados à sua conta</div>
+                </div>
+            </h2>
+        </div>
+
+        <div class="column center aligned">
+            <h2 class="ui icon header">
+                <a href="{% url 'socialaccount_connections' %}">
+                    <i class="fab fa-facebook-f fa-4x"></i>
+                </a>
+                <div class="content">
+                    Redes sociais
+                    <div class="sub header">Associe redes sociais à sua conta para não ter que lembrar da sua senha durante o login</div>
+                </div>
+            </h2>
+        </div>
+
+    </div>
+    <div class="row">
+
+        <div class="column center aligned">
+            <h2 class="ui icon header">
+                <a href="{% url 'account_change_password' %}">
+                    <i class="fas fa-key fa-4x"></i>
+                </a>
+                <div class="content">
+                    Sua senha
+                    <div class="sub header">Altere ou defina uma senha para login</div>
+                </div>
+            </h2>
+        </div>
+
+        <div class="column center aligned">
+            <h2 class="ui icon header">
+                <a href="{% url 'apps_connected' %}">
+                    <i class="fas fa-rocket fa-4x"></i>
+                </a>
+                <div class="content">
+                    Aplicativos conectados
+                    <div class="sub header">Aplicativos que você autorizou para terem acesso à sua conta</div>
+                </div>
+            </h2>
+        </div>
+
+        <div class="column center aligned">
+            <h2 class="ui icon header">
+                <a href="{% url 'apps_my' %}">
+                    <i class="fas fa-laptop fa-4x"></i>
+                </a>
+                <div class="content">
+                    Seus aplicativos
+                    <div class="sub header">Se torne um(a) desenvolvedor(a), crie aplicativos com nossa API e monetize sua plataforma</div>
+                </div>
+            </h2>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+
+{% block extend_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js" integrity="sha256-59IZ5dbLyByZgSsRE3Z0TjDuX7e1AiqW5bZ8Bg50dsU=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/pt-br.js" integrity="sha256-LosziN79TxO+Pb6NSpePf3lMaUeq8Iwg8adFrVaB2Sg=" crossorigin="anonymous"></script>
+<script src="{% static 'project/js/semantic_calendar.js' %}"></script>
+{% endblock %}
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/semantic_calendar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div id="intro" class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="ui huge header">Editar informações
+                <div class="sub header">Edite suas informações aqui</div>
+            </div>
+        </div>
+        <div class="ui hidden divider"></div>
+        <div class="row">
+            <div class="column eight wide left aligned">
+                <div class="ui top attached tabular menu">
+                    <a class="item active" data-tab="0" data-id="0">Básico</a>
+                    <a class="item" data-tab="1" data-id="1">Escola</a>
+                    <a class="item" data-tab="2" data-id="2">Motorista</a>
+                    <a class="item" data-tab="3" data-id="3">Avisos</a>
+                </div>
+                <div class="ui transition fade in tab segment bottom attached active" data-tab="0">
+                    <form class="ui form" method="post" action="">
+                        {% csrf_token %}
+                        <input type="text" name="action" value="basic" hidden>
+                        <h1>Informações básicas</h1>
+                        <div class="two fields">
+                            <div class="field {% if forms.name.first_name.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.name.first_name.label}}</label>
+                                <span style="color: red" class="small">{{ forms.name.first_name.errors.as_text }}
+                                </span>{{ forms.name.first_name }}
+                            </div>
+                            <div class="field {% if forms.name.last_name.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.name.last_name.label}}</label>
+                                <span style="color: red" class="small">{{ forms.name.last_name.errors.as_text }}
+                                </span>{{ forms.name.last_name }}
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field {% if forms.profile.gender.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.profile.gender.label}}</label>
+                                <span style="color: red" class="small">{{ forms.profile.gender.errors.as_text }}
+                                </span>{{ forms.profile.gender }}
+                            </div>
+                            <div class="field {% if forms.profile.phone.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.profile.phone.label}}</label>
+                                <span style="color: red" class="small">{{ forms.profile.phone.errors.as_text }}
+                                </span>{{ forms.profile.phone }}
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field {% if forms.profile.birthday.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.profile.birthday.label }}</label>
+                                <span style="color: red" class="small">{{ forms.profile.birthday.errors.as_text }}
+                                </span>
+                                <div class="ui calendar" id="{{ forms.profile.birthday.auto_id }}">
+                                    <div class="ui input left icon">
+                                        <i class="calendar icon"></i>
+                                        <input required value="{{ forms.profile.birthday.value }}" autocomplete="off" type="text" name="{{ forms.profile.birthday.name }}" placeholder="Data do seu aniversário">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button class="ui button green"><i class="icon save"></i> Salvar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="ui transition fade in bottom attached tab segment" data-tab="1">
+                    <form class="ui form" method="post" action="">
+                        {% csrf_token %}
+                        <input type="text" name="action" value="university" hidden>
+                        <div class="ui huge header">Sobre sua universidade
+                            <div class="sub header">Alterações em alguns campos da sua universidade estão indisponíveis por enquanto</div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field {% if forms.university.university.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.university.university.label}}</label>
+                                <span style="color: red" class="small">{{ forms.university.university.errors.as_text }}
+                                </span>{{ forms.university.university }}
+                            </div>
+                            <div class="field {% if forms.university.university_id.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.university.university_id.label}}</label>
+                                <span style="color: red" class="small">{{ forms.university.university_id.errors.as_text }}
+                                </span>{{ forms.university.university_id }}
+                            </div>
+                        </div>
+                        <div class="field {% if forms.university.university_email.errors.as_text %}error{% endif %}">
+                            <label>{{ forms.university.university_email.label}}</label>
+                            <span style="color: red" class="small">{{ forms.university.university_email.errors.as_text }}
+                            </span>{{ forms.university.university_email }}
+                        </div>
+                        <div class="two fields">
+                            <div class="field {% if forms.university.course.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.university.course.label}}</label>
+                                <span style="color: red" class="small">{{ forms.university.course.errors.as_text }}
+                                </span>{{ forms.university.course }}
+                            </div>
+                            <div class="field {% if forms.university.enroll_year.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.university.enroll_year.label}}</label>
+                                <span style="color: red" class="small">{{ forms.university.enroll_year.errors.as_text }}
+                                </span>{{ forms.university.enroll_year }}
+                            </div>
+                        </div>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button  class="ui button green"><i class="icon save"></i> Salvar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="ui transition fade in bottom attached tab segment" data-tab="2">
+                    <form class="ui form" method="post" action="">
+                        {% csrf_token %}
+                        <input type="text" name="action" value="driver" hidden>
+                        <h1>Você na direção</h1>
+                        <div class="field {% if forms.driver.car_make.errors.as_text %}error{% endif %}">
+                            <label>{{ forms.driver.car_make.label}}</label>
+                            <span style="color: red" class="small">{{ forms.driver.car_make.errors.as_text }}
+                            </span>{{ forms.driver.car_make }}
+                        </div>
+                        <div class="field {% if forms.driver.car_model.errors.as_text %}error{% endif %}">
+                            <label>{{ forms.driver.car_model.label}}</label>
+                            <span style="color: red" class="small">{{ forms.driver.car_model.errors.as_text }}
+                            </span>{{ forms.driver.car_model }}
+                        </div>
+                        <div class="field {% if forms.driver.car_color.errors.as_text %}error{% endif %}">
+                            <label>{{ forms.driver.car_color.label}}</label>
+                            <span style="color: red" class="small">{{ forms.driver.car_color.errors.as_text }}
+                            </span>{{ forms.driver.car_color }}
+                        </div>
+                        <div class="two fields">
+                            <div class="field {% if forms.driver.likes_pets.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.driver.likes_pets.label}}</label>
+                                <span style="color: red" class="small">{{ forms.driver.likes_pets.errors.as_text }}
+                                </span>{{ forms.driver.likes_pets }}
+                            </div>
+                            <div class="field {% if forms.driver.likes_smoking.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.driver.likes_smoking.label}}</label>
+                                <span style="color: red" class="small">{{ forms.driver.likes_smoking.errors.as_text }}
+                                </span>{{ forms.driver.likes_smoking }}
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field {% if forms.driver.likes_music.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.driver.likes_music.label}}</label>
+                                <span style="color: red" class="small">{{ forms.driver.likes_music.errors.as_text }}
+                                </span>{{ forms.driver.likes_music }}
+                            </div>
+                            <div class="field {% if forms.driver.likes_talking.errors.as_text %}error{% endif %}">
+                                <label>{{ forms.driver.likes_talking.label}}</label>
+                                <span style="color: red" class="small">{{ forms.driver.likes_talking.errors.as_text }}
+                                </span>{{ forms.driver.likes_talking }}
+                            </div>
+                        </div>
+                        {{ forms.driver.user }}
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <div style="text-align: right;">
+                                <button  class="ui button green"><i class="icon save"></i> Salvar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="ui transition fade in bottom attached tab segment" data-tab="3">
+                    <form class="ui form" method="post" action="">
+                        {% csrf_token %}
+                        <input type="text" name="action" value="notifications" hidden>
+                        <div class="ui header huge">Notificações
+                            <div class="sub header">Controle os emails que você quer que te enviemos. Também controla notificações de aplicativos</div>
+                        </div>
+                        <div class="field {% if forms.notifications.updates_notifications.errors.as_text %}error{% endif %}">
+                            <div class="ui toggle checkbox">
+                                {{ forms.notifications.updates_notifications }}
+                                <label>{{ forms.notifications.updates_notifications.label}}</label>
+                                <span style="color: red" class="small">{{ forms.notifications.updates_notifications.errors.as_text }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field {% if forms.notifications.ratings_notifications.errors.as_text %}error{% endif %}">
+                            <div class="ui toggle checkbox">
+                                {{ forms.notifications.ratings_notifications }}
+                                <label>{{ forms.notifications.ratings_notifications.label}}</label>
+                                <span style="color: red" class="small">{{ forms.notifications.ratings_notifications.errors.as_text }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field {% if forms.notifications.news_notifications.errors.as_text %}error{% endif %}">
+                            <div class="ui toggle checkbox">
+                                {{ forms.notifications.news_notifications }}
+                                <label>{{ forms.notifications.news_notifications.label}}</label>
+                                <span style="color: red" class="small">{{ forms.notifications.news_notifications.errors.as_text }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <div style="text-align: right;">
+                                <button  class="ui button green"><i class="icon save"></i> Salvar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'project/js/tabs.js' %}"></script>
+<script type="text/javascript">
+    $("#id_gender").dropdown();
+    $("#id_university").dropdown();
+    $("#id_likes_pets").dropdown();
+    $("#id_likes_smoking").dropdown();
+    $("#id_likes_music").dropdown();
+    $("#id_likes_talking").dropdown();
+    $("#id_updates_notifications").checkbox();
+    $("#id_ratings_notifications").checkbox();
+    $("#id_news_notifications").checkbox();
+
+    $('#id_birthday').calendar({
+        startMode: 'year',
+        type: 'date',
+        parser: {
+            date: function (text, settings) {
+                return moment(text, "LL").toDate();
+            }
+        },
+        formatter: {
+            date: function(date, settings) {
+                return moment(date).format('L');
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "project/base.html" %}
+
+{% load account socialaccount %}
+
+{% block extend_scripts %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock %}
+
+{% block extend_style %}
+<style>
+.ui.button.tiny {
+    margin-bottom: .4em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="column">
+                <div class="ui huge header">Endereços de email
+                    <div class="sub header">Aqui você pode editar seus endereços de email associados</div>
+                </div>
+                <div class="ui divider hidden"></div>
+                {% if user.emailaddress_set.all %}
+                <div class="ui middle center aligned stackable grid container">
+                    <div class="row">
+                        <div class="column twelve wide left aligned">
+                            <form id="form" action="{% url 'account_email' %}" class="email_list" method="post">
+                                {% csrf_token %}
+                                <input hidden type="text" name="email" id="form_email">
+                                <input hidden type="text" id="form_action">
+                            </form>
+                            <table class="ui striped table tablet stackable">
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Verificado</th>
+                                        <th>Tipo</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for emailaddress in user.emailaddress_set.all %}
+                                    <tr>
+                                        <td>
+                                            {{ emailaddress.email }}
+                                        </td>
+                                        <td>
+                                            {% if emailaddress.verified %}
+                                            <b style="color: green">Sim</b>
+                                            {% else %}
+                                            <span style="color: red">Não</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if emailaddress.primary %}
+                                            <b>Primário</b>
+                                            {% else %}
+                                            Secundário
+                                            {% endif %}
+                                        </td>
+                                        <td class="right aligned collapsing">
+                                            {% if not emailaddress.primary %}
+                                            <button class="ui button blue tiny" onclick="make_primary('{{ emailaddress.email }}')">Tornar primário</button>
+                                            {% endif %}
+                                            {% if not emailaddress.verified %}
+                                            <button class="ui button green tiny" onclick="re_send('{{ emailaddress.email }}')">Re-enviar verificação</button>
+                                            <br>
+                                            {% endif %}
+                                            <button class="ui button red tiny" onclick="remove_ask('{{ emailaddress.email }}')">Remover</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <h3 class="ui red header">Você não tem emails associados!
+                    <div class="sub header">Sem emails associados você não poderá receber notificações, alterar sua senha, etc</div>
+                </h3>
+                {% endif %}
+                <div class="ui divider hidden"></div>
+                <h2 class="ui header">Adicionar email
+                    <div class="sub header">Adicione outros emails abaixo</div>
+                </h2>
+                <div class="ui middle center aligned stackable grid container">
+                    <div class="row">
+                        <div style="text-align: left;" class="column eight wide">
+                            <form method="post" action="{% url 'account_email' %}" class="ui form">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button name="action_add" class="ui button primary" type="submit">Adicionar email</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function make_primary(email) {
+        $('#form_email').val(email);
+        $('#form_action').attr('name', 'action_primary');
+        $('#form').submit();
+    }
+    function re_send(email) {
+        $('#form_email').val(email);
+        $('#form_action').attr('name', 'action_send');
+        $('#form').submit();
+    }
+    function remove_ask(email) {
+        swal({
+            title: "Tem certeza?",
+            text: "Quer mesmo remover " + email + "?",
+            icon: "warning",
+            buttons: ["Deixa pra lá!", "Apagar!"],
+            dangerMode: true
+        })
+        .then(function(value) {
+            if (value)
+                remove(email);
+        });
+    }
+    function remove(email) {
+        $('#form_email').val(email);
+        $('#form_action').attr('name', 'action_remove');
+        $('#form').submit();
+    }
+</script>
+{% endblock %}

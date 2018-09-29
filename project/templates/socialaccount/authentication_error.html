@@ -1,0 +1,19 @@
+{% extends "project/base.html" %}
+
+{% load account socialaccount %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="column">
+                <div class="ui huge header">Erro de autenticação
+                </div>
+                <div class="ui divider hidden"></div>
+                <p>Um erro aconteceu durante o login com sua rede social.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

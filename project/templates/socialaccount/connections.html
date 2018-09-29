@@ -1,0 +1,108 @@
+{% extends "project/base.html" %}
+
+{% load account socialaccount %}
+
+{% block extend_scripts %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock %}
+
+{% block extend_style %}
+<style>
+.ui.button.tiny {
+    margin-bottom: .4em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="column">
+                <div class="ui huge header">Conexões de redes sociais
+                    <div class="sub header">Altere as redes sociais associadas à sua conta</div>
+                </div>
+                <div class="ui divider hidden"></div>
+                {% if form.accounts %}
+                <div class="ui middle center aligned stackable grid container">
+                    <div class="row">
+                        <div class="column eight wide left aligned">
+                            <form id="form" action="{% url 'socialaccount_connections' %}" method="post">
+                                {% csrf_token %}
+                                {% if form.non_field_errors %}
+                                <div id="errorMsg">{{ form.non_field_errors }}</div>
+                                {% endif %}
+                                <input hidden type="text" name="account" id="form_account">
+                            </form>
+                            <table class="ui striped table tablet stackable">
+                                <thead>
+                                    <tr>
+                                        <th>Rede social</th>
+                                        <th>Conta</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for base_account in form.accounts %}
+                                    {% with base_account.get_provider_account as account %}
+                                    <tr>
+                                        <td>
+                                            <span class="socialaccount_provider {{ base_account.provider }} {{ account.get_brand.id }} ui large label"><i class="icon {{ base_account.provider }}"></i> {{account.get_brand.name}}</span>
+                                        </td>
+                                        <td>
+                                            {{ account }}
+                                        </td>
+                                        <td class="right aligned collapsing">
+                                            <button class="ui button red tiny" onclick="remove_ask('{{ base_account.id }}', '{{ account.get_brand.name }}', '{{ account }}')">Remover</button>
+                                        </td>
+                                    </tr>
+                                    {% endwith %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <h3 class="ui red header">Você não tem contas sociais associadas
+                    <div class="sub header">Sem contas sociais você terá que usar sua senha para entrar em sua conta</div>
+                </h3>
+                {% endif %}
+                <div class="ui divider hidden"></div>
+                <h2 class="ui header">Adicionar rede social
+                    <div class="sub header">Adicione contas de redes sociais abaixo</div>
+                </h2>
+                <div class="ui middle center aligned stackable grid container">
+                    <div class="row">
+                        <div style="text-align: left;" class="column eight wide">
+                            <div class="socialaccount_providers">
+                                {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function remove_ask(id, provider, account) {
+        swal({
+            title: "Tem certeza?",
+            text: "Quer mesmo dissociar sua conta " + account + " no " + provider + "?",
+            icon: "warning",
+            buttons: ["Deixa pra lá!", "Apagar!"],
+            dangerMode: true
+        })
+        .then(function(value) {
+            if (value)
+                remove(id);
+        });
+    }
+    function remove(id) {
+        $('#form_account').val(id);
+        $('#form').submit();
+    }
+</script>
+{% endblock %}

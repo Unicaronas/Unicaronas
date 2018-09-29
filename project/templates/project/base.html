@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+
+<head>
+    <!-- Load project's staticfiles -->
+    {% load staticfiles %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="Caronas para universitários">
+    <link rel="icon" href="{% static 'project/img/logo_black.svg' %}">
+
+    <title>Unicaronas</title>
+
+    <!-- jQuery -->
+    <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <!-- jQuery Cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+    <!-- Semantic-UI JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.js"></script>
+
+    <!-- Semantic-UI CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.css">
+
+    <!-- Material and Awesome Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
+
+
+    <!-- Local scripts -->
+    <script type="text/javascript" src="{% static 'project/js/sidebar.js' %}"></script>
+
+    <!-- Local stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{% static 'project/css/menu.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'project/css/responsive.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'project/css/colored_text.css' %}">
+
+
+    <!-- Page scripts -->
+    {% block extend_scripts %}{% endblock %}
+
+    <!-- Page style -->
+    {% block extend_style %}{% endblock %}
+
+    <!-- Google Analytics -->
+    {% include 'project/analytics/GA.html' %}
+
+</head>
+
+<body data-gr-c-s-loaded="true" class="pushable">
+
+    <!-- Sidebar Menu -->
+    <div class="ui vertical inverted sidebar menu left">
+        <a href="{% url 'index' %}#intro" class="right item">O que é</a>
+        <a href="{% url 'apps_list' %}" class="item">Aplicativos</a>
+        <a href="{% url 'become_dev' %}" class="item">Desenvolver</a>
+        {% if user.is_authenticated %}
+        <div class="item">
+            <a href="{% url 'profile' %}">Minha conta</a>
+        </div>
+        <div class="item">
+            <a href="{% url 'account_logout' %}">Sair</a>
+        </div>
+        {% else %}
+        <div class="item">
+            <a href="{% url 'account_signup' %}">Cadastro</a>
+        </div>
+        <div class="item">
+            <a href="{% url 'account_login' %}">Entrar</a>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <!-- Page Contents -->
+    <div class="pusher">
+
+        <!-- Menu -->
+        <div class="following bars">
+            <div class="ui container">
+                <div class="ui large {{ inverted }} secondary menu">
+
+                    <a href="{% url 'index' %}" class="toc item">
+                        <img style="max-height: 4em; max-width: 4em;" src="{% if inverted %}{% static 'project/img/logo_white.svg' %}{% else %}{% static 'project/img/logo_black.svg' %}{% endif %}">
+                    </a>
+                    <a class="toc men right item">
+                        <i class="sidebar big icon"></i>
+                    </a>
+                    <a href="{% url 'index' %}" class="item">
+                        <img style="max-height: 4em; max-width: 4em;" src="{% if inverted %}{% static 'project/img/logo_white.svg' %}{% else %}{% static 'project/img/logo_black.svg' %}{% endif %}">
+                    </a>
+                    <a href="{% url 'index' %}#intro" class="right item">O que é</a>
+                    <a href="{% url 'apps_list' %}" class="item">Aplicativos</a>
+                    <a href="{% url 'become_dev' %}" class="item">Desenvolver</a>
+                    {% if user.is_authenticated %}
+                    <div class="item">
+                        <a href="{% url 'profile' %}"><div class="ui primary {{ inverted }} button">Minha conta</div></a>
+                    </div>
+                    <div class="item">
+                        <a href="{% url 'account_logout' %}"><div class="ui red {{ inverted }} button">Sair</div></a>
+                    </div>
+                    {% else %}
+                    <div class="item">
+                        <a href="{% url 'account_signup' %}"><div class="ui basic {{ inverted }} button">Cadastro</div></a>
+                    </div>
+                    <div class="item">
+                        <a href="{% url 'account_login' %}"><div class="ui basic {{ inverted }} button">Entrar</div></a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% block masthead %}{% endblock %}
+
+        <!-- Messages -->
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="ui container">
+            <div class="ui message {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} red {% else %} blue {% endif %} {{ message.tags }}" style="margin: 0px; text-align: center;">
+                <i class="close icon" style="text-align: right;"></i>
+
+                {{ message }}
+                <script type="text/javascript">
+                    $('.message .close')
+                    .on('click', function() {
+                        $(this)
+                        .closest('.message')
+                        .transition('fade');
+                    });
+                </script>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Specific contents -->
+
+        {% block content %}{% endblock %}
+
+    </div>
+    <script type="text/javascript">
+        var csrf = "{{ csrf_token }}";
+    </script>
+</body>
+</html>

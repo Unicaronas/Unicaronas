@@ -1,0 +1,246 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+{% load account socialaccount %}
+
+{% block extend_scripts %}
+<script src="{% static 'project/js/semantic_calendar.js' %}"></script>
+{% endblock %}
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/semantic_calendar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div id="intro" class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="ui huge header">Completar cadastro
+                <div class="sub header">Você escolheu se cadastrar usando o {{ account.get_provider.name }}. Como passo final, complete o formulário abaixo:</div>
+            </div>
+        </div>
+        <div class="ui hidden divider"></div>
+        <div class="row">
+            <div class="column eight wide left aligned">
+                {% if form.errors %}
+                {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                {% if field == '__all__' %}
+                <div class="ui list">
+                    <div class="item">
+                        <div style="color: red" class="header">Outros:</div>
+                        {{ error }}
+                    </div>
+                </div>
+                {% else %}
+                {% for raw_field in form %}
+                {% if raw_field.name == field %}
+                <div class="ui list">
+                    <div class="item">
+                        <div style="color: red" class="header">{{ raw_field.label }}:</div>
+                        {{ error }}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+                <form class="signup ui form" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+                    {% csrf_token %}
+                    {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <div style="display: none" class="ui top attached tabular menu">
+                        <a style="pointer-events: none" class="item active" data-tab="0" data-id="0">Básico</a>
+                        <a style="pointer-events: none" class="item" data-tab="1" data-id="1">Universidade</a>
+                        <a style="pointer-events: none" class="item" data-tab="2" data-id="2">É motorista?</a>
+                        <a style="pointer-events: none" class="item" data-tab="3" data-id="3">Motorista</a>
+                        <a style="pointer-events: none" class="item" data-tab="4" data-id="4">Captcha</a>
+                    </div>
+                    <div class="ui transition fade in top attached tab active" data-tab="0">
+                        <h1>Nos fale um pouco sobre você</h1>
+                        <p>Assim vai ser mais fácil trocar uma ideia com quem for na carona com você</p>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>{{ form.first_name.label }}</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="field">
+                                <label>{{ form.last_name.label }}</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>{{ form.gender.label }}</label>
+                                {{ form.gender }}
+                            </div>
+                            <div class="field">
+                                <label>{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                            </div>
+                        </div>
+                        <div class="two fields">
+                        <div class="field">
+                            <label>{{ form.birthday.label }}</label>
+                            <div class="ui calendar" id="{{ form.birthday.auto_id }}">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input required value="{{ form.birthday.value }}" autocomplete="off" type="text" name="{{ form.birthday.name }}" placeholder="Data do seu aniversário">
+                                </div>
+                            </div>
+                      </div>
+                      </div>
+                      <div class="ui divider"></div>
+                      <div style="text-align: right;">
+                        <button type="button" class="ui button green" onclick="next_tab(0)">Próximo<i class="icon angle right"></i></button>
+                    </div>
+                </div>
+                <div class="ui transition fade in top attached tab" data-tab="1">
+                    <h1>Agora sobre onde você estuda</h1>
+                    <p>Unicaronas é exclusivo para universitários, então precisamos saber se você é um(a)</p>
+                    <div class="field">
+                        <label>{{ form.university.label }}</label>
+                        {{ form.university }}
+                    </div>
+                    <div class="field">
+                        <label>{{ form.username.label }}</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="field">
+                        <label>{{ form.email.label }}</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>{{ form.course.label }}</label>
+                            {{ form.course }}
+                        </div>
+                        <div class="field">
+                            <label>{{ form.enroll_year.label }}</label>
+                            {{ form.enroll_year }}
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div style="text-align: right;">
+                        <button type="button" class="ui button red" onclick="previous_tab(1)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button green" onclick="next_tab(1)">Próximo<i class="icon angle right"></i></button>
+                    </div>
+                </div>
+                <div class="ui transition fade in top attached tab" data-tab="2">
+                    <h1>Você é motorista?</h1>
+                    <br>
+                    <div class="two fields">
+                        <div class="field">
+                            <button type="button" class="ui button green fluid" onclick="next_tab(2)">Sim</button>
+                        </div>
+                        <div class="field">
+                            <button type="button" class="ui button blue fluid" onclick="next_tab(3)">Não</button>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <button type="button" class="ui button red" onclick="previous_tab(2)"><i class="icon angle left"></i>Anterior</button>
+                    </div>
+                </div>
+                <div class="ui transition fade in top attached tab" data-tab="3">
+                    <h1>Como serão suas caronas?</h1>
+                    <p>Essas infos só serão compartilhadas com quem confirmar caronas com você</p>
+                    <div class="field">
+                        <label>{{ form.car_make.label }}</label>
+                        {{ form.car_make }}
+                    </div>
+                    <div class="field">
+                        <label>{{ form.car_model.label }}</label>
+                        {{ form.car_model }}
+                    </div>
+                    <div class="field">
+                        <label>{{ form.car_color.label }}</label>
+                        {{ form.car_color }}
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>{{ form.likes_pets.label }}</label>
+                            {{ form.likes_pets }}
+                        </div>
+                        <div class="field">
+                            <label>{{ form.likes_smoking.label }}</label>
+                            {{ form.likes_smoking }}
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>{{ form.likes_music.label }}</label>
+                            {{ form.likes_music }}
+                        </div>
+                        <div class="field">
+                            <label>{{ form.likes_talking.label }}</label>
+                            {{ form.likes_talking }}
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div style="text-align: right;">
+                        <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button green" onclick="next_tab(3)">Próximo<i class="icon angle right"></i></button>
+                    </div>
+                </div>
+                <div class="ui transition fade in top attached tab" data-tab="4">
+                    <h1>Quase lá!</h1>
+                    <p>Precisamos ter certeza de que você está mesmo aí</p>
+                    <br>
+                    {{ form.captcha }}
+                    <br><br>
+                    <div class="ui divider"></div>
+                    <div style="text-align: right;">
+                        <button type="button" class="ui button red" onclick="previous_tab(5)"><i class="icon angle left"></i>Anterior</button>
+                        <button id="submit_button" disabled class="ui button blue"><i class="send icon"></i> Criar conta</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'project/js/tabs.js' %}"></script>
+<script type="text/javascript">
+    function add_search_query(event, element) {
+        event.preventDefault();
+        window.location = element.href + window.location.search;
+    }
+    function add_search_query_form(form) {
+        form.attr('action', form.attr('action') + window.location.search);
+    }
+
+    $("form").each(function(i, form) {
+        add_search_query_form($(form));
+    })
+
+
+    $("#id_gender").dropdown();
+    $("#id_birthday_day").dropdown();
+    $("#id_birthday_month").dropdown();
+    $("#id_birthday_year").dropdown();
+    $("#id_university").dropdown();
+    $("#id_likes_pets").dropdown();
+    $("#id_likes_smoking").dropdown();
+    $("#id_likes_music").dropdown();
+    $("#id_likes_talking").dropdown();
+
+    function captchaSpottedCallback() {
+        $('#submit_button').prop("disabled", false);
+    }
+
+    $('#id_birthday').calendar({
+        startMode: 'year',
+        type: 'date',
+        formatter: {
+            date: function (date, settings) {
+                if (!date) return '';
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                return day + '/' + month + '/' + year;
+            }
+        }
+    });
+</script>
+{% endblock %}

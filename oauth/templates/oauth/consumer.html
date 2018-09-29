@@ -1,0 +1,369 @@
+<!doctype html>
+<!DOCTYPE html>
+<html>
+<head>
+    {% load staticfiles %}
+    {% load versioning %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>OAuth2 Consumer</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" type="text/css" href="{% static 'oauth/css/consumer.css' %}">
+</head>
+<body data-gr-c-s-loaded="true">
+
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">OAuth2 Consumer</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                    <a class="nav-link active" href="{% url 'apps_my' %}">Criar app</a>
+                </nav>
+            </div>
+        </header>
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-3">
+                    <div class="nav flex-column nav-pills" id="pills" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link" id="configure-tab" data-toggle="tab" href="#configure" role="tab" aria-controls="configure" aria-selected="false">Configurar o App</a>
+                        <a class="nav-link" id="access-tab" data-toggle="tab" href="#access" role="tab" aria-controls="access" aria-selected="false">Pedir acesso</a>
+                        <a class="nav-link" id="token-tab" data-toggle="tab" href="#token" role="tab" aria-controls="token" aria-selected="false">Pedir token</a>
+                        <a class="nav-link" id="refresh-tab" data-toggle="tab" href="#refresh" role="tab" aria-controls="refresh" aria-selected="false">Atualizar token</a>
+                        <a class="nav-link" id="debug-tab" data-toggle="tab" href="#debug" role="tab" aria-controls="debug" aria-selected="false">Debugar token</a>
+                        <a class="nav-link" id="request-tab" data-toggle="tab" href="#request" role="tab" aria-controls="request" aria-selected="false">Fazer pedidos</a>
+                        <a class="nav-link disabled" id="errors-tab" data-toggle="tab" href="#errors" role="tab" aria-controls="errors" aria-selected="false">Erros</a>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade" id="configure" role="tabpanel" aria-labelledby="configure-tab">
+                            <h2>Configurando seu app</h2>
+                            <p>
+                                Para configurar seu app, <a href="{% url 'apps_my' %}" target="_blank">crie um app</a> e configure ele assim:
+                                <ul>
+                                    <li>
+                                        <kbd><span id="current_url"></span></kbd> em <b>redirect_uris</b>
+                                    </li>
+                                    <li>
+                                        <kbd>profile:read</kbd> em <b>scope</b>
+                                    </li>
+                                    <li>
+                                        <kbd>confidential</kbd> em <b>client_type</b>
+                                    </li>
+                                    <li>
+                                        <kbd>authorization-code</kbd> em <b>authorization_grant_type</b>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+                                Clique no botão abaixo quando tiver feito isso
+                            </p>
+                            <button onclick="$('#access-tab').tab('show')" class="btn btn-primary">Pronto!</button>
+
+                        </div>
+                        <div class="tab-pane fade" id="access" role="tabpanel" aria-labelledby="access-tab">
+                            <h2>Pedindo acesso</h2>
+                            <p>
+                                Agora vamos pedir acesso à sua API. Para isso, digite o <kbd>client_id</kbd> do seu novo aplicativo e clique em continuar.
+                            </p>
+                            <div class="form-group">
+                                <label for="client_id">Client ID</label>
+                                <input class="form-control" type="text" id="client_id" placeholder="AbCd1234">
+                            </div>
+                            <div class="form-group">
+                                <label for="auth_url">URL de Autorização <span class="badge badge-secondary">Já preenchida!</span></label>
+                                <input disabled="disabled" class="form-control" type="text" id="auth_url">
+                            </div>
+                            <div class="form-group">
+                                <label for="auth_scopes">Scopes</label>
+                                <input class="form-control" type="text" id="auth_scopes" value="profile:read">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="request_access()">Pronto!</button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="token" role="tabpanel" aria-labelledby="token-tab">
+                            <h1>Pedir token</h1>
+                            <p>Como resposta da API ao nosso servidor, nós recebemos um código que pode ser usado para obter um token.</p>
+                            <div class="form-group">
+                                <label for="api_code">Código</label>
+                                <input disabled="disabled" class="form-control" type="text" id="api_code">
+                            </div>
+                            <div class="form-group">
+                                <label for="exchange_url">URL de troca</label>
+                                <input disabled="disabled" class="form-control" type="text" id="exchange_url">
+                            </div>
+                            <p>Mas antes, me diga novamente qual é o seu <kbd>client_id</kbd> e me diga o <kbd>client_secret</kbd> também
+                            <div class="form-group">
+                                <label for="client_id2">Client ID</label>
+                                <input class="form-control" type="text" id="client_id2">
+                            </div>
+                            <div class="form-group">
+                                <label for="client_secret">Client Secret</label>
+                                <input class="form-control" type="text" id="client_secret">
+                            </div>
+                            <p>Quando estive tudo pronto, clique no botão abaixo</p>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="exchange_token()">Trocar!</button>
+                            </div>
+                            <div id="exchange_errors" style="display: none;">
+                                <h4>Erros:</h4>
+                                <p id="exchange_error"></p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="refresh" role="tabpanel" aria-labelledby="refresh-tab">
+                            <h2>Atualizar token</h2>
+                            <p>Pronto! Agora você já tem um token de acesso e pode usá-lo à vontade.</p>
+                            <p>O problema é que seu token tem validade. O que acontece quando ela acabar? Você precisa atualizá-lo usando o <tbd>refresh_token</tbd>.</p>
+                            <div class="form-group">
+                                <label for="access_token">Token</label>
+                                <input disabled="disabled" class="form-control" type="text" id="access_token">
+                            </div>
+                            <div class="form-group">
+                                <label for="refresh_token">Refresh token</label>
+                                <input disabled="disabled" class="form-control" type="text" id="refresh_token">
+                            </div>
+                            <div class="form-group">
+                                <label for="expires_in">Expires in</label>
+                                <input disabled="disabled" class="form-control" type="text" id="expires_in">
+                            </div>
+                            <div class="form-group">
+                                <label for="token_type">Token type</label>
+                                <input disabled="disabled" class="form-control" type="text" id="token_type">
+                            </div>
+                            <div class="form-group">
+                                <label for="scope">Scopes</label>
+                                <input disabled="disabled" class="form-control" type="text" id="scope">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="refresh_token()">Atualizar!</button>
+                            </div>
+                            <div id="refresh_errors" style="display: none;">
+                                <h4>Erros:</h4>
+                                <p id="refresh_error"></p>
+                            </div>
+                            <p>Você também pode seguir para a próxima etapa, onde pediremos detalhes do token ao servidor</p>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="$('#debug-tab').tab('show');">Continuar!</button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="debug" role="tabpanel" aria-labelledby="debug-tab">
+                            <h2>Debugar token</h2>
+                            <p>O próximo passo é debugar nosso token para obter informações úteis sobre ele</p>
+                            <div class="form-group">
+                                <label for="debug_url">Debug URL</label>
+                                <input disabled="disabled" class="form-control" type="text" id="debug_url">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="debug_token();">Debugar!</button>
+                            </div>
+                            <pre id="token_debug"></pre>
+                            <div id="debug_errors" style="display: none;">
+                                <h4>Erros:</h4>
+                                <p id="debug_error"></p>
+                            </div>
+                            <p>Por último, vamos tentar fazer pedidos para a API</p>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="$('#request-tab').tab('show');">Continuar!</button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="request" role="tabpanel" aria-labelledby="request-tab">
+                            <h1>Pedidos</h1>
+                            <p>O último passo é fazer pedidos usando nosso token. Vamos esperimentar acessar a api de informações sobre aplicativos. Com ela é possível ler e editar os aplicativos de usuários que aprovam o seu aplicativo</p>
+                            <div class="form-group">
+                                <label for="debug_url">URL da API</label>
+                                <input class="form-control" type="text" id="api_url">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="execute_request();">Acessar API!</button>
+                            </div>
+                            <p>Experimente também alterar essa URL por outras da <a href="{% url 'docs:schema-redoc'|versioned_url %}" target="_blank">documentação</a>!</p>
+                            <pre id="request_result"></pre>
+                            <div id="request_errors" style="display: none;">
+                                <h4>Erros:</h4>
+                                <p id="request_error"></p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="errors" role="tabpanel" aria-labelledby="errors-tab">
+                            <h2>Erros</h2>
+                            <p>Oops! Algo de errado aconteceu!</p>
+                            <p>A mensagem de erro foi:</p>
+                            <kbd id="error_message"></kbd>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+    </script>
+    <script type="text/javascript">
+        var referrer = document.referrer;
+        $(document).ready(function(){
+            if (document.location.hash) {
+                $('a[href="' + document.location.hash + '"]').tab('show');
+            }
+            else {
+                $('#configure-tab').tab('show');
+            }
+        });
+        $(document).ready(function() {
+            $("#current_url").text(document.location.protocol + '//' + document.location.host + document.location.pathname);
+            $("#auth_url").val(document.location.protocol + '//' + document.location.host + "{% url 'oauth2_provider:authorize' %}");
+            $("#exchange_url").val(document.location.protocol + '//' + document.location.host + "{% url 'oauth2_provider:token' %}");
+            $("#debug_url").val(document.location.protocol + '//' + document.location.host + "{% url 'oauth2_provider:debug_base' %}");
+            $("#api_url").val(document.location.protocol + '//' + document.location.host + "{% url 'api:user_data:me'|versioned_url %}");
+        });
+        $(document).ready(function load_errors() {
+            if (document.location.search) {
+                var error = getParameterByName('error');
+                if (error) {
+                    $('#errors-tab').removeClass('disabled');
+                    $('#errors-tab').tab('show');
+                    $('#error_message').text(error);
+                }
+            }
+        });
+        $(document).ready(function load_code() {
+            if (document.location.search) {
+                var code = getParameterByName('code');
+                if (code) {
+                    $('#token-tab').tab('show');
+                    $('#api_code').val(code);
+                }
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        function request_access() {
+            var state = 'random_string';
+            var response_type = 'code';
+            var client_id = $('#client_id').val();
+            var auth_url = $('#auth_url').val();
+            var redirect_uri = $('#current_url').text();
+            var scope = $('#auth_scopes').val();
+            var redirect = auth_url + '?client_id=' + client_id + '&response_type=' + response_type + '&state=' + state + '&redirect_uri=' + redirect_uri + '&scope=' + scope;
+            document.location.href = redirect;
+        }
+
+        function update_refresh_page(data) {
+            $("#refresh_errors").hide();
+            $('#access_token').val(data['access_token']);
+            $('#refresh_token').val(data['refresh_token']);
+            $('#expires_in').val(data['expires_in']);
+            $('#token_type').val(data['token_type']);
+            $('#scope').val(data['scope']);
+            $('#refresh-tab').tab('show');
+        }
+
+        function error_refresh_page(data) {
+            $("#refresh_errors").show();
+            $("#refresh_error").text(data.statusCode().status + ' ' + data.statusCode().statusText + ' : ' + data.responseText);
+        }
+
+        function exchange_token() {
+            var code = $('#api_code').val();
+            var exchange_url = $("#exchange_url").val();
+            var app_id = $("#client_id2").val();
+            var app_secret = $("#client_secret").val();
+            var redirect_url = $('#current_url').text();
+            var grant_type = 'authorization_code';
+
+            $.ajax({
+                url: exchange_url,
+                type: 'POST',
+                data: {code: code, redirect_uri: redirect_url, grant_type: grant_type},
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
+                },
+                success: update_refresh_page,
+                error: error_refresh_page
+            })
+        }
+
+        function refresh_token() {
+            var refresh_token = $("#refresh_token").val();
+            var exchange_url = $("#exchange_url").val();
+            var app_id = $("#client_id2").val();
+            var app_secret = $("#client_secret").val();
+            var grant_type = 'refresh_token';
+
+            $.ajax({
+                url: exchange_url,
+                type: 'POST',
+                data: {refresh_token: refresh_token, grant_type: grant_type},
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
+                },
+                success: update_refresh_page,
+                error: error_refresh_page
+            })
+        }
+
+        function debug_token() {
+            var access_token = $("#access_token").val();
+            var debug_url = $("#debug_url").val() + access_token;
+
+            $.ajax({
+                url: debug_url,
+                type: 'GET',
+                success: function(data) {
+                    $("#debug_errors").hide();
+                    $('#token_debug').text(JSON.stringify(data, undefined, 4));
+                },
+                error: function(data) {
+                    $("#debug_errors").show();
+                    $("#debug_error").text(data.statusCode().status + ' ' + data.statusCode().statusText + ' : ' + data.responseText);
+                }
+            })
+        }
+
+        function execute_request() {
+            var access_token = $("#access_token").val();
+            var api_url = $("#api_url").val();
+
+            $.ajax({
+                url: api_url,
+                type: 'GET',
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Bearer " + access_token);
+                },
+                success: function(data) {
+                    $("#request_errors").hide();
+                    $('#request_result').text(JSON.stringify(data, undefined, 4));
+                },
+                error: function(data) {
+                    $("#request_errors").show();
+                    $("#request_error").text(data.statusCode().status + ' ' + data.statusCode().statusText + ' : ' + data.responseText);
+                }
+            })
+        }
+    </script>
+</body>
+</html>

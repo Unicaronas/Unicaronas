@@ -1,0 +1,190 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/mobile_desktop.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle aligned stackable grid container">
+        <div class="row">
+            <div class="center aligned sixteen wide column">
+                <h1 class="ui header">Aplicativos do Unicaronas
+                    <div class="sub header">Nossos apps são criados pela comunidade! Explore as opções disponíveis ou <a href="{% url 'become_dev' %}">crie um app</a> se não encontrar o que procura</div>
+                </h1>
+                <div class="ui search">
+                    <div class="ui icon input">
+                        <input id="search" type="text" placeholder="Pesquisar aplicativos...">
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider hidden"></div>
+    <div class="ui grid container">
+        <div class="ui centered sixteen wide tablet ten wide computer column">
+            {% if paginator.count == 0 %}
+            <h1 class="ui header" style="text-align: center;"><div class="sub header">Sem Aplicativos nessa pesquisa :(</div></h1>
+            {% endif %}
+            <div class="ui divided items">
+                {% for app in apps %}
+                <div class="item">
+                    <div class="content">
+                        <div class="ui large header">
+                            {% if app.logo %}
+                            <img class="ui circular image" src="{{ app.logo }}">
+                            {% endif %}
+                            <div class="content">
+                                {{ app.name }}
+                                <div class="sub header">Por {{ app.user.get_full_name }}</div>
+                            </div>
+                        </div>
+                        <div class="meta">
+                            Feito para {{ app.get_platform_display }}
+                        </div>
+                        <div class="description">
+                            <p>
+                                {{ app.description | linebreaksbr | truncatewords:50  }}
+                            </p>
+                        </div>
+                        <div class="extra">
+                            {% if spotted.attachment %}
+                            <div class="ui label blue small">
+                                <i class="linkify icon"></i>
+                                Tem anexo
+                            </div>
+                            {% endif %}
+                            {% if spotted.author == user %}
+                            <div class="ui label pink small">
+                                <i class="key icon"></i>
+                                Você enviou
+                            </div>
+                            {% elif spotted.author %}
+                            <div class="ui label pink small">
+                                <i class="key icon"></i>
+                                Tem autor
+                            </div>
+                            {% endif %}
+                            {% if spotted.target == user %}
+                            <div class="ui label red small">
+                                <i class="heart icon"></i>
+                                Te enviaram
+                            </div>
+                            {% elif spotted.target %}
+                            <div class="ui label red small">
+                                <i class="heart icon"></i>
+                                Tem crush
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="mobile hidden">
+                            <div class="extra">
+                                <a href="{% url 'apps_detail' app.id %}">
+                                    <div class="ui green left floated labeled icon button">
+                                        <i class="envelope open icon"></i>
+                                        Ver detalhes
+                                    </div>
+                                </a>
+                                {% if app.website %}
+                                <a href="{{ app.website }}">
+                                    <div class="ui blue right floated labeled icon button">
+                                        <i class="globe icon"></i>
+                                        Ver página/Baixar
+                                    </div>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mobile only">
+                            <div class="extra">
+                                <a href="{% url 'apps_detail' app.id %}">
+                                    <div class="ui green left floated button tiny">
+                                        Ver detalhes
+                                    </div>
+                                </a>
+                                {% if app.website %}
+                                <a href="{{ app.website }}">
+                                    <div class="ui blue right floated button tiny">
+                                        Ver página/Baixar
+                                    </div>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if is_paginated %}
+            <div class="ui horizontal divider">Página {{ page_obj.number }} de {{ paginator.num_pages }}</div>
+            <div class="mobile hidden">
+                {% if page_obj.has_previous %}
+                <a onclick="go_to_page({{ page_obj.previous_page_number }})">
+                    <button class="ui left floated labeled icon button">
+                        <i class="left arrow icon"></i>
+                        Página anterior
+                    </button>
+                </a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <a onclick="go_to_page({{ page_obj.next_page_number }})">
+                    <button class="ui right floated right labeled icon button">
+                        <i class="right arrow icon"></i>
+                        Próxima página
+                    </button>
+                </a>
+                {% endif %}
+            </div>
+            <div class="mobile only">
+                {% if page_obj.has_previous %}
+                <a onclick="go_to_page({{ page_obj.previous_page_number }})">
+                    <button class="ui left floated button small">
+                        Página anterior
+                    </button>
+                </a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <a onclick="go_to_page({{ page_obj.next_page_number }})">
+                    <button class="ui right floated right button small">
+                        Próxima página
+                    </button>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function get_url_param(param) {
+        query = window.location.search.substring(1);
+        vars = query.split('&');
+        for (i in vars) {
+            pair = vars[i].split('=');
+            if (decodeURIComponent(pair[0]) == param)
+                return decodeURIComponent(pair[1]);
+        }
+        return "";
+    }
+    function go_to_page(page) {
+        path = "?page=" + page;
+        search = get_url_param("search");
+        if (search != "")
+            path = path + '&search=' + search;
+        document.location.href = path;
+    }
+    var input = document.getElementById("search");
+    input.value = get_url_param("search");
+    input.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            document.location.href = '?search=' + document.getElementById("search").value;
+        }
+    });
+</script>
+{% endblock %}

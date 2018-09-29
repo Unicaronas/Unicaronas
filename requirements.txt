@@ -1,0 +1,36 @@
+# Base
+dj-database-url
+Django
+gunicorn
+psycopg2
+whitenoise
+django-extensions
+django-debug-toolbar
+django-maintenance-mode
+
+# Async
+celery
+redis
+
+# REST
+djangorestframework
+rest-condition
+djangorestframework-gis
+git+git://github.com/philipn/django-rest-framework-filters.git
+django-filter>=2
+drf-nested-routers
+# gdal
+
+# Documentation
+drf-yasg
+drf-yasg[validation]
+
+# Social and auth
+django-allauth
+
+# oauth2
+django-oauth-toolkit
+cryptography
+
+# Captcha
+django-recaptcha

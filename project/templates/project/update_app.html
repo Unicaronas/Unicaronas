@@ -1,0 +1,97 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div id="intro" class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="ui huge header">Editar aplicativo
+            </div>
+        </div>
+        <div class="ui hidden divider"></div>
+        <div class="row">
+            <div class="column eight wide left aligned">
+                {% if form.errors %}
+                {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                {% if field == '__all__' %}
+                <div class="ui list">
+                    <div class="item">
+                        <div style="color: red" class="header">Erros:</div>
+                        {{ error }}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+                <form class="ui form" method="post">
+                    {% csrf_token %}
+                    <div class="field {% if form.name.errors.as_text %}error{% endif %}">
+                        <label>{{ form.name.label}}</label>
+                        <span style="color: red" class="small">{{ form.name.errors.as_text }}
+                        </span>{{ form.name }}
+                    </div>
+                    <div class="field {% if form.description.errors.as_text %}error{% endif %}">
+                        <label>{{ form.description.label}}</label>
+                        <span style="color: red" class="small">{{ form.description.errors.as_text }}
+                        </span>
+                        <textarea name="{{ form.description.name }}" id="{{ form.description.auto_id }}" cols="40" rows="3">{% if form.description.value %}{{ form.description.value }}{% endif %}</textarea>
+                    </div>
+                    <div class="two fields">
+                        <div class="field {% if form.client_type.errors.as_text %}error{% endif %}">
+                            <label>{{ form.client_type.label}}</label>
+                            <span style="color: red" class="small">{{ form.client_type.errors.as_text }}
+                            </span>{{ form.client_type }}
+                        </div>
+                        <div class="field {% if form.authorization_grant_type.errors.as_text %}error{% endif %}">
+                            <label>{{ form.authorization_grant_type.label}}</label>
+                            <span style="color: red" class="small">{{ form.authorization_grant_type.errors.as_text }}
+                            </span>{{ form.authorization_grant_type }}
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field {% if form.platform.errors.as_text %}error{% endif %}">
+                            <label>{{ form.platform.label}}</label>
+                            <span style="color: red" class="small">{{ form.platform.errors.as_text }}
+                            </span>{{ form.platform }}
+                        </div>
+                    </div>
+                    <div class="field {% if form.scope.errors.as_text %}error{% endif %}">
+                        <label>{{ form.scope.label}}</label>
+                        <span style="color: red" class="small">{{ form.scope.errors.as_text }}
+                        </span>{{ form.scope }}
+                    </div>
+                    <div class="field {% if form.redirect_uris.errors.as_text %}error{% endif %}">
+                        <label>{{ form.redirect_uris.label}}</label>
+                        <span style="color: red" class="small">{{ form.redirect_uris.errors.as_text }}
+                        </span>
+                        <textarea name="{{ form.redirect_uris.name }}" id="{{ form.redirect_uris.auto_id }}" cols="40" rows="3">{% if form.redirect_uris.value %}{{ form.redirect_uris.value }}{% endif %}</textarea>
+                    </div>
+                    <div class="two fields">
+                        <div class="field {% if form.website.errors.as_text %}error{% endif %}">
+                            <label>{{ form.website.label}}</label>
+                            <span style="color: red" class="small">{{ form.website.errors.as_text }}
+                            </span>{{ form.website }}
+                        </div>
+                        <div class="field {% if form.logo.errors.as_text %}error{% endif %}">
+                            <label>{{ form.logo.label}}</label>
+                            <span style="color: red" class="small">{{ form.logo.errors.as_text }}
+                            </span>{{ form.logo }}
+                        </div>
+                    </div>
+                    <button  class="ui button big centered labeled icon blue"><i class="icon save"></i> Salvar alterações!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'project/js/tabs.js' %}"></script>
+<script type="text/javascript">
+
+    $("#id_client_type").dropdown();
+    $("#id_authorization_grant_type").dropdown();
+    $("#id_platform").dropdown();
+</script>
+{% endblock %}

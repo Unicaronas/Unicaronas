@@ -1,0 +1,157 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+{% load versioning %}
+
+{% block extend_scripts %}
+{% endblock %}
+
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/home.css' %}">
+{% endblock %}
+
+{% block inverted %}
+inverted
+{% endblock %}
+
+{% block masthead %}
+<div class="masthead segment bg1 zoomed">
+    <div class="ui container">
+        <div class="introduction">
+            <h1 class="ui inverted header">
+                <span class="library">
+                    <img style="max-height: 1em" src="{% static 'project/img/logo_white.svg' %}">aronas
+                </span>
+                <span id="masthead_subtitle" class="tagline">
+                </span>
+            </h1>
+            <div class="ui hidden divider"></div>
+            {% if user.is_authenticated %}
+            <a href="{% url 'apps_list' %}" class="ui huge inverted download button">
+                Aplicativos
+            </a>
+            <a href="{% url 'become_dev' %}" class="ui huge inverted basic button">Quero ser dev!</a>
+            {% else %}
+            <a href="{% url 'account_signup' %}" class="ui huge inverted download button">
+                Me inscreva!
+            </a>
+            <a href="{% url 'become_dev' %}" class="ui huge inverted basic button">Quero ser dev!</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div id="intro" class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="column eight wide">
+            <h2 class="ui icon header">
+                <i style="color: #22b8cf" class="fas fa-car fa-3x">
+                </i>
+                <div class="content">
+                    Caronas
+                    <div class="sub header">
+                    </div>
+                </div>
+            </h2>
+        </div>
+        <div class="column eight wide">
+            <h2>Titulo</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis ultricies purus, a efficitur purus feugiat eu. Nullam lobortis urna vel massa sagittis, sed auctor dui dignissim. Nullam vel nunc vel dolor gravida imperdiet a vel nibh. Vivamus consequat iaculis tortor at vehicula. Vivamus porttitor diam ut diam molestie, ac interdum augue pulvinar. Nam non diam justo. Cras tincidunt placerat nisi eu aliquet. Etiam semper justo id ultrices bibendum. Mauris vel ultricies risus. Pellentesque elit arcu, tincidunt eget arcu eget, interdum imperdiet est.</p>
+        </div>
+    </div>
+</div>
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="column eight wide">
+            <h2>Titulo</h2>
+            <p>Donec dapibus enim odio, et pellentesque est maximus luctus. Suspendisse nec justo purus. Vestibulum eu interdum eros, quis sollicitudin nunc. Vivamus imperdiet eros eget nulla blandit consectetur vitae vel felis. Phasellus luctus leo mauris, vitae tincidunt libero commodo vitae. Aenean in eros metus. Vivamus sed sollicitudin ante. Quisque vehicula sed odio ac fermentum. Vestibulum tortor orci, porttitor quis fringilla id, varius vel est. Sed dapibus mi vitae libero tempor tincidunt. Nunc cursus leo non tortor elementum, sed laoreet velit maximus. Phasellus ultrices interdum quam sit amet venenatis.</p>
+        </div>
+        <div class="column eight wide">
+            <h2 class="ui icon header">
+                <i style="color: gray" class="privacy icon">
+                </i>
+                <div class="content">
+                    Privacidade
+                    <div class="sub header">
+                    </div>
+                </div>
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned divided stackable grid container">
+        <div class="column eight wide">
+            <h2 class="ui icon header">
+                <i style="color: green" class="fas fa-dollar-sign fa-3x">
+                </i>
+            </h2>
+            <h2>Titulo</h2>
+            <p>Donec quis libero commodo, porttitor ante eget, cursus eros. Sed commodo justo eu pellentesque dictum. Aliquam suscipit varius leo, in sodales turpis consequat id. Vestibulum tortor odio, consectetur volutpat lectus ultricies, lacinia viverra risus. Proin feugiat pretium neque, porttitor egestas risus pellentesque ac. Nullam convallis felis sed finibus hendrerit. Fusce at nisi dapibus ex varius molestie vel vitae lectus. Curabitur semper tellus vel pretium rhoncus. Vestibulum tincidunt tincidunt dolor sit amet condimentum. Etiam commodo id mauris nec ultrices. Sed est enim, bibendum vel velit vel, aliquam viverra arcu. Praesent sed sodales est.</p>
+        </div>
+        <div class="column eight wide">
+            <h2 class="ui icon header">
+                <i style="color: #5c7cfa" class="fas fa-laptop fa-3x">
+                </i>
+            </h2>
+            <h2>Desenvolvedores = ❤️</h2>
+            <p>Sed nibh sem, dictum a auctor ut, mollis ac mi. Praesent eleifend ac ligula in euismod. Vivamus rhoncus tincidunt mauris, et ultricies metus interdum sit amet. Suspendisse dictum eros quis nisi dignissim, sed tincidunt est mattis. Nulla orci eros, sagittis ac dui eget, vehicula lobortis turpis. Quisque vel fringilla purus, et sodales nisl. Mauris posuere velit elementum quam lacinia, nec varius massa porttitor. Proin quis orci a orci blandit cursus.</p>
+        </div>
+    </div>
+</div>
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="row">
+            <div class="column sixteen wide">
+                <h2 class="ui icon header">
+                    <i style="color: red" class="heart icon">
+                    </i>
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column eight wide">
+                <h2>A maior comunidade de caronas universitárias</h2>
+                <p>Nunc vehicula ac ante eu blandit. Sed sit amet dui dignissim, auctor enim vitae, maximus erat. Cras accumsan, augue in vestibulum eleifend, nisi neque imperdiet elit, ac sagittis sapien odio et ipsum. Donec convallis, risus eu efficitur mollis, urna magna porta ipsum, at lobortis erat felis quis mauris. Ut sollicitudin elementum risus vel lobortis. Sed id auctor purus, aliquet aliquet orci. Maecenas id tortor vel dui scelerisque mattis. Proin porttitor risus fermentum ultricies dignissim. Quisque id sem erat.</p>
+                {% if not user.is_authenticated %}<p>Se você ainda não faz parte dessa comunidade, <a href="">entre agora</a>.{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui inverted vertical footer segment">
+        <div class="ui container">
+            <div class="ui stackable center aligned inverted divided equal height stackable grid">
+                <div class="row">
+                    <div class="eight wide column">
+                        <div class="right aligned">
+                            <h4 class="ui inverted header">Sobre</h4>
+                            <div class="ui inverted link horizontal list">
+                                <a href="{% url 'index' %}/#info" class="right item">O que é</a>
+                                <a href="{% url 'apps_list' %}" class="item">Aplicativos</a>
+                                <a href="{% url 'docs:schema-redoc'|versioned_url %}" class="item">Documentação</a>
+                                <a class="item" href="https://github.com/SpottedBot/SpottedBot">Código fonte <i class="icon github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <h4 class="ui left aligned inverted header">Unicaronas</h4>
+                        <p style="text-align: left">Caronas de universitários para universitários</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div style="color: grey;">
+                        Made with  <i class="icon heart red"></i> by <a href="https://www.facebook.com/gustavo.maronato">Maronato</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{% static 'project/js/cycle_masthead_bg.js' %}"></script>
+    {% endblock %}

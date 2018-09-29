@@ -1,0 +1,15 @@
+{% if GOOGLE_ANALYTICS %}
+{% load staticfiles %}
+<script type="text/javascript">
+    var ga_id = "{{ GOOGLE_ANALYTICS }}";
+</script>
+<script type="text/javascript" src="{% static 'project/js/GA.js' %}"></script>
+{% else %}
+<script type="text/javascript">
+    function ga(arg1, arg2) {
+        if (location.hostname == 'localhost') {
+            console.log('unregistered Google analytics event dispatched');
+        }
+    }
+</script>
+{% endif %}

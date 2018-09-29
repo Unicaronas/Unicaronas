@@ -1,0 +1,2 @@
+class InvalidScopedUserId(Exception):
+    pass

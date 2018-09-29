@@ -1,0 +1,19 @@
+{% extends "project/base.html" %}
+
+{% load account socialaccount %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="column">
+                <div class="ui huge header">Login cancelado
+                </div>
+                <div class="ui divider hidden"></div>
+                <p>Parece que você desistiu de logar com sua rede social. Se foi um erro, <a href="{{login_url}}">tente novamente</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

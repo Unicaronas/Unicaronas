@@ -1,0 +1,324 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+
+{% load application_helpers %}
+
+{% block extend_scripts %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock %}
+
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/mobile_desktop.css' %}">
+<style type="text/css">
+.ui.button {
+    margin-bottom: .3em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle aligned stackable grid container">
+        <div class="row">
+            <div class="center aligned sixteen wide column">
+                <h1 class="ui header">Seus aplicativos
+                    <div class="sub header">Crie e edite seus aplicativos aqui</div>
+                </h1>
+                <a href="{% url 'apps_create' %}">
+                    <div class="ui button big labeled icon blue">
+                        <i class="icon plus"></i>
+                        Criar aplicativo
+                    </div>
+                </a>
+                <div class="ui divider hidden"></div>
+                <div class="ui search">
+                    <div class="ui icon input">
+                        <input id="search" type="text" placeholder="Pesquisar aplicativos...">
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider hidden"></div>
+    <div class="ui grid container">
+        <div class="ui centered sixteen wide tablet ten wide computer column">
+            {% if paginator.count == 0 %}
+            <h1 class="ui header" style="text-align: center;"><div class="sub header">Sem Aplicativos nessa pesquisa :(</div></h1>
+            {% endif %}
+            <div class="ui divided items">
+                {% for app in apps %}
+                <div class="item">
+                    <div class="content">
+                        <div class="ui large header">
+                            {% if app.logo %}
+                            <img class="ui circular image" src="{{ app.logo }}">
+                            {% endif %}
+                            <div class="content">
+                                {{ app.name }}
+                            </div>
+                        </div>
+                        <div class="meta">
+                            Plataforma: {{ app.get_platform_display }}
+                        </div>
+                        <div class="meta">
+                            Tipo de cliente: {{ app.get_client_type_display }}
+                        </div>
+                        <div class="meta">
+                            Tipo de autorização: {{ app.get_authorization_grant_type_display }}
+                        </div>
+                        <div class="meta">
+                            Client ID: <b><code>{{ app.client_id }}</code></b>
+                        </div>
+                        <div class="meta">
+                            <div class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    Client Secret
+                                </div>
+                                <div class="content">
+                                    <b><code>{{ app.client_secret }}</code></b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meta">
+                            <div class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    Permissões
+                                </div>
+                                <div class="content">
+                                    <div class="ui list">
+                                        {% for key, value in app.requested_scopes_dict.items %}
+                                        <div class="item"><code>{{ key }}</code>: <b>{{ value }}</b></div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meta">
+                            <div class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    URIs de Redirecionamento
+                                </div>
+                                <div class="content">
+                                    <div class="ui list">
+                                        {% for uri in app.redirect_uris_list %}
+                                        <div class="item"><b>{{ uri }}</b></div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="description">
+                            <div class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    Descrição
+                                </div>
+                                <div class="content">
+                                    <p>{{ app.description | linebreaksbr }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="extra">
+                            <div class="ui label black small">
+                                <i class="user icon"></i>
+                                {% with user_total=app.get_users.count %}
+                                {{ user_total }} usuário{{ user_total|pluralize }}
+                                {% endwith %}
+                            </div>
+                            {% if app.published %}
+                            <div class="ui label blue small">
+                                <i class="bullhorn icon"></i>
+                                Publicado
+                            </div>
+                            {% else %}
+                            <div class="ui label red small">
+                                <i class="coffee icon"></i>
+                                Não publicado
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="mobile hidden">
+                            <div class="extra">
+                                <a href="{% url 'apps_update' app.id %}">
+                                    <div class="ui yellow left floated labeled icon button">
+                                        <i class="pencil icon"></i>
+                                        Editar
+                                    </div>
+                                </a>
+                                {% if not app.published %}
+                                <a onclick="ask_delete('{{ app.name }}', '{{ app.id }}')">
+                                    <div class="ui red left floated labeled icon button">
+                                        <i class="trash icon"></i>
+                                        Apagar
+                                    </div>
+                                </a>
+                                {% endif %}
+                                <a onclick="toggle_publish('{{ app.name }}', '{{ app.id }}', '{{ app.published }}')">
+                                    {% if app.published %}
+                                    <div class="ui red right floated labeled icon button">
+                                        <i class="close icon"></i>
+                                        Despublicar
+                                    </div>
+                                    {% else %}
+                                    <div class="ui green right floated labeled icon button">
+                                        <i class="bullhorn icon"></i>
+                                        Publicar
+                                    </div>
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mobile only">
+                            <div class="extra">
+                                <a href="{% url 'apps_update' app.id %}">
+                                    <div class="ui yellow left floated tiny button">
+                                        Editar
+                                    </div>
+                                </a>
+                                {% if not app.published %}
+                                <a onclick="ask_delete('{{ app.name }}', '{{ app.id }}')">
+                                    <div class="ui red left floated tiny button">
+                                        Apagar
+                                    </div>
+                                </a>
+                                {% endif %}
+                                <a onclick="toggle_publish('{{ app.name }}', '{{ app.id }}', '{{ app.published }}')">
+                                    {% if app.published %}
+                                    <div class="ui red right floated tiny button">
+                                        Despublicar
+                                    </div>
+                                    {% else %}
+                                    <div class="ui green right floated tiny button">
+                                        Publicar
+                                    </div>
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if is_paginated %}
+        <div class="ui horizontal divider">Página {{ page_obj.number }} de {{ paginator.num_pages }}</div>
+        <div class="mobile hidden">
+            {% if page_obj.has_previous %}
+            <a onclick="go_to_page({{ page_obj.previous_page_number }})">
+                <button class="ui left floated labeled icon button">
+                    <i class="left arrow icon"></i>
+                    Página anterior
+                </button>
+            </a>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <a onclick="go_to_page({{ page_obj.next_page_number }})">
+                <button class="ui right floated right labeled icon button">
+                    <i class="right arrow icon"></i>
+                    Próxima página
+                </button>
+            </a>
+            {% endif %}
+        </div>
+        <div class="mobile only">
+            {% if page_obj.has_previous %}
+            <a onclick="go_to_page({{ page_obj.previous_page_number }})">
+                <button class="ui left floated button small">
+                    Página anterior
+                </button>
+            </a>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <a onclick="go_to_page({{ page_obj.next_page_number }})">
+                <button class="ui right floated right button small">
+                    Próxima página
+                </button>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+<form id="toggle_publish_form" method="POST" action="{% url 'toggle_publish' %}">
+    {% csrf_token %}
+    <input hidden id="application_id_field" type="text" name="application_id">
+</form>
+<form id="delete_form" method="POST">
+    {% csrf_token %}
+</form>
+
+<script type="text/javascript">
+    $(".accordion").accordion();
+
+    function capitalize(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function toggle_publish(application_name, application_id, is_public) {
+        is_public = is_public == 'True';
+        var text = is_public ? "despublicar " : "publicar ";
+        var text2 = is_public ? "Usuários não poderão mais descobrir seu app pela aba 'Aplicativos'" : "Usuários poderão descobrir seu app pela aba 'Aplicativos'";
+        swal({
+            title: capitalize(text) + application_name,
+            text: "Quer mesmo " + text + application_name + "?\n" + text2,
+            icon: "warning",
+            buttons: ["Deixa pra lá!", capitalize(text)],
+            dangerMode: is_public
+        })
+        .then(function(value) {
+            if (value) {
+                $('#application_id_field').val(application_id);
+                $('#toggle_publish_form').submit();
+            }
+        });
+    }
+    function ask_delete(application_name, application_id) {
+        swal({
+            title: "Apagar " + application_name + "?",
+            text: "Tem certeza de que quer apagar " + application_name + "?\nEssa ação é irreversível!",
+            icon: "warning",
+            buttons: ["Deixa pra lá!", "Apagar!"],
+            dangerMode: true
+        })
+        .then(function(value) {
+            if (value) {
+                var durl = "{% url 'apps_delete' 1 %}";
+                $('#delete_form').attr('action', durl.slice(0, -2) + application_id + '/')
+                $('#delete_form').submit();
+            }
+        });
+    }
+    function get_url_param(param) {
+        query = window.location.search.substring(1);
+        vars = query.split('&');
+        for (i in vars) {
+            pair = vars[i].split('=');
+            if (decodeURIComponent(pair[0]) == param)
+                return decodeURIComponent(pair[1]);
+        }
+        return "";
+    }
+    function go_to_page(page) {
+        path = "?page=" + page;
+        search = get_url_param("search");
+        if (search != "")
+            path = path + '&search=' + search;
+        document.location.href = path;
+    }
+    var input = document.getElementById("search");
+    input.value = get_url_param("search");
+    input.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            document.location.href = '?search=' + document.getElementById("search").value;
+        }
+    });
+</script>
+{% endblock %}

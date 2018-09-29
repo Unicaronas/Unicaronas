@@ -1,0 +1,67 @@
+{
+  "name": "Unicaronas",
+  "description": "Main website. Also resource and authorization server for the Unicaronas API",
+  "keywords": [
+    "django",
+    "python",
+    "service",
+    "universities",
+    "students"
+  ],
+  "addons": [
+    "heroku-postgresql:hobby-dev",
+    "heroku-redis:hobby-dev"
+  ],
+  "stack": "cedar-14",
+  "env": {
+    "ADMIN_ACCOUNT": {
+        "value": "gustavomaronato@gmail.com",
+        "description": "Endereço de email para envio de logs de erro",
+        "required": true
+    },
+    "ALLOWED_HOSTS": {
+      "value": "['*']",
+      "description": "Domínios com permissão para acessar o app",
+      "required": false
+    },
+    "BUILD_WITH_GEO_LIBRARIES": "1",
+    "DEBUG": {
+      "value": "True",
+      "description": "Ativar modo de debug"
+    },
+    "DJANGO_SECRET": {
+      "description": "Chave privada de encriptação usada pelo Django",
+      "generator": "secret"
+    },
+    "EMAIL_ACCOUNT": {
+      "description": "Endereço de email para envio de logs de erro e outros emails",
+      "required": true
+    },
+    "EMAIL_PASSWORD": {
+      "description": "Senha do endereço de email acima",
+      "required": true
+    },
+    "GEOCODING_API_KEY": {
+      "description": "Chave de API de Geocoding da Google",
+      "required": true
+    },
+    "MAINTENANCE_MODE": {
+      "description": "Modo de manutenção do site",
+      "value": "False"
+    },
+    "ROOT_URL": {
+      "description": "URL base do seu app",
+      "value": "<nome-do-seu-app>.herokuapp.com",
+      "required": true
+    },
+    "SECRET_PRIME": {
+      "description": "Número primo de 1024 bits usado para encriptação",
+      "value": "108650088105333667193766288403153326759793323273717085213264005252602921158777961788778077036492800691575964554066761236015489394698977438886887736227197531518656324831220058411637304333854897012788252708321822102735283164429485359334063979206067174033899588537783543213614728965110684926939307181612445168179",
+      "required": true
+    },
+    "SHOW_TOOLBAR_CALLBACK": {
+      "description": "Mostrar toolbar de debug do Django",
+      "value": "True"
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{% load static %}
+.hidden.menu {
+    display: none;
+}
+
+.following.bars {
+    top: 0px;
+    z-index: 900;
+    left: 0%;
+    padding: 2em 0em;
+    width: 100%;
+    box-shadow: 0px 0px 0px 0px transparent;
+    border-bottom: 1px solid transparent;
+    transition:
+        padding 0.5s ease,
+        background 0.5s ease,
+        box-shadow 0.5s ease,
+        border 0.5s ease;
+}
+
+.masthead.segment {
+    min-height: 700px;
+    padding: 1em 0em;
+}
+.masthead .logo.item img {
+    margin-right: 1em;
+}
+.masthead .ui.menu .ui.button {
+    margin-left: 0.5em;
+}
+.masthead h1.ui.header {
+    margin-top: 3em;
+    margin-bottom: 0em;
+    font-size: 4em;
+    font-weight: normal;
+}
+.masthead h2 {
+    font-size: 1.7em;
+    font-weight: normal;
+}
+
+.ui.vertical.stripe {
+    padding: 8em 0em;
+}
+.ui.vertical.stripe h3 {
+    font-size: 2em;
+}
+.ui.vertical.stripe .button + h3,
+.ui.vertical.stripe p + h3 {
+    margin-top: 3em;
+}
+.ui.vertical.stripe .floated.image {
+    clear: both;
+}
+.ui.vertical.stripe p {
+    font-size: 1.33em;
+}
+.ui.vertical.stripe .horizontal.divider {
+    margin: 3em 0em;
+}
+
+.quote.stripe.segment {
+    padding: 0em;
+}
+.quote.stripe.segment .grid .column {
+    padding-top: 5em;
+    padding-bottom: 5em;
+}
+
+.footer.segment {
+    padding: 5em 0em;
+}
+
+.ui.secondary.menu .item {
+    margin: 0.1em;
+    padding: 0.58571429em 0.72857143em;
+}
+.ui.menu {
+    margin: 0px;
+    padding: 0px;
+}
+
+.ui.menu .item > img:not(.ui) {
+    width: 11em;
+}
+
+@media only screen and (min-width: 800px) {
+    .toc.item {
+        display: none !important;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .secondary.menu .item:not(.toc),
+    .secondary.menu .right.item:not(.toc),
+    .secondary.menu .menu {
+        display: none;
+    }
+    .toc.item {
+        display: block;
+    }
+    .masthead.segment {
+        min-height: 350px;
+    }
+    .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+    }
+    .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+    }
+}

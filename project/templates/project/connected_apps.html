@@ -1,0 +1,215 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+
+{% load application_helpers %}
+
+{% block extend_scripts %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock %}
+
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/mobile_desktop.css' %}">
+<style type="text/css">
+.ui.button {
+    margin-bottom: .3em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="ui vertical stripe">
+    <div class="ui middle aligned stackable grid container">
+        <div class="row">
+            <div class="center aligned sixteen wide column">
+                <h1 class="ui header">Aplicativos conectados
+                    <div class="sub header">Veja e edite as informações que os apps têm acesso</div>
+                </h1>
+                <div class="ui search">
+                    <div class="ui icon input">
+                        <input id="search" type="text" placeholder="Pesquisar aplicativos...">
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider hidden"></div>
+    <div class="ui grid container">
+        <div class="ui centered sixteen wide tablet ten wide computer column">
+            {% if paginator.count == 0 %}
+            <h1 class="ui header" style="text-align: center;"><div class="sub header">Sem Aplicativos nessa pesquisa :(</div></h1>
+            {% endif %}
+            <div class="ui divided items">
+                {% for app in apps %}
+                <div class="item">
+
+                    <div class="content">
+                        <div class="ui large header">
+                            {% if app.logo %}
+                            <img class="ui circular image" src="{{ app.logo }}">
+                            {% endif %}
+                            <div class="content">
+                                {{ app.name }}
+                                <div class="sub header">Por {{ app.user.get_full_name }}</div>
+                            </div>
+                        </div>
+                        <div class="meta">
+                            Feito para {{ app.get_platform_display }}
+                        </div>
+                        <div class="description">
+                            <p>
+                                {{ app.description | linebreaksbr | truncatewords:20  }}
+                            </p>
+                        </div>
+                        <div class="extra">
+                            Informações que esse app tem acesso:<br>
+                            {% approved_scopes app user as approved %}
+                            <div class="ui list">
+                                {% for key, value in approved.items %}
+                                <div class="item"><b>{{ value }}</b></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="mobile hidden">
+                            <div class="extra">
+                                <a href="{% url 'apps_detail' app.id %}">
+                                    <div class="ui green left floated labeled icon button">
+                                        <i class="envelope open icon"></i>
+                                        Ver detalhes
+                                    </div>
+                                </a>
+                                {% if app.website %}
+                                <a href="{{ app.website }}">
+                                    <div class="ui blue left floated labeled icon button">
+                                        <i class="globe icon"></i>
+                                        Ver página/Baixar
+                                    </div>
+                                </a>
+                                {% endif %}
+                                <a onclick="ask_revoke_access('{{ app.name }}', '{{ app.id }}')">
+                                    <div class="ui red right floated labeled icon button">
+                                        <i class="close icon"></i>
+                                        Revogar acesso
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mobile only">
+                            <div class="extra">
+                                <a onclick="ask_revoke_access('{{ app.name }}', '{{ app.id }}')">
+                                    <div class="ui red right floated tiny button">
+                                        Revogar acesso
+                                    </div>
+                                </a>
+                                <a href="{% url 'apps_detail' app.id %}">
+                                    <div class="ui green button tiny">
+                                        Ver detalhes
+                                    </div>
+                                </a>
+                                {% if app.website %}
+                                <br>
+                                <a href="{{ app.website }}">
+                                    <div class="ui blue button tiny">
+                                        Ver página/Baixar
+                                    </div>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if is_paginated %}
+            <div class="ui horizontal divider">Página {{ page_obj.number }} de {{ paginator.num_pages }}</div>
+            <div class="mobile hidden">
+                {% if page_obj.has_previous %}
+                <a onclick="go_to_page({{ page_obj.previous_page_number }})">
+                    <button class="ui left floated labeled icon button">
+                        <i class="left arrow icon"></i>
+                        Página anterior
+                    </button>
+                </a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <a onclick="go_to_page({{ page_obj.next_page_number }})">
+                    <button class="ui right floated right labeled icon button">
+                        <i class="right arrow icon"></i>
+                        Próxima página
+                    </button>
+                </a>
+                {% endif %}
+            </div>
+            <div class="mobile only">
+                {% if page_obj.has_previous %}
+                <a onclick="go_to_page({{ page_obj.previous_page_number }})">
+                    <button class="ui left floated button small">
+                        Página anterior
+                    </button>
+                </a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <a onclick="go_to_page({{ page_obj.next_page_number }})">
+                    <button class="ui right floated right button small">
+                        Próxima página
+                    </button>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<form id="revoke_app_form" method="POST" action="{% url 'apps_revoke' %}">
+    {% csrf_token %}
+    <input hidden id="application_id_field" type="text" name="application_id">
+</form>
+
+<script type="text/javascript">
+    function ask_revoke_access(application_name, application_id) {
+        swal({
+            title: "Tem certeza?",
+            text: "Quer mesmo revogar o acesso de " + application_name + " às suas informações?\nVocê terá que aprová-lo novamente para voltar a usar",
+            icon: "warning",
+            buttons: ["Deixa pra lá!", "Revogar!"],
+            dangerMode: true
+        })
+        .then(function(value) {
+            if (value)
+                revoke_access(application_id);
+        });
+    }
+    function revoke_access(application_id) {
+        $('#application_id_field').val(application_id);
+        $('#revoke_app_form').submit();
+    }
+    function get_url_param(param) {
+        query = window.location.search.substring(1);
+        vars = query.split('&');
+        for (i in vars) {
+            pair = vars[i].split('=');
+            if (decodeURIComponent(pair[0]) == param)
+                return decodeURIComponent(pair[1]);
+        }
+        return "";
+    }
+    function go_to_page(page) {
+        path = "?page=" + page;
+        search = get_url_param("search");
+        if (search != "")
+            path = path + '&search=' + search;
+        document.location.href = path;
+    }
+    var input = document.getElementById("search");
+    input.value = get_url_param("search");
+    input.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            document.location.href = '?search=' + document.getElementById("search").value;
+        }
+    });
+</script>
+{% endblock %}

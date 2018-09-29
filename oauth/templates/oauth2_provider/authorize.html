@@ -1,0 +1,103 @@
+{% extends "oauth2_provider/base.html" %}
+{% load i18n %}
+{% block content %}
+<div style="text-align: center;" class="block-center">
+    {% if not error %}
+    <form id="authorizationForm" method="post">
+        {% if application.logo %}
+        <img class="ui centered tiny circular image" src="{{ application.logo }}">
+        {% endif %}
+        <h3 class="block-center-heading">Autorizar aplicativo</h3>
+        {% csrf_token %}
+
+        {% for field in form %}
+        {% if field.is_hidden %}
+        {{ field }}
+        {% endif %}
+        {% endfor %}
+
+        <p class="lead" style="text-align: center;"><b><a href="#" data-toggle="popover" data-trigger="focus" data-placement="top" title="{{ application.name }}" data-content="{{ application.description }}">{{ application.name }}</a></b> vai receber:</p>
+
+        <ul class="list-unstyled">
+            {% with form.scope.field.widget.choices|length as n_scopes %}
+            {% if n_scopes == 1 %}
+            {{ form.scope.field.widget.choices.0.1 }}.
+            {% else %}
+            {{ form.scope.field.widget.choices.0.1 }}{% if n_scopes == 2 %} e {{ form.scope.field.widget.choices.1.1 | lower }}.{% else %}, {{ form.scope.field.widget.choices.1.1 | lower }} <b>e {% if n_scopes|add:"-2" == 1 %}mais uma permissão{% else %} outras {{ n_scopes|add:"-2" }} permissões{% endif %}.</b>
+            {% endif %}
+            {% endif %}
+            {% endwith %}
+        </ul>
+        <p>
+            <a data-toggle="collapse" href="#collapsedPermissions" aria-expanded="false" aria-controls="collapsedPermissions">
+                Ver e editar permissões
+            </a>
+        </p>
+        <div class="collapse" id="collapsedPermissions">
+            <div style="text-align: left;" class="card card-body">
+                <div class="container">
+                {% for pk, choice in form.scope.field.widget.choices %}
+                {% if pk not in default_scopes %}
+                <div class="checkbox">
+                    <label for="id_{{form.scope.name}}_{{ forloop.counter0 }}">
+                        <input class="form-check-input" checked="checked" id="id_{{form.scope.name}}_{{ forloop.counter0 }}" name="{{form.scope.name}}" type="checkbox" value="{{pk}}" />
+                        {{ choice }}
+                    </label>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% if default_scopes %}
+                {% if default_scopes|length != form.scope.field.widget.choices|length %}
+                <hr />
+                {% endif %}
+                <div style="text-align: center;">
+                <p class="text-muted">Permissões padrão:</p>
+                    {% for pk, choice in form.scope.field.widget.choices %}
+                    {% if pk in default_scopes %}
+                    <div class="checkbox">
+                        <label for="id_{{form.scope.name}}_{{ forloop.counter0 }}">
+                            <input class="form-check-input" disabled checked="checked" id="id_{{form.scope.name}}_{{ forloop.counter0 }}" name="{{form.scope.name}}" type="checkbox" value="{{pk}}" />
+                            {{ choice }}
+                        </label>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <p class="text-muted"><small>As permissões padrão são obrigatórias.</small></p>
+                    </div>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+
+        {% if form.errors %}
+        {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+        <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        {% endfor %}
+        {% endif %}
+
+        <br>
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" class="btn btn-lg btn-primary" name="allow" value="Autorizar"/>
+            </div>
+        </div>
+        <br>
+        <input type="submit" class="btn btn-sm btn-outline-danger" value="Agora não"/>
+    </form>
+    <hr />
+    <p class="text-muted small">Logado como {{ user.get_full_name }}. <a href="#" onclick="href_logout_url()">Não é você?</a></p>
+    {% else %}
+    <h2>Error: {{ error.error }}</h2>
+    <p>{{ error.description }}</p>
+    {% endif %}
+</div>
+<script type="text/javascript">
+    function href_logout_url() {
+        var logout_url = '{% url "oauth2_provider:logout" %}';
+        hr = logout_url + '?next=' + encodeURIComponent(document.location.pathname + document.location.search);
+        document.location.href = hr;
+    }
+</script>
+{% endblock %}
