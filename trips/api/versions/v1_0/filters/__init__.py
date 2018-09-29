@@ -1,1 +1,1 @@
-from .base import LocalizedOrderingFilter
+from .base import LocalizedOrderingFilter, TripFilterSet

@@ -72,6 +72,14 @@ class NotPermissionedProfileSerializer(
         exclude = ['id', 'user']
 
 
+class BasicProfileSerializer(
+        QueryFieldsMixin,
+        serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['gender', 'birthday']
+
+
 class ProfileSerializer(
         QueryFieldsPermissionMixin,
         serializers.ModelSerializer):

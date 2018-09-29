@@ -8,7 +8,7 @@ class DBFinder(BaseFinder):
 
     def find_instance(self, term):
         qs = DBResult.objects.filter(expires__gt=timezone.now())
-        return qs.filter(query=term.query).first()
+        return qs.filter(query__iexact=term.query).first()
 
     def find(self, term):
         # Only search for results that are not expired

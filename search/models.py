@@ -102,7 +102,7 @@ class Hit(models.Model):
     # /path/of/request/
     path_info = models.CharField(max_length=200)
     # /path/of/request/?query=strings
-    full_path_info = models.CharField(max_length=200)
+    full_path_info = models.TextField()
     # GET, POST, etc
     method = models.CharField(max_length=10)
     # Query type (origin, destination)

@@ -47,7 +47,6 @@ class RequestPipeline(DefaultPipeline):
         term = Term(query, query_type=self.query_type, request=self.request)
 
         steps = self.steps
-
         # For each step
         for i, step in enumerate(steps):
             term = step.transform(term)

@@ -1,3 +1,4 @@
+from django.db.models import Count, F, Q
 from rest_framework import serializers
 from project.mixins import PrefetchMixin, QueryFieldsMixin
 from search.pipeline import RequestPipeline
@@ -65,6 +66,16 @@ class BaseTripListRetrieveSerializer(
         label="Assentos restantes", read_only=True)
     is_full = serializers.BooleanField(
         label="Se a carona está cheia", read_only=True)
+
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        queryset = super().setup_eager_loading(queryset)
+        seats_left = F('max_seats') - Count(
+            'passengers',
+            filter=~Q(passengers__status="denied")
+        )
+        queryset = queryset.annotate(seats_left=seats_left)
+        return queryset
 
     class Meta:
         model = Trip

@@ -39,6 +39,20 @@ class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
                         param.type = 'string <date>'
                     if field_name == 'time':
                         param.type = 'string <time>'
+                    if field_name == 'auto_approve':
+                        param.type = 'boolean'
+                    if field_name == 'origin':
+                        param.description = 'Filtra caronas por local de origem. Usa `origin_radius` para traçar o raio de pesquisa. Exemplo: `origin=Unicamp`'
+                        continue
+                    if field_name == 'destination':
+                        param.description = 'Filtra caronas por local de destino. Usa `destination_radius` para traçar o raio de pesquisa. Exemplo: `destination=Rodoviária Tietê`'
+                        continue
+                    if field_name == 'destination_radius':
+                        param.description = 'Raio de pesquisa do destino da carona em km. `5`km por padrão. Exemplo: `destination_radius=10`'
+                        continue
+                    if field_name == 'origin_radius':
+                        param.description = 'Raio de pesquisa da origem da carona em km. `5`km por padrão. Exemplo: `origin_radius=5`'
+                        continue
                     field_query = field_data[1] if len(field_data) > 1 else 'exact'
                     field_query_map = {
                         'exact': 'iguais ao',
@@ -53,6 +67,7 @@ class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
                         'string <date-time>': get_datetime,
                         'string <date>': get_date,
                         'string <time>': get_time,
+                        'boolean': 'true',
                     }
                     if field_type_map.get(param.type, False):
                         if callable(field_type_map[param.type]):

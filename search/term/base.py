@@ -8,12 +8,12 @@ class BaseTerm(object):
     @property
     def query(self):
         """Return the query term"""
-        return self._query
+        return self._query.lower()
 
     @property
     def original_query(self):
         """Original query, before any transformations"""
-        return self._original_query
+        return self._original_query.lower()
 
     @property
     def is_transformed(self):

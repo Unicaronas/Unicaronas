@@ -1,3 +1,4 @@
+from rest_framework.request import Request
 from django.http import HttpRequest
 from .base import BaseTerm
 
@@ -5,7 +6,7 @@ from .base import BaseTerm
 class Term(BaseTerm):
 
     def __init__(self, query, query_type=None, request=None):
-        assert isinstance(request, (HttpRequest, type(None)))
+        assert isinstance(request, (HttpRequest, type(None), Request))
         assert isinstance(query_type, (str, type(None)))
         self._request = request
         self._query_type = query_type

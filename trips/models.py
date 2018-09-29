@@ -17,12 +17,12 @@ class Trip(models.Model):
     )
     origin = models.CharField(
         "Enderço de origem da carona",
-        max_length=200
+        max_length=500
     )
     origin_point = models.PointField("Coordenadas de origem da carona")
     destination = models.CharField(
         "Enderço de destino da carona",
-        max_length=200
+        max_length=500
     )
     destination_point = models.PointField("Coordenadas de destino da carona")
     price = models.PositiveSmallIntegerField("Preço da carona em reais")
@@ -45,8 +45,7 @@ class Trip(models.Model):
         null=True
     )
 
-    @property
-    def seats_left(self):
+    def get_seats_left(self):
         """Quantos assentos restam na carona
         Apenas passageiros em espera e confirmados são considerados
         """
@@ -113,6 +112,8 @@ class Trip(models.Model):
     def passenger_give_up(self, user):
         """Passenger decides to leave the trip"""
         passenger = self.check_is_passenger(user)
+        if passenger.status == 'denied':
+            raise PassengerDeniedError('Passageiro está negado')
         self.driver.notify_passenger_give_up(user)
         passenger.give_up()
 
@@ -211,6 +212,9 @@ class Passenger(models.Model):
 
     def trip_deleted(self):
         self.send_trip_deleted_notification()
+
+    def give_up(self):
+        self.delete()
 
     def __str__(self):
         return f"Passageiro {self.user} na {self.trip}"

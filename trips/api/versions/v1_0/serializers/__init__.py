@@ -1,3 +1,4 @@
 from .driver import DriverBasicInfo, DriverTripCreateUpdateSerializer, DriverTripListRetrieveSerializer
-from .passenger import BasicPassengerTripListRetrieveSerializer, DetailedPassengerTripListRetrieveSerializer, PassengerSerializer
-from .actions import DriverActionsSerializer
+from .passenger import PassengerTripListRetrieveSerializer, PassengerSerializer
+from .actions import DriverActionsSerializer, FuturePassengerActionsSerializer, PassengerActionsSerializer
+from .search import SearchTripSerializer
