@@ -15,7 +15,7 @@
   "stack": "cedar-14",
   "env": {
     "ADMIN_ACCOUNT": {
-        "value": "gustavomaronato@gmail.com",
+        "value": "",
         "description": "Endereço de email para envio de logs de erro",
         "required": true
     },
