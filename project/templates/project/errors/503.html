@@ -1,0 +1,21 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+{% load versioning %}
+
+{% block content %}
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="row">
+            <img style="max-width: 200px; margin-top: 50px" src="{% static 'project/img/logo_black.svg' %}">
+            <div class="ui huge header">Manutenção programada!
+                <div class="sub header">Ninguém é de ferro</div>
+            </div>
+        </div>
+        <div class="ui row left aligned">
+            <div class="column twelve wide center aligned">
+                <p>Estamos em manutenção, mas voltaremos em breve com novidades!</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

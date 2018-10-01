@@ -20,6 +20,10 @@ import debug_toolbar
 from user_data.views import ProfileView, ProfileEdit
 from watchman import views as watchman_views
 from . import views
+from .views import Handler404, Handler500
+
+handler404 = Handler404.as_view()
+handler500 = Handler500.as_view()
 
 
 api_urlpatterns = [

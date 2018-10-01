@@ -1,0 +1,20 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+{% load versioning %}
+
+{% block content %}
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="row">
+            <div class="ui huge header">Erro 404!
+                <div class="sub header">O que você procurou não existe!</div>
+            </div>
+        </div>
+        <div class="ui row left aligned">
+            <div class="column twelve wide center aligned">
+                <p>Que tal tentar outra página?</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
