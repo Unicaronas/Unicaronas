@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.gis',
@@ -392,5 +393,3 @@ WATCHMAN_ENABLE_PAID_CHECKS = not DEBUG
 
 
 # Configure Django App for Heroku.
-import django_heroku
-# django_heroku.settings(locals())
