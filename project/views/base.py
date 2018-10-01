@@ -12,3 +12,11 @@ class Index(generic.TemplateView):
 
 class BecomeDev(generic.TemplateView):
     template_name = 'project/become_dev.html'
+
+
+class TermsAndConditions(generic.TemplateView):
+    template_name = 'project/terms_and_conditions.html'
+
+
+class PrivacyPolicy(generic.TemplateView):
+    template_name = 'project/privacy_policy.html'

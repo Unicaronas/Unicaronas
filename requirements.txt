@@ -5,8 +5,22 @@ gunicorn
 psycopg2
 whitenoise
 django-extensions
+Werkzeug
 django-debug-toolbar
 django-maintenance-mode
+django-heroku
+django-phonenumber-field
+
+# Analytics
+django-analytical
+django-watchman
+
+# Profiling
+django-silk
+
+# Optimization
+nplusone
+django-celery-email
 
 # Async
 celery
@@ -34,3 +48,6 @@ cryptography
 
 # Captcha
 django-recaptcha
+
+# Error logging
+sentry-sdk

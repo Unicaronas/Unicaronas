@@ -1,0 +1,78 @@
+{% extends "project/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+{% block status_content %}
+<div class="ui vertical stripe">
+    <div class="ui center aligned stackable grid container">
+        <div class="row">
+            <div class="center aligned eight wide column">
+                <h2 class="ui header">
+                    <span class="ui header left floated">
+                        {% trans "Status do Serviço" %}
+                    </span>
+                    <span class="ui header right floated {% if overall_status %}green{% else %}red{% endif %} pull-right">
+                        {% if overall_status %}
+                        <i class="fa fa-check"></i> {% trans "Online" %}
+                        {% else %}
+                        <i class="fa fa-exclamation-triangle"></i> {% trans "Atenção!" %}
+                        {% endif %}{# overall_status #}
+                    </span>
+                </h2>
+            </div><!-- .col -->
+        </div><!-- .row -->
+        <div class="row">
+            <div class="center aligned eight wide column">
+                <h3 class="ui header {% if overall_status %}green{% else %}red{% endif %}">
+                    {% if overall_status %}
+                    {% trans "Tudo online!" %}
+                    {% else %}
+                    {% trans "Alguns sistemas offline!" %}
+                    {% endif %}{# overall_status #}
+                </h3>
+                <small></small>
+            </div><!-- .col -->
+        </div><!-- .row -->
+        <div class="row">
+            <div class="center aligned eight wide column">
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Type" %}</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Status" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for type_name, type in checks.items %}
+                        {% for status in type.statuses %}
+                        <tr class="{% if status.ok %}positive{% else %}negative{% endif %}">
+                            <td>{{ type_name|title }}</td>
+                            <td>{{ status.name }}</td>
+
+                            {% if status.ok %}
+                            <td><i class="check icon"></i>{% trans "OK" %}</td>
+
+                            {% else %}
+                            <td>
+                                <i class="attention icon"></i>Erro!
+                            </td>
+                            {% endif %}{# status.ok #}
+
+                        </tr>
+                        {% endfor %}{# for status in type.statuses #}
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">{% trans "No checks indicated." %}</td>
+                        </tr>
+                        {% endfor %}{# for type_name, type in checks.items #}
+                    </tbody>
+                </table>
+            </div><!-- .col -->
+        </div><!-- .row -->
+    </div>
+</div>
+{% endblock %}{# status_content #}
+
+{% endblock %}{# content #}

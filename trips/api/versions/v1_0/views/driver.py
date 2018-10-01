@@ -13,7 +13,7 @@ from ..inspectors import DjangoFilterDescriptionInspector
 from ..filters import LocalizedOrderingFilter
 from ..serializers import DriverTripCreateUpdateSerializer, DriverTripListRetrieveSerializer, PassengerSerializer, DriverActionsSerializer
 from .....models import Trip, Passenger
-from .....exceptions import PassengerPendingError, PassengerApprovedError, PassengerDeniedError
+from .....exceptions import PassengerPendingError, PassengerApprovedError, PassengerDeniedError, TripFullError
 
 
 class DriverTripViewset(
@@ -376,7 +376,6 @@ class DriverPassengerActionsViewset(
             'forfeit': trip.forfeit_passenger
         }
         try:
-            return
             action_map[action](passenger.user)
         except PassengerPendingError:
             raise APIException({'detail': 'Operação inválida para passageiros pendentes'}, code=status.HTTP_400_BAD_REQUEST)
@@ -384,3 +383,5 @@ class DriverPassengerActionsViewset(
             raise APIException({'detail': 'Operação inválida para passageiros aprovados'}, code=status.HTTP_400_BAD_REQUEST)
         except PassengerDeniedError:
             raise APIException({'detail': 'Operação inválida para passageiros negados ou removidos'}, code=status.HTTP_400_BAD_REQUEST)
+        except TripFullError:
+            raise APIException({'detail': 'Carona já está cheia'}, code=status.HTTP_400_BAD_REQUEST)

@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import dj_database_url
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -35,6 +38,14 @@ DEBUG = eval(os.environ.get('DEBUG', 'False').capitalize())
 TEST_MODE = eval(os.environ.get('TEST_MODE', 'False').capitalize())
 
 ALLOWED_HOSTS = eval(os.environ.get('ALLOWED_HOSTS', '["*"]'))
+
+# Sentry
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn="https://3d1c47f0749e4f10a41024096b499c1f@sentry.io/1292000",
+        integrations=[DjangoIntegration()]
+    )
 
 
 # Application definition
@@ -72,11 +83,19 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'captcha',
+    'analytical',
 
     'drf_yasg',
+    'silk',
+    'nplusone.ext.django',
+    'djcelery_email',
+    'phonenumber_field',
+    'watchman',
 ]
 
 MIDDLEWARE = [
+    'silk.middleware.SilkyMiddleware',
+    'nplusone.ext.django.NPlusOneMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -211,6 +230,8 @@ SERVER_EMAIL = os.environ.get('EMAIL_ACCOUNT')
 
 ADMINS = [('Admin', os.environ.get('ADMIN_ACCOUNT')), ]
 
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+
 
 # Debug Toolbar
 SHOW_TOOLBAR_CALLBACK = eval(os.environ.get('SHOW_TOOLBAR_CALLBACK', 'True'))
@@ -286,7 +307,7 @@ ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 ACCOUNT_FORMS = {
     'signup': 'user_data.forms.CustomSignupForm',
@@ -335,5 +356,41 @@ Abaixo você encontrará os `scopes` disponíveis e suas descrições, além das
 }
 
 
+# Phonenumbers
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'BR'
+
 # Geocoding API
 GEOCODING_API_KEY = os.environ.get('GEOCODING_API_KEY')
+
+# Analytics
+GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID')
+
+
+# Profiling
+SILKY_PYTHON_PROFILER = True
+SILKY_AUTHENTICATION = True
+SILKY_AUTHORISATION = True
+SILKY_PERMISSIONS = lambda user: user.is_superuser
+SILKY_META = True
+SILKY_MAX_RECORDED_REQUESTS = 10**3
+
+
+# Watchman
+WATCHMAN_CHECKS = (
+    'project.status_checks.redis_check',
+    'project.status_checks.celery_check',
+    'project.status_checks.google_apis',
+    'project.status_checks.facebook',
+    'project.status_checks.blablacar',
+    'project.status_checks.email',
+    'watchman.checks.databases',
+    'watchman.checks.caches',
+    'watchman.checks.storage',
+)
+WATCHMAN_ENABLE_PAID_CHECKS = not DEBUG
+
+
+# Configure Django App for Heroku.
+import django_heroku
+# django_heroku.settings(locals())

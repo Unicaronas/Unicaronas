@@ -29,12 +29,12 @@ init_bg();
 
 function cycle_phrase() {
     var options = [
-        "-tretas +caronas",
+        "- tretas + caronas",
         "Caronas, só que melhor",
         "Uber da Unicamp",
         "Ônibus tá muito caro",
         "Universitários + caronas = ❤️",
-        "Quem tem tempo pra esperar buzão?",
+        "Quem tem tempo pra esperar busão?",
         "Pagamentos em bandecos",
         "Me encontra no posto da 1",
     ]

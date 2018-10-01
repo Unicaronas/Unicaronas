@@ -25,8 +25,6 @@ def get_time():
 
 class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
     def get_filter_parameters(self, filter_backend):
-        print("Got filter_backends")
-        print(filter_backend)
         if isinstance(filter_backend, RestFrameworkFilterBackend):
             result = super(DjangoFilterDescriptionInspector, self).get_filter_parameters(filter_backend)
             for param in result:

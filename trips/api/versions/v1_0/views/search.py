@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count, F, Q
+from django.shortcuts import Http404
 from rest_framework import viewsets, status
 from rest_framework.exceptions import APIException
 from rest_framework_filters.backends import RestFrameworkFilterBackend
@@ -22,7 +23,7 @@ class SearchTripViewset(
 
     """
     # Only allow trips in the future
-    swagger_tags = ['Pesquisar']
+    swagger_tags = ['Pesquisa Interna']
     queryset = Trip.objects.all()
     max_limit = 50
     limit = 10
@@ -51,8 +52,9 @@ class SearchTripViewset(
             filter=~Q(passengers__status="denied")
         )
         qs = qs.annotate(seats_left=seats_left)
-        # qs = qs.filter(datetime__gt=timezone.now())
-        return qs.filter(seats_left__gt=0)
+        qs = qs.filter(seats_left__gt=0)
+        qs = qs.filter(datetime__gt=timezone.now())
+        return qs
 
     def get_serializer_class(self):
         if self.request.method == 'PATCH':
@@ -140,8 +142,7 @@ class SearchTripViewset(
 
         for field in required_fields:
             if not self.request.query_params.get(field, False):
-                raise APIException({'detail': f'Parâmetro GET `{field}` faltando'}, code=status.HTTP_400_BAD_REQUEST)
-
+                raise APIException(f'Parâmetro GET `{field}` faltando', code=status.HTTP_400_BAD_REQUEST)
         return super().list(*args, **kwargs)
 
     @swagger_auto_schema(
@@ -173,12 +174,11 @@ class SearchTripViewset(
     def perform_update(self, serializer):
         action = serializer.validated_data['action']
         passenger = serializer.instance
-        trip = Trip.objects.get(id=self.kwargs['id'])
+        trip = Trip.objects.get(id=self.kwargs['pk'])
         action_map = {
             'book': trip.book_user,
         }
         try:
-            return
             action_map[action](passenger.user)
         except TripFullError:
             raise APIException({'detail': 'Carona já está cheia'}, code=status.HTTP_400_BAD_REQUEST)

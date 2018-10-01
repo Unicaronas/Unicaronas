@@ -2,6 +2,7 @@ from django import forms
 from captcha.fields import ReCaptchaField
 from .models import Profile, Student, Driver, Preferences
 from .models import GENDER_CHOICES, PET_CHOICES, SMOKING_CHOICES, TALKING_CHOICES, MUSIC_CHOICES, UNIVERSITY_CHOICES
+from phonenumber_field.formfields import PhoneNumberField
 
 
 class ExtraSignupFields(forms.Form):
@@ -17,7 +18,7 @@ class ExtraSignupFields(forms.Form):
         label="Gênero",
         choices=GENDER_CHOICES
     )
-    phone = forms.CharField(label="Celular")
+    phone = PhoneNumberField(label="Celular")
 
     # Student
     university = forms.ChoiceField(

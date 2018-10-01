@@ -32,7 +32,7 @@ class PassengerTripViewset(
     ]
     ordering = ['-datetime', 'price']
     serializer_class = PassengerTripListRetrieveSerializer
-    # permission_classes = [TokenMatchesOASRequirements]
+    permission_classes = [TokenMatchesOASRequirements]
     required_alternate_scopes = {
         "GET": [["trips:passenger:read"]],
         "PATCH": [["trips:passenger:write"]],
@@ -132,12 +132,11 @@ class PassengerTripViewset(
     def perform_update(self, serializer):
         action = serializer.validated_data['action']
         passenger = serializer.instance
-        trip = Trip.objects.get(id=self.kwargs['id'])
+        trip = Trip.objects.get(id=self.kwargs['pk'])
         action_map = {
-            'give_up': trip.give_up,
+            'give_up': trip.passenger_give_up,
         }
         try:
-            return
             action_map[action](passenger.user)
         except PassengerDeniedError:
             raise APIException({'detail': 'Passageiros negados não podem desistir da carona'}, code=status.HTTP_400_BAD_REQUEST)

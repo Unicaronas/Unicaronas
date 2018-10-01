@@ -53,26 +53,26 @@ class Trip(models.Model):
 
     @property
     def is_full(self):
-        return self.seats_left == 0
+        return self.get_seats_left() == 0
 
     def check_is_passenger(self, user, raise_on_error=True):
         """Checks whether the user is a passenger. Raises error if not"""
         passenger = self.passengers.filter(user=user).first()
         if passenger is None and raise_on_error:
-            raise PassengerNotBookedError("Passageiro não está nessa viagem")
+            raise PassengerNotBookedError("Passageiro não está nessa carona")
         return passenger
 
     def check_is_not_passenger(self, user, raise_on_error=True):
         """Checks whether the user is not a passenger. Raises error if is"""
         passenger = Passenger.objects.filter(user=user, trip=self).first()
         if passenger is not None and raise_on_error:
-            raise PassengerBookedError("Usuário é passageiro nessa viagem")
+            raise PassengerBookedError("Usuário é passageiro nessa carona")
         return passenger
 
     def book_user(self, user):
         """to-be Passenger books the trip"""
         if self.is_full:
-            raise TripFullError("Viagem cheia")
+            raise TripFullError("Carona cheia")
         self.check_is_not_passenger(user)
 
         passenger = Passenger(
@@ -92,6 +92,8 @@ class Trip(models.Model):
         Driver approves the passenger (or is automatically approved)
         Also allows driver to approve denied passengers
         """
+        if self.is_full:
+            raise TripFullError('Carona cheia')
         passenger = self.check_is_passenger(user)
         passenger.approve()
 
@@ -114,8 +116,8 @@ class Trip(models.Model):
         passenger = self.check_is_passenger(user)
         if passenger.status == 'denied':
             raise PassengerDeniedError('Passageiro está negado')
-        self.driver.notify_passenger_give_up(user)
         passenger.give_up()
+        self.user.driver.notify_passenger_give_up(user)
 
     def delete_trip(self):
         for passenger in self.passengers.all():

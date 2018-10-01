@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
+from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
 
@@ -62,9 +63,8 @@ class Profile(models.Model):
         max_length=10,
         choices=GENDER_CHOICES
     )
-    phone = models.CharField(
+    phone = PhoneNumberField(
         'Celular',
-        max_length=20,
         help_text="Usado para contato"
     )
 

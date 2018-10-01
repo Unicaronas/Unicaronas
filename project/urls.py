@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 import debug_toolbar
 from user_data.views import ProfileView, ProfileEdit
+from watchman import views as watchman_views
 from . import views
 
 
@@ -58,6 +59,8 @@ oauth_patterns = [
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
     path('develop/', views.BecomeDev.as_view(), name='become_dev'),
+    path('terms_and_conditions/', views.TermsAndConditions.as_view(), name='terms_and_conditions'),
+    path('privacy_policy/', views.PrivacyPolicy.as_view(), name='privacy_policy'),
     path('what_is_oauth/', views.BecomeDev.as_view(), name='oauth_help'),
 ]
 
@@ -67,6 +70,11 @@ urlpatterns += application_patterns
 urlpatterns += admin_patterns
 urlpatterns += account_patterns
 urlpatterns += oauth_patterns
+urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
+urlpatterns += [
+    path('status/', watchman_views.dashboard, name='watchman-dashboard'),
+    path('status/ping', watchman_views.ping, name='watchman-ping'),
+]
 
 if settings.SHOW_TOOLBAR_CALLBACK:
 

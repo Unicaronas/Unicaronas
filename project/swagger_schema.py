@@ -28,8 +28,17 @@ Os resultados da API de usuário se modificam dinamicamente de acordo com as per
 > **Nota:** Por enquanto as únicas permissões que essa API garante são de *leitura* dos dados. Para que seu usuário altere seus dados, redirecione-o para o site principal do Unicaronas.
 """
     },
-    'Pesquisar': {
-        'name': 'Pesquisar',
+    'Pesquisa Interna': {
+        'name': 'Pesquisa Interna',
+        'description': """
+A API de Pesquisas é o centro do Unicaronas. Com ela, você pode pesquisar nossa grande base de dados e colocar seus usuários nas melhores caronas possíveis.
+
+## Pesquisas e caronas
+Pesquise caronas usando uma poderosa variedade de filtros e garanta que seu usuário encontrará o que procura.
+"""
+    },
+    'Pesquisa Externa': {
+        'name': 'Pesquisa Externa',
         'description': """
 A API de Pesquisas é o centro do Unicaronas. Com ela, você pode pesquisar nossa grande base de dados e colocar seus usuários nas melhores caronas possíveis.
 

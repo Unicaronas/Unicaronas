@@ -50,24 +50,31 @@ Código em javascript com fetch
 
 # Criando aplicativos
 """,
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="BSD License"),
+        terms_of_service="https://unicaronas.com/terms_and_conditions/",
+        contact=openapi.Contact(name="Suporte", email="contato@unicaronas.com", url="https://unicaronas.com"),
+        license=openapi.License(name="AGPL3", url="https://opensource.org/licenses/AGPL-3.0"),
+        x_logo={
+            "url": "/static/project/img/social/og-image.jpg",
+            "backgroundColor": "#FFFFFF"
+        }
     ),
     # validators=['flex', 'ssv'],
     public=True,
     permission_classes=(permissions.AllowAny,),
     patterns=[path('api/', include(api_urls))],
-    generator_class=TaggedDescriptionSchemaGenerator,
+    generator_class=TaggedDescriptionSchemaGenerator
 )
 
 app_name = 'docs'
 
 
 docs_urlpatterns = [
-    path('swagger<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('swagger<str:format>', schema_view.without_ui(
+        cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger',
+                                         cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc',
+                                       cache_timeout=0), name='schema-redoc'),
 ]
 
 
