@@ -2,6 +2,7 @@ import re
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
+from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
 from third_parties.pipeline import Pipeline
 from third_parties.serializers import ResultSerializer
 from ..serializers import ThirdPartyQuerySerializer
@@ -10,13 +11,20 @@ from ..serializers import ThirdPartyQuerySerializer
 class ThirdPartyTripSearchView(APIView):
     swagger_tags = ['Pesquisa Externa']
     serializer_class = ThirdPartyQuerySerializer
+    permission_classes = [TokenMatchesOASRequirements]
+    required_alternate_scopes = {
+        "GET": [["trips:read"]],
+    }
 
     @swagger_auto_schema(
         query_serializer=ThirdPartyQuerySerializer,
         responses={
             400: 'Seus parâmetros GET estão mal formatados',
             200: ResultSerializer
-        }
+        },
+        security=[
+            {'unicaronas auth': ['trips:read']}
+        ]
     )
     def get(self, request, format=None):
         """Pesquisar caronas externas
