@@ -308,7 +308,7 @@ ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 ACCOUNT_FORMS = {
     'signup': 'user_data.forms.CustomSignupForm',
@@ -331,6 +331,8 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 # Captcha Settings
 NOCAPTCHA = True
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
 # Documentation settings
 SWAGGER_SETTINGS = {
@@ -343,8 +345,8 @@ SWAGGER_SETTINGS = {
 OAuth2 é uma forma de autenticação que permite que seu aplicativo obtenha acesso granular aos dados dos seus usuários. Seu usuário tem controle total sobre quais informações deseja compartilhar e você acessa a API usando endpoints comuns HTTP. OAuth2 possui flows para aplicativos web, desktop e mobile, todos implementados na API do Unicaronas. Para saber mais, [visite o guia de OAuth2](/oauth2_guide/)
 
 Abaixo você encontrará os `scopes` disponíveis e suas descrições, além das URLs de autorização e troca de tokens.""",
-            'authorizationUrl': '/o/authorize/',
-            'tokenUrl': '/o/token/',
+            'authorizationUrl': f'{ROOT_URL}/o/authorize/',
+            'tokenUrl': f'{ROOT_URL}/o/token/',
             'flow': 'accessCode',
             'scopes': OAUTH2_PROVIDER['SCOPES']
         }
@@ -366,6 +368,7 @@ GEOCODING_API_KEY = os.environ.get('GEOCODING_API_KEY')
 
 # Analytics
 GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID')
+GOOGLE_ANALYTICS_SITE_SPEED = True
 
 
 # Profiling

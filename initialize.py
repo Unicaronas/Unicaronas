@@ -140,6 +140,20 @@ env = [
         'ask': False,
         'required': True
     },
+    {
+        'name': 'RECAPTCHA_PUBLIC_KEY',
+        'title': 'Chave pública do reCaptcha',
+        'default': False,
+        'ask': True,
+        'required': True
+    },
+    {
+        'name': 'RECAPTCHA_PRIVATE_KEY',
+        'title': 'Chave privada do reCaptcha',
+        'default': False,
+        'ask': True,
+        'required': True
+    },
 ]
 
 
