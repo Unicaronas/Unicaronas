@@ -21,6 +21,7 @@ django-silk
 # Optimization
 nplusone
 django-celery-email
+scout-apm
 
 # Async
 celery

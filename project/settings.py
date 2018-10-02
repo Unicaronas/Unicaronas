@@ -51,6 +51,7 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    'scout_apm.django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -395,4 +396,7 @@ WATCHMAN_CHECKS = (
 WATCHMAN_ENABLE_PAID_CHECKS = not DEBUG
 
 
-# Configure Django App for Heroku.
+# Scout settings
+SCOUT_MONITOR = not DEBUG
+SCOUT_KEY = os.environ.get('SCOUT_KEY')
+SCOUT_NAME = "Unicaronas"
