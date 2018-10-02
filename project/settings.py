@@ -123,6 +123,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'project.context_processors.fb_handle',
             ],
         },
     },
@@ -221,14 +222,14 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Email settings
-DEFAULT_CONTACT_EMAIL = os.environ.get('EMAIL_ACCOUNT')
-DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_ACCOUNT')
-EMAIL_HOST_USER = os.environ.get('EMAIL_ACCOUNT')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = eval(os.environ.get('EMAIL_USE_TLS', 'True'))
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-SERVER_EMAIL = os.environ.get('EMAIL_ACCOUNT')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+DEFAULT_CONTACT_EMAIL = os.environ.get('DEFAULT_CONTACT_EMAIL', EMAIL_HOST_USER)
+SERVER_EMAIL = os.environ.get('SERVER_EMAIL', EMAIL_HOST_USER)
 
 ADMINS = [('Admin', os.environ.get('ADMIN_ACCOUNT')), ]
 
@@ -323,7 +324,7 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 
 def ACCOUNT_USER_DISPLAY(user):
-    return user.get_full_name()
+    return user.first_name
 
 
 SOCIALACCOUNT_AUTO_SIGNUP = False
@@ -332,8 +333,6 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 # Captcha Settings
 NOCAPTCHA = True
-RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
-RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
 # Documentation settings
 SWAGGER_SETTINGS = {
@@ -400,3 +399,7 @@ WATCHMAN_ENABLE_PAID_CHECKS = not DEBUG
 SCOUT_MONITOR = not DEBUG
 SCOUT_KEY = os.environ.get('SCOUT_KEY')
 SCOUT_NAME = "Unicaronas"
+
+
+# Email variables
+FACEBOOK_HANDLE = os.environ.get('FACEBOOK_HANDLE', 'Unicaronas2.0')

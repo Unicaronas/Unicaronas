@@ -1,0 +1,20 @@
+{% load fb_handle %}
+
+{% with title="Obrigado por se cadastrar!" %}
+{% with subtitle="Você está a um passo das melhores caronas" %}
+{% with description="Para começar a usar sua conta e compartilhar as melhores caronas para universitários basta confirmar o seu email.<br><br>Você pode fazer isso agora clicando no botão abaixo:" %}
+{% with actionUrl=activate_url %}
+{% with actionName="Confirmar email" %}
+{% with project_url=current_site.domain %}
+{% with project_name=current_site.name %}
+{% facebook_handle as facebookHandle %}
+
+{% include "project/email/action/text.txt" %}
+
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}

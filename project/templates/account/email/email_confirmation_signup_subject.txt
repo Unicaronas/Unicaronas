@@ -1,0 +1,3 @@
+{% autoescape off %}
+Bem-vind@ ao {{ current_site.name }}!
+{% endautoescape %}

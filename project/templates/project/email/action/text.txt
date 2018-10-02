@@ -1,0 +1,10 @@
+{{title}}
+
+{{subtitle}}
+
+{{description}}
+
+{{actionUrl}}
+
+Abraços,
+{{ project_name }} Team

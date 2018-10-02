@@ -1,0 +1,8 @@
+{{title}}
+
+{{subtitle}}
+
+{{description}}
+
+Abraços,
+{{ hackathon_name }} Team
