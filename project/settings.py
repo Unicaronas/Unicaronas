@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'user_data',
     'trips',
     'search',
+    'third_parties',
 
     'maintenance_mode',
 
@@ -403,3 +404,6 @@ SCOUT_NAME = "Unicaronas"
 
 # Email variables
 FACEBOOK_HANDLE = os.environ.get('FACEBOOK_HANDLE', 'Unicaronas2.0')
+
+# BlaBlaCar API Key
+BLABLACAR_API_KEY = os.environ.get('BLABLACAR_API_KEY')

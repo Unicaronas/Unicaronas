@@ -19,5 +19,8 @@ class BaseThirdPartySearch(object):
         """
         assert isinstance(query, SearchQuery)
         conn = self.get_connection()
+        if conn.is_expired:
+            # If connection is expired, return empty results
+            return Result()
         response = conn.post(query)
         return Result(response)

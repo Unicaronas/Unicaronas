@@ -12,7 +12,7 @@ class BaseSearchQuery(object):
         assert isinstance(price_lte, int)
         assert isinstance(datetime_gte, datetime)
         assert isinstance(datetime_lte, datetime)
-        assert isinstance(request, (HttpRequest, Request))
+        assert isinstance(request, (HttpRequest, Request, type(None)))
         self._origin = origin
         self._destination = destination
         self._price_lte = price_lte

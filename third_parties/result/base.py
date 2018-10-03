@@ -1,3 +1,4 @@
+from django.utils import timezone
 from datetime import datetime
 from ..serializers import ResultItemSerializer, ResultSerializer
 
@@ -39,7 +40,7 @@ class BaseResultItem(object):
 
     @property
     def datetime(self):
-        return self._datetime
+        return timezone.make_aware(self._datetime)
 
     @property
     def url(self):
@@ -48,8 +49,6 @@ class BaseResultItem(object):
     @property
     def data(self):
         return {
-            'origin': self.origin,
-            'destination': self.destination,
             'price': self.price,
             'datetime': self.datetime,
             'url': self.url,
@@ -73,6 +72,9 @@ class BaseResultItem(object):
         serializer = self.get_serializer(data=data, context=context)
         serializer.is_valid()
         return serializer.validated_data
+
+    def __lt__(self, other):
+        return self.datetime < other.datetime
 
 
 class BaseResult(object):
@@ -107,6 +109,9 @@ class BaseResult(object):
         serializer = self.get_serializer(data=data, context=context)
         serializer.is_valid()
         return serializer.data
+
+    def sort(self):
+        self._items.sort()
 
     def __add__(self, other):
         if not isinstance(self, BaseResult):

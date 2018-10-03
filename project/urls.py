@@ -60,6 +60,10 @@ oauth_patterns = [
     path('o/', include('oauth.urls')),
 ]
 
+third_parties_patterns = [
+    path('third_parties/', include('third_parties.urls')),
+]
+
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
     path('develop/', views.BecomeDev.as_view(), name='become_dev'),
@@ -74,6 +78,7 @@ urlpatterns += application_patterns
 urlpatterns += admin_patterns
 urlpatterns += account_patterns
 urlpatterns += oauth_patterns
+urlpatterns += third_parties_patterns
 urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
 urlpatterns += [
     path('status/', watchman_views.dashboard, name='watchman-dashboard'),

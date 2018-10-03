@@ -52,3 +52,6 @@ django-recaptcha
 
 # Error logging
 sentry-sdk
+
+# Other
+unidecode

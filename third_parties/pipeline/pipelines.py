@@ -13,4 +13,12 @@ class Pipeline(BasePipeline):
             steps = list(search_map.values())
         else:
             steps = [search_map[step] for step in steps_as_str if search_map.get(step, False)]
-        super().__init__(steps)
+
+        l_steps = []
+        for step in steps:
+            if isinstance(step, list):
+                for sub_step in step:
+                    l_steps.append(sub_step)
+            else:
+                l_steps.append(step)
+        super().__init__(l_steps)

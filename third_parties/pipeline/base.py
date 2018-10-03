@@ -1,6 +1,6 @@
 from datetime import datetime
 from search.term import Term
-from search.finder import SynonymFinder
+from search.finder import TermPreparationFinder, SynonymFinder
 from ..search.base import BaseThirdPartySearch
 from ..query import SearchQuery
 from ..result import Result
@@ -24,11 +24,15 @@ class BasePipeline(object):
         assert isinstance(datetime_lte, datetime)
         assert isinstance(datetime_gte, datetime)
 
+        preparation = TermPreparationFinder()
+        synonym = SynonymFinder()
+
         origin = Term(origin, 'both', request)
         destination = Term(destination, 'both', request)
-
-        origin = SynonymFinder().transform(origin)
-        destination = SynonymFinder().transform(destination)
+        origin = preparation.transform(origin)
+        destination = preparation.transform(destination)
+        origin = synonym.transform(origin)
+        destination = synonym.transform(destination)
 
         query = SearchQuery(origin, destination, price_lte, datetime_lte, datetime_gte, request)
 
@@ -39,4 +43,6 @@ class BasePipeline(object):
         for i, step in enumerate(steps):
             results += step.search(query)
 
+        # Sort results
+        results.sort()
         return results

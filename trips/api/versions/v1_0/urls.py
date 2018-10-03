@@ -16,6 +16,6 @@ driver_actions.register('passengers', DriverPassengerActionsViewset, base_name='
 
 urlpatterns = router.urls
 
-urlpatterns += [path('external', ThirdPartyTripSearchView.as_view())]
+urlpatterns += [path('external/', ThirdPartyTripSearchView.as_view())]
 
 urlpatterns += driver_actions.urls

@@ -3,3 +3,5 @@ from .redis import RedisFinder
 from .synonym import SynonymFinder
 from .google_api import GoogleAPIFinder
 from .db import DBFinder
+from .prepare_term import TermPreparationFinder
+from .grammar import GrammarCorrectorFinder

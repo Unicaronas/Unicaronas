@@ -5,8 +5,6 @@ from ..utils import get_search_keys
 
 class BaseResultItemSerializer(serializers.Serializer):
 
-    origin = serializers.CharField(label="Endereço de origem da carona")
-    destination = serializers.CharField(label="Endereço de destino da carona")
     price = serializers.IntegerField(label="Preço da carona")
     datetime = serializers.DateTimeField(label="Data e hora da carona")
     url = serializers.URLField(label="URL para reserva da carona")

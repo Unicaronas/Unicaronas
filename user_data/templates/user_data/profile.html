@@ -11,6 +11,43 @@
                 </div>
             </div>
         </div>
+        {% if user.facebook_groups.all %}
+        <div class="row">
+            <div class="eight wide column">
+                <div class="ui header medium">Grupos que você é admin</div>
+                <table class="ui striped table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Grupo
+                            </th>
+                            <th>
+                                Dias até expiro
+                            </th>
+                            <th>
+                                Ações
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in user.facebook_groups.all %}
+                        <tr {% if group.is_expired %}class="danger"{% endif %}>
+                            <td>
+                                {{ group.name }}
+                            </td>
+                            <td>
+                                {{ group.days_until_expire }}
+                            </td>
+                            <td>
+                                <a href="{% url 'third_parties:fb_group_redirect' group.id %}" class="ui tiny green inverted button">Atualizar token</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 <div class="ui three column grid stackable container">

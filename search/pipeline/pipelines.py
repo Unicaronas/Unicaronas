@@ -1,5 +1,5 @@
 from .base import BasePipeline
-from ..finder import SynonymFinder, LocalCacheFinder, RedisFinder, GoogleAPIFinder, DBFinder
+from ..finder import SynonymFinder, LocalCacheFinder, RedisFinder, GoogleAPIFinder, DBFinder, TermPreparationFinder, GrammarCorrectorFinder
 from ..term import Term
 
 
@@ -11,8 +11,8 @@ class DefaultPipeline(BasePipeline):
 
     def __init__(self):
         steps = [
-            SynonymFinder(), LocalCacheFinder(),
-            RedisFinder(), DBFinder(), GoogleAPIFinder()
+            TermPreparationFinder(), GrammarCorrectorFinder(), SynonymFinder(),
+            LocalCacheFinder(), RedisFinder(), DBFinder(), GoogleAPIFinder()
         ]
         super().__init__(steps)
 
