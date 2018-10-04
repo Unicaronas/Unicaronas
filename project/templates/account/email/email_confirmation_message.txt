@@ -1,8 +1,8 @@
 {% load fb_handle %}
 
-{% with title="Verificação de email" %}
+{% with title="Confirmação de email" %}
 {% with subtitle="" %}
-{% with description="Para confirmar seu email novo, clique no link abaixo:" %}
+{% with description="Para confirmar seu email, clique no link abaixo:" %}
 {% with actionUrl=activate_url %}
 {% with actionName="Confirmar email" %}
 {% with project_url=current_site.domain %}
