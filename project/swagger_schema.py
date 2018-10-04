@@ -13,6 +13,8 @@ Ajude motoristas a gerenciar suas caronas, criando, listando e editando todas as
 
 ## Passageiros
 Dê total controle aos seus motoristas sobre quem vai ou não em suas caronas. Gerencie aprovação e rejeição de passageiros e use os dados fornecidos para ajudar seus motoristas a fazerem viagens seguras e tranquilas.
+
+> **Atenção:** Todos os endpoints dessa API só podem ser acessados caso seu usuário seja um *motorista*. Para saber se é motorista, o resultado do campo **driver** do endpoint [*Usuário Atual*](#operation/user_read) tem que ser diferente de `null`.
 """
     },
     'Usuário': {

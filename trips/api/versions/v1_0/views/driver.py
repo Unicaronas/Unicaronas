@@ -9,6 +9,7 @@ from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRe
 from project.mixins import PrefetchQuerysetModelMixin, PatchModelMixin
 from oauth2_provider.models import get_application_model
 from oauth.exceptions import InvalidScopedUserId
+from user_data.permissions import UserIsDriver
 from ..inspectors import DjangoFilterDescriptionInspector
 from ..filters import LocalizedOrderingFilter
 from ..serializers import DriverTripCreateUpdateSerializer, DriverTripListRetrieveSerializer, PassengerSerializer, DriverActionsSerializer
@@ -35,7 +36,7 @@ class DriverTripViewset(
         'price', 'datetime'
     ]
     ordering = ['-datetime', 'price']
-    permission_classes = [TokenMatchesOASRequirements]
+    permission_classes = [TokenMatchesOASRequirements, UserIsDriver]
     required_alternate_scopes = {
         "GET": [["trips:driver:read"]],
         "POST": [["trips:driver:write"]],
@@ -226,7 +227,7 @@ class DriverPassengerActionsViewset(
     queryset = Passenger.objects.all()
     serializer_class = PassengerSerializer
     swagger_tags = ['Motorista']
-    permission_classes = [TokenMatchesOASRequirements]
+    permission_classes = [TokenMatchesOASRequirements, UserIsDriver]
     required_alternate_scopes = {
         "GET": [["trips:driver:read"]],
         "PATCH": [["trips:driver:write"]],

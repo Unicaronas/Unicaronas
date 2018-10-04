@@ -51,8 +51,10 @@ Código em javascript com fetch
 # Criando aplicativos
 """,
         terms_of_service="https://unicaronas.com/terms_and_conditions/",
-        contact=openapi.Contact(name="Suporte", email="contato@unicaronas.com", url="https://unicaronas.com"),
-        license=openapi.License(name="AGPL3", url="https://opensource.org/licenses/AGPL-3.0"),
+        contact=openapi.Contact(
+            name="Suporte", email="contato@unicaronas.com", url="https://unicaronas.com"),
+        license=openapi.License(
+            name="AGPL3", url="https://opensource.org/licenses/AGPL-3.0"),
         x_logo={
             "url": "/static/project/img/social/og-image.jpg",
             "backgroundColor": "#FFFFFF"
@@ -73,8 +75,8 @@ docs_urlpatterns = [
         cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger',
                                          cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc',
-                                       cache_timeout=0), name='schema-redoc'),
+    path('', schema_view.with_ui('redoc',
+                                 cache_timeout=0), name='schema-redoc'),
 ]
 
 
