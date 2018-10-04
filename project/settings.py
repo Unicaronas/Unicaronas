@@ -94,6 +94,8 @@ INSTALLED_APPS = [
     'djcelery_email',
     'phonenumber_field',
     'watchman',
+
+    'storages',
 ]
 
 MIDDLEWARE = [
