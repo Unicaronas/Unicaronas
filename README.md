@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/Unicaronas/my.svg?branch=master)](https://travis-ci.com/Unicaronas/Unicaronas)
 
+[![forthebadge](https://forthebadge.com/images/badges/contains-technical-debt.svg)](https://forthebadge.com)
 
 # Unicaronas
 
