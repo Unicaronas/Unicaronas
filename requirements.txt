@@ -8,25 +8,23 @@ django-extensions
 Werkzeug
 django-debug-toolbar
 django-maintenance-mode
-django-heroku
 django-phonenumber-field
 
 # Analytics
 django-analytical
 django-watchman
 
-# Profiling
+# Profiling and Monitoring
 django-silk
+scout-apm
 
 # Optimization
 nplusone
-django-celery-email
-scout-apm
-django-storages
 
 # Async
 celery
 redis
+django-celery-email
 
 # REST
 djangorestframework
@@ -56,3 +54,7 @@ sentry-sdk
 
 # Other
 unidecode
+
+# Media files
+boto3
+django-storages
