@@ -32,11 +32,14 @@ class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
                     field_data = param.name.split('__')
                     field_name = field_data[0]
                     if field_name == 'datetime':
-                        param.type = 'string <date-time>'
+                        param.type = 'string'
+                        param.format = 'date-time'
                     if field_name == 'date':
-                        param.type = 'string <date>'
+                        param.type = 'string'
+                        param.format = 'date'
                     if field_name == 'time':
-                        param.type = 'string <time>'
+                        param.type = 'string'
+                        param.format = 'time'
                     if field_name == 'auto_approve':
                         param.type = 'boolean'
                     if field_name == 'origin':

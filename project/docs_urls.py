@@ -22,7 +22,7 @@ Texto inicial
 Para garantir a disponibilidade da API para todos, alguns limites são aplicados. Em particular, as chamadas são limitadas em duas categorias: `burst`, chamadas rápidas em um minuto, e `sustained`, chamadas totais feitas no dia.
 
 | Categoria     | Limite        |
-| ------------- |--------------:|
+| ------------- |---------------|
 | `burst`       | 60/min        |
 | `sustained`   | 10.000/dia    |
 
