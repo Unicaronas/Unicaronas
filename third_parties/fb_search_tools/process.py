@@ -14,8 +14,8 @@ def unique_id(item):
 def process_item(item, source=None):
     if not is_valid(item):
         return None
-
-    cache = RedisCache()
+    # Cache items for 1 day
+    cache = RedisCache(timeout=86400)
 
     uid = unique_id(item)
 

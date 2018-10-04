@@ -29,7 +29,7 @@ class BaseConnection(object):
 
     def cache_response(self, parameters, response):
         # Cache for 10 minutes
-        cache = RedisCache(600)
+        cache = RedisCache(timeout=600)
         cache.set_key(parameters, response)
 
     def send_request(self, parameters):

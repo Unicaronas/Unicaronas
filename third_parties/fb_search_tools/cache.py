@@ -40,7 +40,7 @@ class BaseCache(object):
 
 class RedisCache(BaseCache):
 
-    def __init__(self, url=None, timeout=604800, *args, **kwargs):
+    def __init__(self, url=None, timeout=86400, *args, **kwargs):
         self.url = settings.REDIS_URL or url
         super().__init__(timeout)
 
