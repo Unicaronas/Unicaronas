@@ -40,7 +40,7 @@ class TripFilterSet(FilterSet):
         if not radius:
             radius = '5'
         radius = min(max(float(radius), 0.05), 20)
-        pipe = RequestPipeline('origin', self.request)
+        pipe = RequestPipeline('destination', self.request)
         result = pipe.search(value)
         if result is None:
             return qs.none()

@@ -22,6 +22,7 @@ django-silk
 nplusone
 django-celery-email
 scout-apm
+django-storages
 
 # Async
 celery
