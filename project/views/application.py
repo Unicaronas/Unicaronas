@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.db.models import Q
 from oauth2_provider.models import get_application_model, get_refresh_token_model, get_access_token_model
 from oauth.forms import ApplicationForm
+from ..tasks import new_app_published
 
 
 class DetailApplications(generic.DetailView):
@@ -89,9 +90,15 @@ class TogglePublish(LoginRequiredMixin, generic.View):
         app = get_application_model().objects.filter(id=app_id)
         if app.exists() and app.first().user == self.request.user:
             app = app.first()
-            message = f"{app.name} publicado com sucesso!"
             if app.published:
                 message = f"{app.name} despublicado com sucesso!"
+            else:
+                message = f"{app.name} publicado com sucesso!"
+                if not app.published_past:
+                    # Send published email to users
+                    new_app_published.delay(app.id)
+                else:
+                    app.published_past = True
             app.published = not app.published
             app.save()
             messages.add_message(request, messages.SUCCESS, message)

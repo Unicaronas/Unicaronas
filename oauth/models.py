@@ -86,6 +86,7 @@ class Application(omodels.AbstractApplication):
 
     website = models.URLField(blank=True, help_text="App's website or download page")
     published = models.BooleanField(default=False, help_text="Whether or not your app is published")
+    published_past = models.BooleanField(default=False, help_text="Whether or not the app has been published before")
     logo = models.URLField(blank=True)
 
     @property

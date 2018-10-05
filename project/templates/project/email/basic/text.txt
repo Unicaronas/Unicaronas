@@ -5,4 +5,4 @@
 {{description}}
 
 Abraços,
-{{ hackathon_name }} Team
+{{ project_name }} Team

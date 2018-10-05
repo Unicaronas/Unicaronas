@@ -23,6 +23,9 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Website root url
 ROOT_URL = os.environ.get('ROOT_URL', 'localhost:8000')
 
+# Project name
+PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Unicaronas')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -213,6 +216,7 @@ AWS_AUTO_CREATE_BUCKET = True
 # Celery stuff
 REDIS_URL = os.environ.get('REDIS_URL')
 CELERY_BROKER_URL = REDIS_URL
+CELERY_IMPORTS = ['project.tasks']
 
 
 # Cache settings
