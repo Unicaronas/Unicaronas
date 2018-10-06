@@ -14,27 +14,27 @@ GENDER_CHOICES = (
 )
 
 TALKING_CHOICES = (
-    (0, 'Gosto de paisagens'),
-    (1, 'Às vezes curto conversar'),
-    (2, 'Adoro conversar!')
+    ('Gosto de paisagens', 'Gosto de paisagens'),
+    ('Às vezes curto conversar', 'Às vezes curto conversar'),
+    ('Adoro conversar!', 'Adoro conversar!')
 )
 
 SMOKING_CHOICES = (
-    (0, 'Cigarro não, por favor'),
-    (1, 'Às vezes permito fumar'),
-    (2, 'Cigarro não me incomoda')
+    ('Cigarro não, por favor', 'Cigarro não, por favor'),
+    ('Às vezes permito fumar', 'Às vezes permito fumar'),
+    ('Cigarro não me incomoda', 'Cigarro não me incomoda')
 )
 
 PET_CHOICES = (
-    (0, 'Animais não, por favor'),
-    (1, 'Depende do animal'),
-    (2, 'Adoro animais!')
+    ('Animais não, por favor', 'Animais não, por favor'),
+    ('Depende do animal', 'Depende do animal'),
+    ('Adoro animais!', 'Adoro animais!')
 )
 
 MUSIC_CHOICES = (
-    (0, 'Curto silêncio'),
-    (1, 'Depende da música'),
-    (2, 'Adoro música!')
+    ('Curto silêncio', 'Curto silêncio'),
+    ('Depende da música', 'Depende da música'),
+    ('Adoro música!', 'Adoro música!')
 )
 
 UNIVERSITY_CHOICES = (
@@ -125,25 +125,29 @@ class Driver(models.Model):
         'Cor do carro',
         max_length=30
     )
-    likes_pets = models.IntegerField(
+    likes_pets = models.CharField(
         'Curte animais de estimação',
         choices=PET_CHOICES,
-        default=0
+        max_length=30,
+        blank=True
     )
-    likes_smoking = models.IntegerField(
+    likes_smoking = models.CharField(
         'Curte fumar',
         choices=SMOKING_CHOICES,
-        default=0
+        max_length=30,
+        blank=True
     )
-    likes_music = models.IntegerField(
+    likes_music = models.CharField(
         'Curte música',
         choices=MUSIC_CHOICES,
-        default=0
+        max_length=30,
+        blank=True
     )
-    likes_talking = models.IntegerField(
+    likes_talking = models.CharField(
         'Curte conversar',
         choices=TALKING_CHOICES,
-        default=0
+        max_length=30,
+        blank=True
     )
 
     def notify_new_passenger(self, passenger):

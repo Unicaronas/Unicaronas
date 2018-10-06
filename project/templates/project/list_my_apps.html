@@ -2,6 +2,7 @@
 {% load staticfiles %}
 
 {% load application_helpers %}
+{% load versioning %}
 
 {% block extend_scripts %}
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -25,6 +26,7 @@
                 <h1 class="ui header">Seus aplicativos
                     <div class="sub header">Crie e edite seus aplicativos aqui</div>
                 </h1>
+                <p>Precisa de ajuda para programar seus apps? Leia a <a href="{% url 'docs:schema-redoc'|versioned_url %}" class="item">documentação</a>!</p>
                 <a href="{% url 'apps_create' %}">
                     <div class="ui button big labeled icon blue">
                         <i class="icon plus"></i>
