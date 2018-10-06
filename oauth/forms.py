@@ -47,7 +47,7 @@ class ApplicationForm(forms.ModelForm):
             choices=scopes.get_scopes_backend().get_all_scopes().items())
     )
 
-    logo = forms.ImageField(label="Logo (opcional)", help_text="Quadrado, entre 512x512 e 1024x1024 px")
+    logo = VersatileImageFormField(label="Logo (opcional)", help_text="Quadrado, entre 512x512 e 1024x1024 px", required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
