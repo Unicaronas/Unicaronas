@@ -27,7 +27,7 @@
                 {% endfor %}
                 {% endfor %}
                 {% endif %}
-                <form class="ui form" method="post">
+                <form class="ui form" enctype="multipart/form-data" method="post">
                     {% csrf_token %}
 
                     <h1 class="ui header">Basta preencher o formulário abaixo
@@ -82,6 +82,7 @@
                         </div>
                         <div class="field {% if form.logo.errors.as_text %}error{% endif %}">
                             <label>{{ form.logo.label}}</label>
+                            {% if not form.logo.errors.as_text %}<small>{{ form.logo.help_text }}</small><br>{% endif %}
                             <span style="color: red" class="small">{{ form.logo.errors.as_text }}
                             </span>{{ form.logo }}
                         </div>

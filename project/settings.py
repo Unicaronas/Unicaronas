@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     'watchman',
 
     'storages',
+    'versatileimagefield',
 ]
 
 MIDDLEWARE = [

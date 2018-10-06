@@ -1,10 +1,15 @@
+import hashlib
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from versatileimagefield.fields import VersatileImageField
 from oauth2_provider import models as omodels
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.settings import oauth2_settings
-import hashlib
+from project.validators import MaxImageDimensionsValidator, MinImageDimensionsValidator, SquareImageValidator
+
 
 from .utils import Cipher
 from .exceptions import InvalidScopedUserId
@@ -87,7 +92,12 @@ class Application(omodels.AbstractApplication):
     website = models.URLField(blank=True, help_text="App's website or download page")
     published = models.BooleanField(default=False, help_text="Whether or not your app is published")
     published_past = models.BooleanField(default=False, help_text="Whether or not the app has been published before")
-    logo = models.URLField(blank=True)
+    logo = VersatileImageField(
+        "App's logo",
+        blank=True,
+        upload_to=lambda instance, file_name: f"app_logos/{instance.user.student.university_id}/{instance.client_id}.{file_name.split('.')[-1]}",
+        validators=[MinImageDimensionsValidator(512, 512), MaxImageDimensionsValidator(1024, 1024), SquareImageValidator()]
+    )
 
     @property
     def requested_scopes(self):
@@ -178,3 +188,16 @@ class Application(omodels.AbstractApplication):
         if get_app:
             return app, user
         return user
+
+
+@receiver(post_save, sender=Application, dispatch_uid="refresh_app_logos")
+def refresh_app_logos(sender, instance, **kwargs):
+    instance.logo.delete_all_created_images()
+
+
+@receiver(models.signals.post_delete, sender=Application, dispatch_uid="delete_app_logos")
+def delete_app_logos(sender, instance, **kwargs):
+    # Deletes Image Renditions
+    instance.logo.delete_all_created_images()
+    # Deletes Original Image
+    instance.logo.delete(save=False)

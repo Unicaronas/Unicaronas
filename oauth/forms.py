@@ -1,6 +1,7 @@
 from django import forms
 from oauth2_provider import models, scopes
 from oauth2_provider.scopes import get_scopes_backend
+from versatileimagefield.forms import VersatileImageFormField
 
 
 class CustomAllowForm(forms.Form):
@@ -45,6 +46,8 @@ class ApplicationForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(
             choices=scopes.get_scopes_backend().get_all_scopes().items())
     )
+
+    logo = forms.ImageField(label="Logo (opcional)", help_text="Quadrado, entre 512x512 e 1024x1024 px")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

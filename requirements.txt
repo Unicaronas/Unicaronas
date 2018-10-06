@@ -9,6 +9,8 @@ Werkzeug
 django-debug-toolbar
 django-maintenance-mode
 django-phonenumber-field
+pillow
+django-versatileimagefield
 
 # Analytics
 django-analytical
