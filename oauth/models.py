@@ -25,6 +25,10 @@ def scoped_user_id(self):
 omodels.AbstractAccessToken.add_to_class('scoped_user_id', scoped_user_id)
 
 
+def get_logo_path(instance, file_name):
+    return f"app_logos/{instance.user.student.university_id}/{instance.client_id}.{file_name.split('.')[-1]}"
+
+
 class Application(omodels.AbstractApplication):
     """Modified OAuth Application model (Client)
 
@@ -95,7 +99,7 @@ class Application(omodels.AbstractApplication):
     logo = VersatileImageField(
         "App's logo",
         blank=True,
-        upload_to=lambda instance, file_name: f"app_logos/{instance.user.student.university_id}/{instance.client_id}.{file_name.split('.')[-1]}",
+        upload_to=get_logo_path,
         validators=[MinImageDimensionsValidator(512, 512), MaxImageDimensionsValidator(1024, 1024), SquareImageValidator()]
     )
 
