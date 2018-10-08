@@ -17,9 +17,11 @@ class SynonymFinder(BaseFinder):
         s_map = [
             # Map to posto ipiranga, Barão geraldo
             ('unicamp', 'posto ipiranga, unicamp'),
+            ('unicamp', 'posto ipiranga unicamp'),
             ('universidade estadual de campinas', 'posto ipiranga, unicamp'),
 
             ('posto ipiranga, unicamp', 'posto ipiranga, unicamp'),
+            ('posto ipiranga unicamp', 'posto ipiranga, unicamp'),
             ('posto ipiranga', 'posto ipiranga, unicamp'),
             ('posto da 1', 'posto ipiranga, unicamp'),
             ('posto', 'posto ipiranga, unicamp'),
@@ -30,14 +32,18 @@ class SynonymFinder(BaseFinder):
 
             # Map to generic São Paulo, SP
             ('sao paulo, sao paulo', 'sao paulo, sp'),
+            ('sao paulo sao paulo', 'sao paulo, sp'),
             ('sao paulo, sp', 'sao paulo, sp'),
+            ('sao paulo sp', 'sao paulo, sp'),
             ('sao paulo', 'sao paulo, sp'),
             ('sp', 'sao paulo, sp'),
             ('sampa', 'sao paulo, sp'),
 
             # Map to rodoviária tietê
             ('rodoviaria tiete, sao paulo', 'rodoviaria tiete, sao paulo'),
+            ('rodoviaria tiete sao paulo', 'rodoviaria tiete, sao paulo'),
             ('rodoviaria tiete, sp', 'rodoviaria tiete, sao paulo'),
+            ('rodoviaria tiete sp', 'rodoviaria tiete, sao paulo'),
             ('rodoviaria tiete', 'rodoviaria tiete, sao paulo'),
             ('estacao tiete', 'rodoviaria tiete, sao paulo'),
             ('tiete', 'rodoviaria tiete, sao paulo'),

@@ -1,6 +1,6 @@
 from datetime import datetime
 from search.term import Term
-from search.finder import TermPreparationFinder, SynonymFinder
+from search.finder import TermPreparationFinder, SynonymFinder, GrammarCorrectorFinder
 from ..search.base import BaseThirdPartySearch
 from ..query import SearchQuery
 from ..result import Result
@@ -25,12 +25,15 @@ class BasePipeline(object):
         assert isinstance(datetime_gte, datetime)
 
         preparation = TermPreparationFinder()
+        grammar = GrammarCorrectorFinder()
         synonym = SynonymFinder()
 
         origin = Term(origin, 'both', request)
         destination = Term(destination, 'both', request)
         origin = preparation.transform(origin)
         destination = preparation.transform(destination)
+        origin = grammar.transform(origin)
+        destination = grammar.transform(destination)
         origin = synonym.transform(origin)
         destination = synonym.transform(destination)
 
