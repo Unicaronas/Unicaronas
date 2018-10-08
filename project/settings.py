@@ -329,7 +329,7 @@ ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http" if DEBUG else "https"
 ACCOUNT_FORMS = {
     'signup': 'user_data.forms.CustomSignupForm',
     'login': 'user_data.forms.CustomLoginForm',
