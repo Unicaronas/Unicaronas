@@ -62,11 +62,11 @@ class GrammarCorrectorFinder(BaseFinder):
         return set(deletes + transposes + replaces + inserts)
 
     def edits2(self, word):
-        "All edits that are two edits away from `word`."
+        """All edits that are two edits away from `word`."""
         return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))
 
     def correction(self, word):
-        "Most probable spelling correction for word."
+        """Most probable spelling correction for word."""
         # Only correct words
         return max(self.candidates(word), key=self.P)
 
