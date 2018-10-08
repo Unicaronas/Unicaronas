@@ -1,27 +1,91 @@
 from .base import BaseFinder
+import re
+import pickle
+from collections import Counter
+from unidecode import unidecode
+
+
+def words(text):
+    return re.findall(r'\w+', unidecode(text.lower()))
+
+
+def get_words():
+    return Counter(words(open('search/finder/data/big.txt').read()))
+
+
+def pickle_words():
+    with open('search/finder/data/big.pkl', 'wb') as f:
+        pickle.dump(get_words(), f, pickle.HIGHEST_PROTOCOL)
+
+
+def unpickle_words():
+    with open('search/finder/data/big.pkl', 'rb') as f:
+        WORDS = pickle.load(f)
+    return WORDS
+
+
+IGNORED_WORDS = set(words(open('search/finder/data/ignored.txt').read())) | set([''])
 
 
 class GrammarCorrectorFinder(BaseFinder):
     """
     Given a search term, perform grammar correction on it
 
-    Only transforms the input into a known
-    synonym
+    Inspired by Peter Norvig's simple spell corrector
     """
 
-    def get_word_dictionary(self):
-        return []
+    def __init__(self, WORDS=unpickle_words(), IGNORED_WORDS=IGNORED_WORDS):
+        self.WORDS = WORDS
+        self.IGNORED_WORDS = IGNORED_WORDS
+        self.N = sum(self.WORDS.values())
 
-    def levenshtein_clean(self, word):
+    def P(self, word):
+        """Probability of `word` to appear on the corpus"""
+        return self.WORDS[word] / self.N
+
+    def candidates(self, word):
+        """Generates possible spelling corrections for `word`"""
+        return (self.known([word]) or self.known(self.edits1(word)) or self.known(self.edits2(word)) or [word])
+
+    def known(self, words):
+        """The subset of `words` that appear in the dictionary of WORDS."""
+        return set(w for w in words if w in self.WORDS)
+
+    def edits1(self, word):
+        """All edits that are one edit away from `word`."""
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]
+        deletes = [L + R[1:] for L, R in splits if R]
+        transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]
+        replaces = [L + c + R[1:] for L, R in splits if R for c in letters]
+        inserts = [L + c + R for L, R in splits for c in letters]
+        return set(deletes + transposes + replaces + inserts)
+
+    def edits2(self, word):
+        "All edits that are two edits away from `word`."
+        return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))
+
+    def correction(self, word):
+        "Most probable spelling correction for word."
+        # Only correct words
+        return max(self.candidates(word), key=self.P)
+
+    def recurse_correction(self, sentence, splits):
         """
-        From a dictionary of words,
-        try to find a word that is at most n
-        permutations from `word` and take it
+        Recursively split the sentence into smaller sections until a clean word is found.
+        correct it and then join it all back
         """
-        dictionary = self.get_word_dictionary()
-        dictionary
-        # Do magic here
-        return word
+        if not splits:
+            return self.correction(sentence) if sentence not in IGNORED_WORDS else sentence
+        split = splits[0]
+        return split.join([self.recurse_correction(sub_sentence, splits[1:]) for sub_sentence in sentence.split(split)])
+
+    def correct_sentence(self, sentence):
+        """
+        Receives a (hopefully) prepared term sentence and apply correction to it
+        """
+        splits = {c for c in sentence if not c.isalnum()}
+        return self.recurse_correction(sentence, list(splits))
 
     def _transform(self, term):
         """Take a term and try
@@ -29,7 +93,5 @@ class GrammarCorrectorFinder(BaseFinder):
         and find a known synonym that is better
         understood by the later finders
         """
-        # perform grammar correction
-        corrected_words = [self.levenshtein_clean(word) for word in term.query.split()]
-        corrected_term = ' '.join(corrected_words)
+        corrected_term = self.correct_sentence(term.query)
         return self.perform_transform(term, corrected_term)
