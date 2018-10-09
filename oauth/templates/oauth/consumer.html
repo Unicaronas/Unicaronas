@@ -290,10 +290,10 @@
         $.ajax({
             url: exchange_url,
             type: 'POST',
-            data: { code: code, redirect_uri: redirect_url, grant_type: grant_type },
-            beforeSend: function(request) {
-                request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
-            },
+            data: { code: code, redirect_uri: redirect_url, grant_type: grant_type, client_id: app_id },
+            // beforeSend: function(request) {
+            //     request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
+            // },
             success: update_refresh_page,
             error: error_refresh_page
         })
@@ -309,10 +309,10 @@
         $.ajax({
             url: exchange_url,
             type: 'POST',
-            data: { refresh_token: refresh_token, grant_type: grant_type },
-            beforeSend: function(request) {
-                request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
-            },
+            data: { refresh_token: refresh_token, grant_type: grant_type, client_id: app_id },
+            // beforeSend: function(request) {
+            //     request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
+            // },
             success: update_refresh_page,
             error: error_refresh_page
         })

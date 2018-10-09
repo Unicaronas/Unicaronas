@@ -74,6 +74,7 @@
                         <div class="meta">
                             Client ID: <b><code>{{ app.client_id }}</code></b>
                         </div>
+                        {% if not app.client_type == 'public' %}
                         <div class="meta">
                             <div class="ui accordion">
                                 <div class="title">
@@ -85,6 +86,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% endif %}
                         <div class="meta">
                             <div class="ui accordion">
                                 <div class="title">
