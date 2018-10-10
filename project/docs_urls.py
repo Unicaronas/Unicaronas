@@ -4,11 +4,12 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from . import api_urls
 from .swagger_schema import TaggedDescriptionSchemaGenerator
+from .utils import get_current_version
 
 schema_view = get_schema_view(
     openapi.Info(
         title="Unicaronas API",
-        default_version='v1.0',
+        default_version=get_current_version(),
         description="""
 Texto inicial
 

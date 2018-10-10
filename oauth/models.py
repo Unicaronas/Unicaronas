@@ -8,7 +8,7 @@ from versatileimagefield.fields import VersatileImageField
 from oauth2_provider import models as omodels
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.settings import oauth2_settings
-from project.validators import MaxImageDimensionsValidator, MinImageDimensionsValidator, SquareImageValidator
+from project.validators import MaxImageDimensionsValidator, MinImageDimensionsValidator, SquareImageValidator, CustomURLValidator
 
 
 from .utils import Cipher
@@ -102,6 +102,7 @@ class Application(omodels.AbstractApplication):
         upload_to=get_logo_path,
         validators=[MinImageDimensionsValidator(512, 512), MaxImageDimensionsValidator(1024, 1024), SquareImageValidator()]
     )
+    webhook_url = models.URLField(validators=[CustomURLValidator()], blank=True)
 
     @property
     def requested_scopes(self):

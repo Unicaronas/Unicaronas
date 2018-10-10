@@ -2,6 +2,7 @@ from django import forms
 from oauth2_provider import models, scopes
 from oauth2_provider.scopes import get_scopes_backend
 from versatileimagefield.forms import VersatileImageFormField
+from project.validators import CustomURLValidator
 
 
 class CustomAllowForm(forms.Form):
@@ -64,7 +65,7 @@ class ApplicationForm(forms.ModelForm):
     class Meta:
         model = models.get_application_model()
         fields = ['name', 'description', 'client_type', 'authorization_grant_type',
-                  'platform', 'scope', 'redirect_uris', 'website', 'logo']
+                  'platform', 'scope', 'redirect_uris', 'website', 'logo', 'webhook_url']
 
         labels = {
             'name': 'Nome do aplicativo',
@@ -74,5 +75,6 @@ class ApplicationForm(forms.ModelForm):
             'platform': 'Plataforma',
             'redirect_uris': 'URIs de redirecionamento (uma por linha)',
             'website': 'Página do app/Link para Download (opcional)',
-            'logo': 'URL do logo (opcional)'
+            'logo': 'URL do logo (opcional)',
+            'webhook_url': 'URL do webhook (opcional)',
         }

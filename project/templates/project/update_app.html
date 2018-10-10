@@ -69,6 +69,11 @@
                         </span>
                         <textarea name="{{ form.redirect_uris.name }}" id="{{ form.redirect_uris.auto_id }}" cols="40" rows="3">{% if form.redirect_uris.value %}{{ form.redirect_uris.value }}{% endif %}</textarea>
                     </div>
+                    <div class="field {% if form.webhook_url.errors.as_text %}error{% endif %}">
+                        <label>{{ form.webhook_url.label}}</label>
+                        <span style="color: red" class="small">{{ form.webhook_url.errors.as_text }}
+                            </span>{{ form.webhook_url }}
+                    </div>
                     <div class="two fields">
                         <div class="field {% if form.website.errors.as_text %}error{% endif %}">
                             <label>{{ form.website.label}}</label>

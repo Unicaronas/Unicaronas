@@ -2,9 +2,13 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.core import validators
 from oauth2_provider.settings import oauth2_settings
+from project.utils import import_current_version_module
 from .exceptions import PassengerBookedError, TripFullError, PassengerNotBookedError, UserNotDriverError, PassengerApprovedError, PassengerDeniedError, PassengerPendingError
 from .utils import user_is_driver
 # Create your models here.
+
+
+trips_webhooks = import_current_version_module('trips', 'webhooks')
 
 
 class Trip(models.Model):
@@ -85,7 +89,7 @@ class Trip(models.Model):
             self.user.driver.notify_new_passenger(user)
             return
         passenger.send_pending_notification()
-        return
+        trips_webhooks.PassengerPendingWebhook(passenger).send()
 
     def approve_passenger(self, user):
         """
@@ -193,6 +197,7 @@ class Passenger(models.Model):
         self.status = 'approved'
         self.save()
         self.send_approved_notification()
+        trips_webhooks.PassengerApprovedWebhook(self).send()
 
     def deny(self):
         if self.status == 'denied':
@@ -202,6 +207,7 @@ class Passenger(models.Model):
         self.status = 'denied'
         self.save()
         self.send_denied_notification()
+        trips_webhooks.PassengerDeniedWebhook(self).send()
 
     def forfeit(self):
         if self.status == 'denied':
@@ -211,9 +217,18 @@ class Passenger(models.Model):
         self.status = 'denied'
         self.save()
         self.send_forfeit_notification()
+        trips_webhooks.PassengerForfeitWebhook(self).send()
 
     def trip_deleted(self):
         self.send_trip_deleted_notification()
+        trip = self.trip
+        trips_webhooks.TripDeletedWebhook(
+            self.user,
+            trip.origin,
+            trip.destination,
+            trip.datetime,
+            trip.user
+        ).send()
 
     def give_up(self):
         self.delete()

@@ -1,8 +1,6 @@
 {% extends "project/base.html" %}
 {% load staticfiles %}
-
 {% block content %}
-
 <div id="intro" class="ui vertical stripe">
     <div class="ui middle center aligned middle aligned stackable grid container">
         <div class="row">
@@ -29,7 +27,6 @@
                 {% endif %}
                 <form class="ui form" enctype="multipart/form-data" method="post">
                     {% csrf_token %}
-
                     <h1 class="ui header">Basta preencher o formulário abaixo
                         <div class="sub header">Com problemas para preencher? <a href="">Aprenda mais sobre OAuth2 aqui!</a></div>
                     </h1>
@@ -74,6 +71,11 @@
                         </span>
                         <textarea name="{{ form.redirect_uris.name }}" id="{{ form.redirect_uris.auto_id }}" cols="40" rows="3">{% if form.redirect_uris.value %}{{ form.redirect_uris.value }}{% endif %}</textarea>
                     </div>
+                    <div class="field {% if form.webhook_url.errors.as_text %}error{% endif %}">
+                        <label>{{ form.webhook_url.label}}</label>
+                        <span style="color: red" class="small">{{ form.webhook_url.errors.as_text }}
+                            </span>{{ form.webhook_url }}
+                    </div>
                     <div class="two fields">
                         <div class="field {% if form.website.errors.as_text %}error{% endif %}">
                             <label>{{ form.website.label}}</label>
@@ -87,7 +89,7 @@
                             </span>{{ form.logo }}
                         </div>
                     </div>
-                    <button  class="ui button big centered labeled icon blue"><i class="icon save"></i> Criar app!</button>
+                    <button class="ui button big centered labeled icon blue"><i class="icon save"></i> Criar app!</button>
                 </form>
             </div>
         </div>
@@ -95,9 +97,8 @@
 </div>
 <script type="text/javascript" src="{% static 'project/js/tabs.js' %}"></script>
 <script type="text/javascript">
-
-    $("#id_client_type").dropdown();
-    $("#id_authorization_grant_type").dropdown();
-    $("#id_platform").dropdown();
+$("#id_client_type").dropdown();
+$("#id_authorization_grant_type").dropdown();
+$("#id_platform").dropdown();
 </script>
 {% endblock %}
