@@ -2,7 +2,6 @@ from django import forms
 from oauth2_provider import models, scopes
 from oauth2_provider.scopes import get_scopes_backend
 from versatileimagefield.forms import VersatileImageFormField
-from project.validators import CustomURLValidator
 
 
 class CustomAllowForm(forms.Form):
@@ -76,5 +75,5 @@ class ApplicationForm(forms.ModelForm):
             'redirect_uris': 'URIs de redirecionamento (uma por linha)',
             'website': 'Página do app/Link para Download (opcional)',
             'logo': 'URL do logo (opcional)',
-            'webhook_url': 'URL do webhook (opcional)',
+            'webhook_url': 'URL para receber Webhooks (opcional)',
         }
