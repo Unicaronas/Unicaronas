@@ -1,6 +1,6 @@
 from django.utils import timezone
 from rest_framework import viewsets, status
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import ValidationError
 from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -139,6 +139,6 @@ class PassengerTripViewset(
         try:
             action_map[action](passenger.user)
         except PassengerDeniedError:
-            raise APIException({'detail': 'Passageiros negados não podem desistir da carona'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Passageiros negados não podem desistir da carona'}, code=status.HTTP_400_BAD_REQUEST)
         except PassengerNotBookedError:
-            raise APIException({'detail': 'Usuário não é passageiro da carona'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Usuário não é passageiro da carona'}, code=status.HTTP_400_BAD_REQUEST)

@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -379,10 +379,10 @@ class DriverPassengerActionsViewset(
         try:
             action_map[action](passenger.user)
         except PassengerPendingError:
-            raise APIException({'detail': 'Operação inválida para passageiros pendentes'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Operação inválida para passageiros pendentes'}, code=status.HTTP_400_BAD_REQUEST)
         except PassengerApprovedError:
-            raise APIException({'detail': 'Operação inválida para passageiros aprovados'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Operação inválida para passageiros aprovados'}, code=status.HTTP_400_BAD_REQUEST)
         except PassengerDeniedError:
-            raise APIException({'detail': 'Operação inválida para passageiros negados ou removidos'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Operação inválida para passageiros negados ou removidos'}, code=status.HTTP_400_BAD_REQUEST)
         except TripFullError:
-            raise APIException({'detail': 'Carona já está cheia'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Carona já está cheia'}, code=status.HTTP_400_BAD_REQUEST)
