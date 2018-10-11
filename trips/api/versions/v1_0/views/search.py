@@ -1,8 +1,7 @@
 from django.utils import timezone
 from django.db.models import Count, F, Q
-from django.shortcuts import Http404
 from rest_framework import viewsets, status
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import ValidationError
 from rest_framework_filters.backends import RestFrameworkFilterBackend
 from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
 from drf_yasg.utils import swagger_auto_schema
@@ -142,7 +141,7 @@ class SearchTripViewset(
 
         for field in required_fields:
             if not self.request.query_params.get(field, False):
-                raise APIException(f'Parâmetro GET `{field}` faltando', code=status.HTTP_400_BAD_REQUEST)
+                raise ValidationError(f'Parâmetro GET `{field}` faltando', code=status.HTTP_400_BAD_REQUEST)
         return super().list(*args, **kwargs)
 
     @swagger_auto_schema(
@@ -173,14 +172,14 @@ class SearchTripViewset(
 
     def perform_update(self, serializer):
         action = serializer.validated_data['action']
-        passenger = serializer.instance
-        trip = Trip.objects.get(id=self.kwargs['pk'])
+
+        trip = serializer.instance
         action_map = {
             'book': trip.book_user,
         }
         try:
-            action_map[action](passenger.user)
+            action_map[action](self.request.user)
         except TripFullError:
-            raise APIException({'detail': 'Carona já está cheia'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Carona já está cheia'}, code=status.HTTP_400_BAD_REQUEST)
         except PassengerBookedError:
-            raise APIException({'detail': 'Usuário já é passageiro da carona'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'Usuário já é passageiro da carona'}, code=status.HTTP_400_BAD_REQUEST)
