@@ -4,7 +4,7 @@
 {% load application_helpers %}
 
 {% block extend_scripts %}
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.28.4/dist/sweetalert2.all.min.js"></script>
 {% endblock %}
 
 {% block extend_style %}
@@ -70,6 +70,25 @@
                                 {% for key, value in approved.items %}
                                 <div class="item"><b>{{ value }}</b></div>
                                 {% endfor %}
+                            </div>
+                        </div>
+                        <div class="extra">
+                            <div class="ui middle aligned stackable grid">
+                                <div class="row">
+                                    <div class="center aligned column">
+                                        <h1 class="ui large header">{% if not app.user_rating %}Avalie esse app
+                                            <div class="sub header">Sua avaliação ajudará outros usuários e os desenvolvedores</div>
+                                        {% else %} App avaliado!
+                                        <div class="sub header">Agradecemos por sua avaliação! Você pode mudá-la a qualquer momento</div>{% endif %}
+                                        </h1>
+                                        <button onclick="rate_app('{{ app.id }}', true)" class="ui blue basic {% if app.user_rating.0.rating == True %}disabled{% endif %} icon huge button">
+                                            <i class="fas fa-thumbs-up"></i>
+                                        </button>
+                                        <button onclick="rate_app('{{ app.id }}', false)" class="ui red basic {% if app.user_rating.0.rating == False %}disabled{% endif %} icon huge button">
+                                            <i class="fas fa-thumbs-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="mobile hidden">
@@ -167,49 +186,67 @@
     {% csrf_token %}
     <input hidden id="application_id_field" type="text" name="application_id">
 </form>
+<form id="rate_app_form" method="POST" action="{% url 'apps_rate' %}">
+    {% csrf_token %}
+    <input hidden id="rate_application_id_field" type="text" name="application_id">
+    <input hidden id="rating_field" type="checkbox" name="rating">
+</form>
 
 <script type="text/javascript">
-    function ask_revoke_access(application_name, application_id) {
-        swal({
-            title: "Tem certeza?",
-            text: "Quer mesmo revogar o acesso de " + application_name + " às suas informações?\nVocê terá que aprová-lo novamente para voltar a usar",
-            icon: "warning",
-            buttons: ["Deixa pra lá!", "Revogar!"],
-            dangerMode: true
-        })
-        .then(function(value) {
-            if (value)
-                revoke_access(application_id);
-        });
-    }
-    function revoke_access(application_id) {
-        $('#application_id_field').val(application_id);
-        $('#revoke_app_form').submit();
-    }
-    function get_url_param(param) {
-        query = window.location.search.substring(1);
-        vars = query.split('&');
-        for (i in vars) {
-            pair = vars[i].split('=');
-            if (decodeURIComponent(pair[0]) == param)
-                return decodeURIComponent(pair[1]);
-        }
-        return "";
-    }
-    function go_to_page(page) {
-        path = "?page=" + page;
-        search = get_url_param("search");
-        if (search != "")
-            path = path + '&search=' + search;
-        document.location.href = path;
-    }
-    var input = document.getElementById("search");
-    input.value = get_url_param("search");
-    input.addEventListener("keyup", function(event) {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-            document.location.href = '?search=' + document.getElementById("search").value;
-        }
+const swalSUIButtons = swal.mixin({
+    confirmButtonClass: 'ui green labeled icon button',
+    cancelButtonClass: 'ui red labeled icon button',
+    buttonsStyling: false,
+})
+function ask_revoke_access(application_name, application_id) {
+    swalSUIButtons({
+        title: "Tem certeza?",
+        html: "Quer mesmo revogar o acesso de <b>" + application_name + "</b>?<br>Você terá que aprová-lo novamente para voltar a usar",
+        type: "warning",
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: "Deixa pra lá!",
+        confirmButtonClass: "ui green button",
+        cancelButtonText: '<i class="icon close"></i> Revogar!',
+    })
+    .then(function(result) {
+        if (result.dismiss == swal.DismissReason.cancel)
+            revoke_access(application_id);
     });
+}
+function revoke_access(application_id) {
+    $('#application_id_field').val(application_id);
+    $('#revoke_app_form').submit();
+}
+function rate_app(application_id, rating) {
+    $('#rate_application_id_field').val(application_id);
+    $('#rating_field').attr("checked", rating);
+    $('#rate_app_form').submit();
+}
+function get_url_param(param) {
+    query = window.location.search.substring(1);
+    vars = query.split('&');
+    for (i in vars) {
+        pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == param)
+            return decodeURIComponent(pair[1]);
+    }
+    return "";
+}
+function go_to_page(page) {
+    path = "?page=" + page;
+    search = get_url_param("search");
+    if (search != "")
+        path = path + '&search=' + search;
+    document.location.href = path;
+}
+var input = document.getElementById("search");
+input.value = get_url_param("search");
+input.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        document.location.href = '?search=' + document.getElementById("search").value;
+    }
+});
 </script>
 {% endblock %}

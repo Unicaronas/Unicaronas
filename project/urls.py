@@ -39,6 +39,7 @@ application_patterns = [
     path('applications/<int:pk>/', views.DetailApplications.as_view(), name='apps_detail'),
     path('applications/connected/', views.ConnectedApplications.as_view(), name='apps_connected'),
     path('applications/connected/revoke/', views.RevokeAccess.as_view(), name='apps_revoke'),
+    path('applications/connected/rate/', views.RateApp.as_view(), name='apps_rate'),
     path('applications/my/', views.MyApplications.as_view(), name='apps_my'),
     path('applications/my/toggle_publish/', views.TogglePublish.as_view(), name='toggle_publish'),
     path('applications/create/', views.CreateApp.as_view(), name='apps_create'),

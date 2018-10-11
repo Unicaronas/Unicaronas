@@ -43,6 +43,14 @@
                                 <div class="sub header">Por {{ app.user.get_full_name }}</div>
                             </div>
                         </div>
+                        <div class="ui small right floated statistic {% if app.final_score >= 60 %}blue{% else %}{% if app.final_score >= 45 %}orange{% else %}red{% endif %}{% endif %}">
+                            <div class="label">
+                                pontuação:
+                            </div>
+                            <div class="value">
+                                {{ app.final_score }}%
+                            </div>
+                        </div>
                         <div class="meta">
                             Feito para {{ app.get_platform_display }}
                         </div>
@@ -161,30 +169,30 @@
 </div>
 
 <script type="text/javascript">
-    function get_url_param(param) {
-        query = window.location.search.substring(1);
-        vars = query.split('&');
-        for (i in vars) {
-            pair = vars[i].split('=');
-            if (decodeURIComponent(pair[0]) == param)
-                return decodeURIComponent(pair[1]);
-        }
-        return "";
+function get_url_param(param) {
+    query = window.location.search.substring(1);
+    vars = query.split('&');
+    for (i in vars) {
+        pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == param)
+            return decodeURIComponent(pair[1]);
     }
-    function go_to_page(page) {
-        path = "?page=" + page;
-        search = get_url_param("search");
-        if (search != "")
-            path = path + '&search=' + search;
-        document.location.href = path;
+    return "";
+}
+function go_to_page(page) {
+    path = "?page=" + page;
+    search = get_url_param("search");
+    if (search != "")
+        path = path + '&search=' + search;
+    document.location.href = path;
+}
+var input = document.getElementById("search");
+input.value = get_url_param("search");
+input.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        document.location.href = '?search=' + document.getElementById("search").value;
     }
-    var input = document.getElementById("search");
-    input.value = get_url_param("search");
-    input.addEventListener("keyup", function(event) {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-            document.location.href = '?search=' + document.getElementById("search").value;
-        }
-    });
+});
 </script>
 {% endblock %}

@@ -11,8 +11,8 @@ from oauth2_provider.settings import oauth2_settings
 from project.validators import MaxImageDimensionsValidator, MinImageDimensionsValidator, SquareImageValidator, CustomURLValidator
 
 
-from .utils import Cipher
-from .exceptions import InvalidScopedUserId
+from ..utils import Cipher
+from ..exceptions import InvalidScopedUserId
 
 # Create your models here.
 
