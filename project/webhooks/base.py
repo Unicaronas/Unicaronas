@@ -93,7 +93,7 @@ class BaseMultiplePayloadsWebhook(BaseWebhook):
         return data
 
     def send(self):
-        for recipient, data in zip(self.recipients, self.get_data):
+        for recipient, data in zip(self.recipients, self.get_data()):
             self.send_one(recipient, data)
 
 
