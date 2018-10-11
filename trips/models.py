@@ -88,8 +88,8 @@ class Trip(models.Model):
             self.approve_passenger(user)
             self.user.driver.notify_new_passenger(user)
             return
-        passenger.send_pending_notification()
         trips_webhooks.PassengerPendingWebhook(passenger).send()
+        passenger.send_pending_notification()
 
     def approve_passenger(self, user):
         """
@@ -196,8 +196,8 @@ class Passenger(models.Model):
             raise PassengerApprovedError('Passageiro já aprovado')
         self.status = 'approved'
         self.save()
-        self.send_approved_notification()
         trips_webhooks.PassengerApprovedWebhook(self).send()
+        self.send_approved_notification()
 
     def deny(self):
         if self.status == 'denied':
@@ -206,8 +206,8 @@ class Passenger(models.Model):
             raise PassengerApprovedError('Passageiro já aprovado')
         self.status = 'denied'
         self.save()
-        self.send_denied_notification()
         trips_webhooks.PassengerDeniedWebhook(self).send()
+        self.send_denied_notification()
 
     def forfeit(self):
         if self.status == 'denied':
@@ -216,11 +216,10 @@ class Passenger(models.Model):
             raise PassengerPendingError('Passageiro ainda pendente')
         self.status = 'denied'
         self.save()
-        self.send_forfeit_notification()
         trips_webhooks.PassengerForfeitWebhook(self).send()
+        self.send_forfeit_notification()
 
     def trip_deleted(self):
-        self.send_trip_deleted_notification()
         trip = self.trip
         trips_webhooks.TripDeletedWebhook(
             self.user,
@@ -229,6 +228,7 @@ class Passenger(models.Model):
             trip.datetime,
             trip.user
         ).send()
+        self.send_trip_deleted_notification()
 
     def give_up(self):
         self.delete()
