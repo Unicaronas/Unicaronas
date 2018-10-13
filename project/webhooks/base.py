@@ -1,4 +1,4 @@
-from project.tasks import send_webhook
+from project.tasks import send_webhooks
 from .serializers import WebhookSerializer
 
 
@@ -49,7 +49,7 @@ class BaseWebhook(object):
             context = self.get_serializer_context()
             serializer = self.get_serializer(data, context)
             serializer.is_valid()
-            self._data = serializer.validated_data
+            self._data = [serializer.validated_data] * len(self.recipients)
         return self._data
 
     @property
@@ -57,13 +57,8 @@ class BaseWebhook(object):
         """Clean recipients, removing invalid ones"""
         return self._recipients
 
-    def send_one(self, recipient, data):
-        """Send one webhook"""
-        send_webhook.delay(recipient, data, self.timeout)
-
     def send(self):
-        for recipient in self.recipients:
-            self.send_one(recipient, self.get_data())
+        send_webhooks.delay(self.recipients, self.get_data(), self.timeout)
 
 
 class BaseMultiplePayloadsWebhook(BaseWebhook):
@@ -91,10 +86,6 @@ class BaseMultiplePayloadsWebhook(BaseWebhook):
             serializer.is_valid()
             data.append(serializer.validated_data)
         return data
-
-    def send(self):
-        for recipient, data in zip(self.recipients, self.get_data()):
-            self.send_one(recipient, data)
 
 
 class Webhook(BaseWebhook):
