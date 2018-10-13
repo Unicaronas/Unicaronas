@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'trips',
     'search',
     'third_parties',
+    'alarms',
 
     'maintenance_mode',
 

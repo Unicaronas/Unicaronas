@@ -2,3 +2,4 @@ from .driver import DriverBasicInfo, DriverTripCreateUpdateSerializer, DriverTri
 from .passenger import PassengerTripListRetrieveSerializer, PassengerSerializer
 from .actions import DriverActionsSerializer, FuturePassengerActionsSerializer, PassengerActionsSerializer
 from .search import SearchTripSerializer, ThirdPartyQuerySerializer
+from .base import PointSerializer

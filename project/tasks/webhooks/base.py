@@ -1,5 +1,5 @@
 from celery import shared_task
-from requests_futures.session import FutureSession
+from requests_futures.sessions import FuturesSession
 
 
 def send_webhook(recipient, data, session, timeout=5):
@@ -16,7 +16,7 @@ def send_webhook(recipient, data, session, timeout=5):
 @shared_task
 def send_webhooks(recipients, data_list, timeout=5):
 
-    session = FutureSession(max_workers=10)
+    session = FuturesSession(max_workers=10)
 
     if not isinstance(recipients, (list, tuple)):
         recipients = tuple(recipients)

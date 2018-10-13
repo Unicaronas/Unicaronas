@@ -27,6 +27,7 @@ nplusone
 celery
 redis
 django-celery-email
+requests-futures
 
 # REST
 djangorestframework

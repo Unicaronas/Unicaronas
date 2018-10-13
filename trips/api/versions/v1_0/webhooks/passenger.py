@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.shortcuts import reverse
 from django.conf import settings
 from oauth2_provider.models import get_access_token_model, get_application_model
+from project.utils import local_versioned_url_name
 from project.webhooks import MultiplePayloadsWebhook
 
 
@@ -31,7 +32,7 @@ class BasePassengerWebhook(MultiplePayloadsWebhook):
     def get_payload_recipients(self, passenger):
         user = passenger.user
         trip = passenger.trip
-        trip_url = settings.ROOT_URL + reverse('api:v1.0:passenger-trips-detail', kwargs={'pk': trip.id})
+        trip_url = settings.ROOT_URL + reverse(local_versioned_url_name('api:passenger-trips-detail', __file__, 2), kwargs={'pk': trip.id})
         recipients = []
         payload = []
         for app in self.get_valid_apps(user):

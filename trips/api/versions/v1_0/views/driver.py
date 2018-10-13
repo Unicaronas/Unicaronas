@@ -10,6 +10,7 @@ from project.mixins import PrefetchQuerysetModelMixin, PatchModelMixin
 from oauth2_provider.models import get_application_model
 from oauth.exceptions import InvalidScopedUserId
 from user_data.permissions import UserIsDriver
+from alarms.tasks import dispatch_alarms
 from ..inspectors import DjangoFilterDescriptionInspector
 from ..filters import LocalizedOrderingFilter
 from ..serializers import DriverTripCreateUpdateSerializer, DriverTripListRetrieveSerializer, PassengerSerializer, DriverActionsSerializer
@@ -149,6 +150,10 @@ class DriverTripViewset(
         instance = self.perform_create(serializer)
         serializer = DriverTripListRetrieveSerializer(instance=instance, context=self.get_serializer_context())
         headers = self.get_success_headers(serializer.data)
+
+        # Dispatch alarms announcing the new trip to users
+        dispatch_alarms.delay(instance.id)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     @swagger_auto_schema(
