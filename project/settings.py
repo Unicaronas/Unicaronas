@@ -280,6 +280,8 @@ OAUTH2_PROVIDER = {
         'student:read': 'Seu perfil de aluno na sua universidade',
         'driver:read': 'Informações sobre seu carro',
         'driver:preferences:read': 'Suas preferências como motorista',
+        'alarms:read': 'Detalhes sobre os alarmes de caronas criados por você',
+        'alarms:write': 'Criar, editar e apagar seus alarmes de caronas',
         'trips:read': 'Pesquisar caronas por você',
         'trips:driver:read': 'Detalhes sobre as caronas, e seus passageiros, em que você é motorista',
         'trips:driver:write': 'Criar, editar e apagar as caronas em que você é motorista e gerenciar seus passageiros',

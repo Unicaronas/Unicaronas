@@ -42,10 +42,34 @@ Pesquise caronas usando uma poderosa variedade de filtros e garanta que seu usu�
     'Pesquisa Externa': {
         'name': 'Pesquisa Externa',
         'description': """
-A API de Pesquisas é o centro do Unicaronas. Com ela, você pode pesquisar nossa grande base de dados e colocar seus usuários nas melhores caronas possíveis.
+API de pesquisas externas te leva além do banco de dados do Unicaronas. Com ela, você pode garantir que seu usuário sempre encontrará a carona que precisa.
 
-## Pesquisas e caronas
-Pesquise caronas usando uma poderosa variedade de filtros e garanta que seu usuário encontrará o que procura.
+## Bancos externos
+A pesquisa externa difere da interna pois não usa caronas criadas no Unicaronas. Ela pesquisa por caronas em diversos grupos de Facebook e usa a API do BlaBlaCar para te fornecer um vasto leque de opções.
+
+## Limitações
+Por não usar caronas criadas pelo Unicaronas, não é possível verificar a identidade do motorista, nem coletar dados precisos da carona. Coisas como localização exata e número de assentos vagos não estarão disponíveis e, muitas vezes, as caronas podem ser para outros locais ou já estarem lotadas.
+
+O Unicaronas usa diversas técnicas para mitigar esses erros e apresentar resultados de qualidade, mas não oferece nenhuma garantia de que os resultados são tão precisos quanto os resultados da pesquisa interna.
+
+**Por esse motivo, considere expor caronas externas para seus usuários apenas quando não for possível encontrar caronas pela [pesquisa interna](#tag/Pesquisa-Interna) e quando criar [alarmes](#tag/Alarmes) não for possível.**
+"""
+    }, 'Alarmes': {
+        'name': 'Alarmes',
+        'description': """
+Leia, edite e crie alarmes para o usuário que te deu permissão com a API de Alarmes.
+
+## O que são alarmes?
+Alarmes são a forma que seu usuário tem de ser notificado quando uma carona nova for criada em um horário específico.
+
+Nem sempre o será possível encontrar caronas nos horários que mais precisamos. Em outros momentos nós sabemos com bastane antecedência, antes de qualquer motorista criar caronas, que precisaremos estar em um local em uma certa hora.
+O Unicaronas tenta solucionar isso com a API de alarmes.
+
+Com a API de alarmes é possível notificar usuários assim que essas caronas forem criadas, para que eles não tenham que realizar a pesquisa novamente e possam ser os primeiros a fazerem a reserva.
+
+Sua API é bem semelhante à API de [pesquisa interna](#tag/Pesquisa-Interna) e permite que você *salve* uma pesquisa do seu usuário.
+Sempre que uma carona nova for criada, o Unicaronas verificará se alguém criou um alarme que coincida com os parâmetros da carona nova. Se coincidir, o Unicaronas
+enviará [Webhooks](#tag/Webhooks) para todos os aplicativos conectados ao usuário com informações sobre a nova carona.
 """
     }
 }

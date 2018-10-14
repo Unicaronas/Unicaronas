@@ -79,7 +79,6 @@ class SearchTripViewset(
         """Detalhes de uma carona
 
         Permite acessar detalhes de caronas **que ainda não aconteceram**, que **não estão cheias** e que o **usuário não é passageiro ou motorista**.
-        > **Obs:** Só é acessível para caronas que ainda não aconteceram e que não estão cheias
 
         Para acessar, use a ID de uma carona pesquisada.
 
