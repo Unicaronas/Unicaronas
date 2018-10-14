@@ -9,9 +9,13 @@ from project.utils import local_versioned_url_name
 class BaseAlarmWebhook(MultiplePayloadsWebhook):
     event = None
     permissions = None
+    passenger_allows_field = None
 
     def __init__(self, alarm, trip):
-        payload, recipients = self.get_payload_recipients(alarm, trip)
+        if self.passenger_allows(alarm.user):
+            payload, recipients = self.get_payload_recipients(alarm, trip)
+        else:
+            payload, recipients = ([], [])
         super().__init__(self.event, payload, recipients)
 
     def get_valid_apps(self, user):
@@ -47,16 +51,22 @@ class BaseAlarmWebhook(MultiplePayloadsWebhook):
             )
         return payload, recipients
 
+    def passenger_allows(self, user):
+        if self.passenger_allows_field is None:
+            return True
+        return getattr(user.preferences, self.passenger_allows_field, False)
+
 
 class BaseMultipleAlarmsWebhook(BaseAlarmWebhook):
     def __init__(self, alarms, trip):
         payload = []
         recipients = []
         for alarm in alarms:
-            p, r = self.get_payload_recipients(alarm, trip)
-            payload.extend(p)
-            recipients.extend(r)
-        super().__init__(self.event, payload, recipients)
+            if self.passenger_allows(alarm.user):
+                p, r = self.get_payload_recipients(alarm, trip)
+                payload.extend(p)
+                recipients.extend(r)
+        super(BaseAlarmWebhook, self).__init__(self.event, payload, recipients)
 
 
 class AlarmWebhook(BaseAlarmWebhook):
@@ -66,8 +76,9 @@ class AlarmWebhook(BaseAlarmWebhook):
     a user is now pending on a trip
     """
 
-    permissions = ['trips:passenger:read']
+    permissions = ['trips:read']
     event = 'passenger_alarm'
+    passenger_allows_field = 'updates_notifications'
 
 
 class MultipleAlarmsWebhook(BaseMultipleAlarmsWebhook):
@@ -77,5 +88,6 @@ class MultipleAlarmsWebhook(BaseMultipleAlarmsWebhook):
     a user is now pending on a trip
     """
 
-    permissions = ['trips:passenger:read']
+    permissions = ['trips:read']
     event = 'passenger_alarm'
+    passenger_allows_field = 'updates_notifications'

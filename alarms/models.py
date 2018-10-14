@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 from django.core import validators
 from django.contrib.auth.models import User
 from django.db.models import Q, F
@@ -76,12 +76,17 @@ class Alarm(models.Model):
         ).filter(
             # If the alarm defined datetime_lte, filter it
             Q(datetime_lte__isnull=True) | Q(datetime_lte__gte=trip.datetime)
+        ).annotate(
+            # First annotate the distances, since django can't compute
+            # F expressions inside D functions, per
+            # https://gis.stackexchange.com/questions/176735/geodjango-distance-filter-based-on-database-column
+            origin_distance=Distance('origin_point', trip.origin_point),
+            destination_distance=Distance('destination_point', trip.destination_point)
         ).filter(
             # Filter origin
-            origin_point__distance_lte=(trip.origin_point, D(km=F('origin_radius')))
+            origin_distance__lte=F('origin_radius')
         ).filter(
             # Filter destination
-            destination_point__distance_lte=(trip.destination_point, D(km=F('destination_radius')))
+            destination_distance__lte=F('destination_radius')
         )
-
         alarm_webhooks.MultipleAlarmsWebhook(alarms, trip).send()

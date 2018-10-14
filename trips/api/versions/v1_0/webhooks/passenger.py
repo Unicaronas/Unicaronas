@@ -9,9 +9,13 @@ from project.webhooks import MultiplePayloadsWebhook
 class BasePassengerWebhook(MultiplePayloadsWebhook):
     event = None
     permissions = None
+    passenger_allows_field = None
 
     def __init__(self, passenger):
-        payload, recipients = self.get_payload_recipients(passenger)
+        if self.passenger_allows(passenger.user):
+            payload, recipients = self.get_payload_recipients(passenger)
+        else:
+            payload, recipients = ([], [])
         super().__init__(self.event, payload, recipients)
 
     def get_valid_apps(self, user):
@@ -48,6 +52,11 @@ class BasePassengerWebhook(MultiplePayloadsWebhook):
             )
         return payload, recipients
 
+    def passenger_allows(self, user):
+        if self.passenger_allows_field is None:
+            return True
+        return getattr(user.preferences, self.passenger_allows_field, False)
+
 
 class PassengerPendingWebhook(BasePassengerWebhook):
     """Passenger Pending Webhook
@@ -58,6 +67,7 @@ class PassengerPendingWebhook(BasePassengerWebhook):
 
     permissions = ['trips:passenger:read']
     event = 'passenger_pending'
+    passenger_allows_field = 'updates_notifications'
 
 
 class PassengerApprovedWebhook(BasePassengerWebhook):
@@ -69,6 +79,7 @@ class PassengerApprovedWebhook(BasePassengerWebhook):
 
     permissions = ['trips:passenger:read']
     event = 'passenger_approved'
+    passenger_allows_field = 'updates_notifications'
 
 
 class PassengerDeniedWebhook(BasePassengerWebhook):
@@ -80,6 +91,7 @@ class PassengerDeniedWebhook(BasePassengerWebhook):
 
     permissions = ['trips:passenger:read']
     event = 'passenger_denied'
+    passenger_allows_field = 'updates_notifications'
 
 
 class PassengerForfeitWebhook(BasePassengerWebhook):
@@ -91,6 +103,7 @@ class PassengerForfeitWebhook(BasePassengerWebhook):
 
     permissions = ['trips:passenger:read']
     event = 'passenger_forfeit'
+    passenger_allows_field = 'updates_notifications'
 
 
 class TripDeletedWebhook(BasePassengerWebhook):
@@ -102,10 +115,14 @@ class TripDeletedWebhook(BasePassengerWebhook):
 
     permissions = ['trips:passenger:read']
     event = 'trip_deleted'
+    passenger_allows_field = 'updates_notifications'
 
     def __init__(self, user, origin, destination, datetime, driver):
-        payload, recipients = self.get_payload_recipients(user)
-        super().__init__(self.event, payload, recipients)
+        if self.passenger_allows(user):
+            payload, recipients = self.get_payload_recipients(user, origin, destination, datetime, driver)
+        else:
+            payload, recipients = ([], [])
+        super(BasePassengerWebhook, self).__init__(self.event, payload, recipients)
 
     def get_payload_recipients(self, user, origin, destination, datetime, driver):
         recipients = []
