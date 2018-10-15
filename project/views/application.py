@@ -34,7 +34,7 @@ class ListApplications(generic.ListView):
         ).select_related('user')
         if not search:
             return published_apps
-        return published_apps.filter(Q(name__icontains=search) | Q(description__icontains=search))
+        return published_apps.filter(Q(name__icontains=search) | Q(description__icontains=search) | Q(platform__icontains=search))
 
 
 class ConnectedApplications(LoginRequiredMixin, generic.ListView):
