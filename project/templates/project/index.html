@@ -42,7 +42,7 @@ inverted
             <a href="{% url 'apps_list' %}" class="ui huge inverted download button">
                 Aplicativos
             </a>
-            <a href="{% url 'become_dev' %}" class="ui huge inverted basic button">Quero ser dev!</a>
+            <a href="{% url 'docs:schema-redoc'|versioned_url %}" class="ui huge inverted basic button">Quero ser dev!</a>
             {% else %}
             <a href="{% url 'account_signup' %}" class="ui huge inverted download button">
                 Me inscreva!
@@ -150,10 +150,11 @@ inverted
                                 <a href="{% url 'index' %}/#info" class="right item">O que é</a>
                                 <a href="{% url 'apps_list' %}" class="item">Aplicativos</a>
                                 <a href="{% url 'docs:schema-redoc'|versioned_url %}" class="item">Documentação</a>
-                                <a href="{% url 'watchman-dashboard' %}" class="item">Status do serviço</a>
+                                <a href="https://medium.com/unicaronas" class="item">Blog</a>
                                 <br>
                                 <a class="item" href="{% url 'privacy_policy' %}">Privacidade</a>
                                 <a class="item" href="{% url 'terms_and_conditions' %}">Termos e condições</a>
+                                <a href="{% url 'watchman-dashboard' %}" class="item">Status do serviço</a>
                                 <a class="item" href="https://github.com/Unicaronas/Unicaronas">Código fonte <i class="icon github"></i></a>
                             </div>
                         </div>

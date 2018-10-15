@@ -4,6 +4,7 @@
 <head>
     <!-- Load project's staticfiles -->
     {% load static %}
+    {% load versioning %}
     {% load analytical %}
     {% analytical_head_top %}
     <meta charset="utf-8">
@@ -81,7 +82,8 @@
     <div class="ui vertical inverted sidebar menu left">
         <a href="{% url 'index' %}#intro" class="right item">O que é</a>
         <a href="{% url 'apps_list' %}" class="item">Aplicativos</a>
-        <a href="{% url 'become_dev' %}" class="item">Desenvolver</a>
+        <a href="{% url 'docs:schema-redoc'|versioned_url %}" class="item">Documentação</a>
+        <a href="https://medium.com/unicaronas" class="item">Blog</a>
         {% if user.is_authenticated %}
         <div class="item">
             <a href="{% url 'profile' %}">Minha conta</a>
@@ -119,7 +121,8 @@
                     </a>
                     <a href="{% url 'index' %}#intro" class="right item">O que é</a>
                     <a href="{% url 'apps_list' %}" class="item">Aplicativos</a>
-                    <a href="{% url 'become_dev' %}" class="item">Desenvolver</a>
+                    <a href="{% url 'docs:schema-redoc'|versioned_url %}" class="item">Documentação</a>
+                    <a href="https://medium.com/unicaronas" class="item">Blog</a>
                     {% if user.is_authenticated %}
                     <div class="item">
                         <a href="{% url 'profile' %}"><div class="ui primary {{ inverted }} button">Minha conta</div></a>
