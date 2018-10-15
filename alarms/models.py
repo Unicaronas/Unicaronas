@@ -90,3 +90,5 @@ class Alarm(models.Model):
             destination_distance__lte=F('destination_radius')
         )
         alarm_webhooks.MultipleAlarmsWebhook(alarms, trip).send()
+        # Clear selected alarms
+        alarms.delete()

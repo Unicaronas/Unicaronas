@@ -8,7 +8,7 @@ from project.mixins import PrefetchQuerysetModelMixin, PatchModelMixin
 from ..inspectors import DjangoFilterDescriptionInspector
 from ..filters import LocalizedOrderingFilter
 from ..serializers import PassengerTripListRetrieveSerializer, PassengerActionsSerializer
-from .....models import Trip
+from .....models import Trip, Passenger
 from .....exceptions import PassengerDeniedError, PassengerNotBookedError
 
 
@@ -131,13 +131,17 @@ class PassengerTripViewset(
 
     def perform_update(self, serializer):
         action = serializer.validated_data['action']
-        passenger = serializer.instance
         trip = Trip.objects.get(id=self.kwargs['pk'])
+        passenger = Passenger.objects.filter(
+            trip=trip,
+            user=self.request.user
+        ).first()
+        print(passenger, trip, action)
         action_map = {
             'give_up': trip.passenger_give_up,
         }
         try:
-            action_map[action](passenger.user)
+            action_map[action](passenger.user if passenger else None)
         except PassengerDeniedError:
             raise ValidationError({'detail': 'Passageiros negados não podem desistir da carona'}, code=status.HTTP_400_BAD_REQUEST)
         except PassengerNotBookedError:

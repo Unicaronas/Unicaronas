@@ -85,10 +85,11 @@ class Trip(models.Model):
         )
         passenger.save()
         if self.auto_approve:
-            self.approve_passenger(user)
-            self.user.driver.notify_new_passenger(user)
+            passenger = self.approve_passenger(user)
+            self.user.driver.notify_new_passenger(passenger)
             return
         trips_webhooks.PassengerPendingWebhook(passenger).send()
+        self.user.driver.notify_new_passenger(passenger)
 
     def approve_passenger(self, user):
         """
@@ -99,6 +100,7 @@ class Trip(models.Model):
             raise TripFullError('Carona cheia')
         passenger = self.check_is_passenger(user)
         passenger.approve()
+        return passenger
 
     def deny_passenger(self, user):
         """
@@ -119,8 +121,8 @@ class Trip(models.Model):
         passenger = self.check_is_passenger(user)
         if passenger.status == 'denied':
             raise PassengerDeniedError('Passageiro está negado')
+        self.user.driver.notify_passenger_give_up(passenger)
         passenger.give_up()
-        self.user.driver.notify_passenger_give_up(user)
 
     def delete_trip(self):
         for passenger in self.passengers.all():
@@ -195,14 +197,7 @@ class Passenger(models.Model):
         trips_webhooks.PassengerForfeitWebhook(self).send()
 
     def trip_deleted(self):
-        trip = self.trip
-        trips_webhooks.TripDeletedWebhook(
-            self.user,
-            trip.origin,
-            trip.destination,
-            trip.datetime,
-            trip.user
-        ).send()
+        trips_webhooks.TripDeletedWebhook(self).send()
 
     def give_up(self):
         self.delete()

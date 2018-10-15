@@ -3,7 +3,11 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
+from project.utils import import_current_version_module
 # Create your models here.
+
+
+user_data_webhooks = import_current_version_module('user_data', 'webhooks')
 
 
 GENDER_CHOICES = (
@@ -151,12 +155,13 @@ class Driver(models.Model):
     )
 
     def notify_new_passenger(self, passenger):
-        """Passenger is an User"""
-        raise NotImplementedError("Implementar envio de mensagem para motorista")
+        if passenger.status == 'pending':
+            user_data_webhooks.DriverNewPassengerPendingWebhook(passenger).send()
+        else:
+            user_data_webhooks.DriverNewPassengerApprovedWebhook(passenger).send()
 
     def notify_passenger_give_up(self, passenger):
-        """Passenger is an User"""
-        raise NotImplementedError("Implementar envio de mensagem para motorista")
+        user_data_webhooks.DriverPassengerGiveUpWebhook(passenger).send()
 
     def __str__(self):
         return f"Driver de {self.user}"

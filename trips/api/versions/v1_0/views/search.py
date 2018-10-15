@@ -172,7 +172,7 @@ class SearchTripViewset(
     def perform_update(self, serializer):
         action = serializer.validated_data['action']
 
-        trip = serializer.instance
+        trip = self.get_object()
         action_map = {
             'book': trip.book_user,
         }

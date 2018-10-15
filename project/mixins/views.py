@@ -4,12 +4,14 @@ from rest_framework.response import Response
 class PatchModelMixin(object):
     """
     Patch a model instance.
+
+    Actually used to allow views to receive PATCH requests and process dara
+    For this reason, it does not process the instance, only the data from the request
     """
 
     def partial_update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', True)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 

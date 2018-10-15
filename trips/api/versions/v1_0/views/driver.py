@@ -374,7 +374,7 @@ class DriverPassengerActionsViewset(
 
     def perform_update(self, serializer):
         action = serializer.validated_data['action']
-        passenger = serializer.instance
+        passenger = self.get_object()
         trip = Trip.objects.get(id=self.kwargs['trip_id'])
         action_map = {
             'approve': trip.approve_passenger,
