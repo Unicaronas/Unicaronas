@@ -12,9 +12,6 @@ schema_view = get_schema_view(
         title="Unicaronas API",
         default_version=get_current_version(),
         description="""
-## Bem-vind@ à API REST do Unicaronas!
-
-
 # O que é o Unicaronas?
 O [Unicaronas](https://unicaronas.com) é um serviço gratuito de caronas, exclusivo para estudantes universitários, gerido independentemente por estudantes da Unicamp. A principal característica do Unicaronas é que, oficialmente, tudo que ele oferece é essa API. Todas as interfaces e aplicativos foram criados por estudantes membros da comunidade que usam nossa API para servir seus usuários.
 
