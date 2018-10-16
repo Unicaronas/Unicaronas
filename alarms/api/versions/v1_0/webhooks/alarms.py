@@ -77,7 +77,7 @@ class AlarmWebhook(BaseAlarmWebhook):
     """
 
     permissions = ['trips:read']
-    event = 'passenger_alarm'
+    event = 'alarm_dispatched'
     passenger_allows_field = 'updates_notifications'
 
 
@@ -89,5 +89,5 @@ class MultipleAlarmsWebhook(BaseMultipleAlarmsWebhook):
     """
 
     permissions = ['trips:read']
-    event = 'passenger_alarm'
+    event = 'alarm_dispatched'
     passenger_allows_field = 'updates_notifications'

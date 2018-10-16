@@ -7,7 +7,7 @@ from project.utils import import_current_version_module
 # Create your models here.
 
 
-user_data_webhooks = import_current_version_module('user_data', 'webhooks')
+trips_webhooks = import_current_version_module('trips', 'webhooks')
 
 
 GENDER_CHOICES = (
@@ -156,12 +156,12 @@ class Driver(models.Model):
 
     def notify_new_passenger(self, passenger):
         if passenger.status == 'pending':
-            user_data_webhooks.DriverNewPassengerPendingWebhook(passenger).send()
+            trips_webhooks.DriverNewPassengerPendingWebhook(passenger).send()
         else:
-            user_data_webhooks.DriverNewPassengerApprovedWebhook(passenger).send()
+            trips_webhooks.DriverNewPassengerApprovedWebhook(passenger).send()
 
     def notify_passenger_give_up(self, passenger):
-        user_data_webhooks.DriverPassengerGiveUpWebhook(passenger).send()
+        trips_webhooks.DriverPassengerGiveUpWebhook(passenger).send()
 
     def __str__(self):
         return f"Driver de {self.user}"

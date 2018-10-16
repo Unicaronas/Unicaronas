@@ -122,15 +122,12 @@ class TripDeletedWebhook(BasePassengerWebhook):
         payload = []
         trip = passenger.trip
         user = passenger.user
-        driver = trip.user
         for app in self.get_valid_apps(user):
             recipients.append(app.webhook_url)
             user_id = app.get_scoped_user_id(app, user)
-            driver_id = app.get_scoped_user_id(app, driver)
             payload.append(
                 {
                     'user_id': user_id,
-                    'driver_id': driver_id,
                     'origin': trip.origin,
                     'destination': trip.destination,
                     'datetime': trip.datetime

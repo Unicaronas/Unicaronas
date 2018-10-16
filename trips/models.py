@@ -125,7 +125,7 @@ class Trip(models.Model):
         passenger.give_up()
 
     def delete_trip(self):
-        for passenger in self.passengers.all():
+        for passenger in self.passengers.exclude(status='denied'):
             passenger.trip_deleted()
         self.delete()
 

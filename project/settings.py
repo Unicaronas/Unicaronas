@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Website root url
-ROOT_URL = os.environ.get('ROOT_URL', 'localhost:8000')
+ROOT_URL = os.environ.get('ROOT_URL', 'http://localhost:8000')
 
 # Project name
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Unicaronas')
