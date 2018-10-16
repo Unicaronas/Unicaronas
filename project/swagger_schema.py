@@ -22,6 +22,15 @@ Dê total controle aos seus motoristas sobre quem vai ou não em suas caronas. G
 > **Atenção:** Todos os endpoints dessa API só podem ser acessados caso seu usuário seja um *motorista*. Para saber se é motorista, o resultado do campo **driver** do endpoint [*Usuário Atual*](#operation/user_read) tem que ser diferente de `null`.
 """
     },
+    'Passageiro': {
+        'name': 'Passageiro',
+        'description': """
+Nossa API de passageiros lhe permite construir serviços e soluções que tornam as vidas dos passageiros mais fáceis. Com a permissão do motorista, você consegue gerenciar as caronas do seu usuário e executar ações nelas.
+
+## Caronas
+Ajude passageiros a entrar e sair de caronas, listar caronas passadas e futuras e muito mais.
+"""
+    },
     'Usuário': {
         'name': 'Usuário',
         'description': """
