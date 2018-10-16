@@ -1,0 +1,21 @@
+import requests
+{% if headers %}
+# Forneça seu token da API aqui
+headers = {
+{% for key, value in headers.items %}    '{{ key }}': '{{ value }}'{% if not forloop.last %},{% endif %}
+{% endfor %}}
+{% endif %}{% if payload %}payload = {
+{% for key, value in payload.items %}    '{{ key }}': '{{ value }}'{% if not forloop.last %},{% endif %}
+{% endfor %}}
+{% endif %}{% if query %}query = {
+{% for key, value in query.items %}    '{{ key }}': '{{ value }}'{% if not forloop.last %},{% endif %}
+{% endfor %}}
+{% endif %}
+resp = requests.{{ method | lower }}(
+    '{{ request_url }}'{% if headers %},
+    headers=headers{% endif %}{% if query %},
+    params=query{% endif %}{% if payload %},
+    json=payload{% endif %}
+)
+
+print(resp.json())

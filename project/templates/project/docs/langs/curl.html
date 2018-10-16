@@ -1,0 +1,4 @@
+curl -X {{method}}  \
+{% for header, value in headers.items %}--header "{{header}}:{{value}}" \
+{% endfor %}'{{request_url}}{% if query %}?{{query_format | safe}}{% endif %}'{% if payload %}\{% for key, value in payload.items %}
+-d {{key}}={{value}}{% if not forloop.last %} \{% endif %}{% endfor %}{% endif %}
