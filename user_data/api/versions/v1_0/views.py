@@ -46,7 +46,7 @@ class UserData(PrefetchRetrieveAPIView):
                               "Exclui dados retornados, separados por vírgula. Campos aninhados são suportados. Exemplo: `exclude=campo1,campo2{sub_campo1, sub_campo2}`", type=openapi.TYPE_STRING)
         ],
         security=[
-            {'unicaronas auth': [
+            {'OAuth2': [
                 'basic:read',
                 'phone:read',
                 'profile:read',

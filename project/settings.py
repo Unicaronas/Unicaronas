@@ -360,10 +360,10 @@ SWAGGER_SETTINGS = {
     'DEFAULT_AUTO_SCHEMA_CLASS': 'project.swagger_schema.CustomTagAutoSchema',
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
-        'unicaronas auth': {
+        'OAuth2': {
             'type': 'oauth2',
             'description': """
-OAuth2 é uma forma de autenticação que permite que seu aplicativo obtenha acesso granular aos dados dos seus usuários. Seu usuário tem controle total sobre quais informações deseja compartilhar e você acessa a API usando endpoints comuns HTTP. OAuth2 possui flows para aplicativos web, desktop e mobile, todos implementados na API do Unicaronas. Para saber mais, [visite o guia de OAuth2](/oauth2_guide/)
+OAuth2 é uma forma de autenticação que permite que seu aplicativo obtenha acesso granular aos dados dos seus usuários. Seu usuário tem controle total sobre quais informações deseja compartilhar e você acessa a API usando endpoints comuns HTTP. OAuth2 possui flows para aplicativos web, desktop e mobile, todos implementados na API do Unicaronas. Para saber mais, [visite o guia de OAuth2](/what_is_oauth/)
 
 Abaixo você encontrará os `scopes` disponíveis e suas descrições, além das URLs de autorização e troca de tokens.""",
             'authorizationUrl': f'{ROOT_URL}/o/authorize/',

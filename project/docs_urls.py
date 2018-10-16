@@ -12,7 +12,7 @@ schema_view = get_schema_view(
         title="Unicaronas API",
         default_version=get_current_version(),
         description="""
-### Bem-vind@ à API REST do Unicaronas!
+## Bem-vind@ à API REST do Unicaronas!
 
 
 # O que é o Unicaronas?
@@ -199,10 +199,34 @@ Abaixo está a lista de webhooks disponíveis com seus eventos ativadores e o co
 }
 ```
 
-# Melhores práticas
-
 # FAQ
+## Quem pode usar a API?
+Apenas estudantes universitários cadastrados no Unicaronas podem criar aplicativos e utilizar a API.
 
+## Como eu me cadastro?
+Para se cadastrar, basta preencher [esse formulário](/accounts/signup/)
+
+## Como eu crio aplicativos?
+Para criar aplicativos, basta preencher o [formulário de aplicativos](/applications/create/)
+
+## Recebi o erro As credenciais de autenticação não foram fornecidas. O que significa?
+Você está recebendo esse erro pois não incluiu seu token de acesso como *Header* do pedido.
+ Seu token de acesso deve ser incluído como um *Header* no formato *Authorization: Bearer `<seu-token>`
+
+Caso você tenha certeza que está enviando seu token no *Header* mas o erro `As credenciais de autenticação não foram fornecidas.` continuar aparecendo, quer dizer que seu token é inválido ou já expirou. Lembre-se que os tokens têm validade de apenas 1 hora.
+
+## Recebi o erro Você não tem permissão para executar essa ação. O que significa?
+Esse erro significa que seu token é válido, mas não possui os `scopes` necessários para acessar o endpoint. Para a lista de `scopes` necessários para cada endpoint, procure pela seção *AUTHORIZATIONS* em cada endpoint.
+
+## Recebi o erro Too Many Requests. O que significa?
+Significa que você ultrapassou as cotas da API e seu acesso foi cortado temporariamente. Leia sobre [os limites da API](#section/Limites-de-pedidos) para detalhes.
+
+## Cadastrei um Webhook, mas não estou recebendo eventos!
+Para receber os eventos por webhooks, certifique-se de que:
+- A URL do seu webhook está correta e é acessível pela internet
+- Seu aplicativo contém pelo menos um token do seu usuário-alvo com as permissões necessárias
+
+Se você continuar sem receber webhooks de um usuário em particular, significa que esse usuário declarou que não deseja receber avisos de aplicativos
 """.replace('https://unicaronas.com', settings.ROOT_URL).replace('http://unicaronas.com', settings.ROOT_URL),
         terms_of_service="https://unicaronas.com/terms_and_conditions/",
         contact=openapi.Contact(

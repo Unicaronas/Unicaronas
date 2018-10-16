@@ -64,7 +64,7 @@ class PassengerTripViewset(
                               "Exclui dados retornados. Lista separada por vírgula dos campos a serem excluídos. Campos aninhados são suportados. Exemplo: `exclude=campo1,campo2{sub_campo1, sub_campo2}`", type=openapi.TYPE_STRING)
         ],
         security=[
-            {'unicaronas auth': ['trips:passenger:read']}
+            {'OAuth2': ['trips:passenger:read']}
         ]
     )
     def retrieve(self, *args, **kwargs):
@@ -91,7 +91,7 @@ class PassengerTripViewset(
         ],
         filter_inspectors=[DjangoFilterDescriptionInspector],
         security=[
-            {'unicaronas auth': ['trips:read']}
+            {'OAuth2': ['trips:read']}
         ]
     )
     def list(self, *args, **kwargs):
@@ -111,7 +111,7 @@ class PassengerTripViewset(
             400: 'A ação não é compatível com o estado do passageiro',
         },
         security=[
-            {'unicaronas auth': ['trips:passenger:write']}
+            {'OAuth2': ['trips:passenger:write']}
         ]
     )
     def partial_update(self, *args, **kwargs):

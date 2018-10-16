@@ -23,7 +23,7 @@ class ThirdPartyTripSearchView(APIView):
             200: ResultSerializer
         },
         security=[
-            {'unicaronas auth': ['trips:read']}
+            {'OAuth2': ['trips:read']}
         ]
     )
     def get(self, request, format=None):

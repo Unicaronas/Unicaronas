@@ -72,7 +72,7 @@ class DriverTripViewset(
                               "Exclui dados retornados, separados por vírgula. Campos aninhados são suportados. Exemplo: `exclude=campo1,campo2{sub_campo1, sub_campo2}`", type=openapi.TYPE_STRING)
         ],
         security=[
-            {'unicaronas auth': ['trips:driver:read']}
+            {'OAuth2': ['trips:driver:read']}
         ]
     )
     def retrieve(self, *args, **kwargs):
@@ -98,7 +98,7 @@ class DriverTripViewset(
         ],
         filter_inspectors=[DjangoFilterDescriptionInspector],
         security=[
-            {'unicaronas auth': ['trips:driver:read']}
+            {'OAuth2': ['trips:driver:read']}
         ]
     )
     def list(self, *args, **kwargs):
@@ -121,7 +121,7 @@ class DriverTripViewset(
             400: 'Dados do pedido contém erros'
         },
         security=[
-            {'unicaronas auth': ['trips:driver:write']}
+            {'OAuth2': ['trips:driver:write']}
         ]
     )
     def create(self, request, *args, **kwargs):
@@ -163,7 +163,7 @@ class DriverTripViewset(
             400: 'Dados do pedido contém erros',
         },
         security=[
-            {'unicaronas auth': ['trips:driver:write']}
+            {'OAuth2': ['trips:driver:write']}
         ]
     )
     def update(self, request, *args, **kwargs):
@@ -191,7 +191,7 @@ class DriverTripViewset(
             404: 'Carona não existe, já aconteceu, ou você não tem permissão para acessá-la'
         },
         security=[
-            {'unicaronas auth': ['trips:driver:write']}
+            {'OAuth2': ['trips:driver:write']}
         ]
     )
     def partial_update(self, *args, **kwargs):
@@ -206,7 +206,7 @@ class DriverTripViewset(
             404: 'Carona não existe, já aconteceu, ou você não tem permissão para acessá-la',
         },
         security=[
-            {'unicaronas auth': ['trips:driver:write']}
+            {'OAuth2': ['trips:driver:write']}
         ]
     )
     def destroy(self, *args, **kwargs):
@@ -287,7 +287,7 @@ class DriverPassengerActionsViewset(
                               "Exclui dados retornados, separados por vírgula. Campos aninhados são suportados. Exemplo: `exclude=campo1,campo2{sub_campo1, sub_campo2}`", type=openapi.TYPE_STRING)
         ],
         security=[
-            {'unicaronas auth': ['trips:driver:read']}
+            {'OAuth2': ['trips:driver:read']}
         ]
     )
     def retrieve(self, *args, **kwargs):
@@ -313,7 +313,7 @@ class DriverPassengerActionsViewset(
         ],
         filter_inspectors=[DjangoFilterDescriptionInspector],
         security=[
-            {'unicaronas auth': ['trips:driver:read']}
+            {'OAuth2': ['trips:driver:read']}
         ]
     )
     def list(self, *args, **kwargs):
@@ -332,7 +332,7 @@ class DriverPassengerActionsViewset(
             404: 'Passageiro não existe ou a carona já aconteceu'
         },
         security=[
-            {'unicaronas auth': ['trips:driver:write']}
+            {'OAuth2': ['trips:driver:write']}
         ]
     )
     def destroy(self, *args, **kwargs):
@@ -352,7 +352,7 @@ class DriverPassengerActionsViewset(
             400: 'A ação não é compatível com o estado do passageiro',
         },
         security=[
-            {'unicaronas auth': ['trips:driver:write']}
+            {'OAuth2': ['trips:driver:write']}
         ]
     )
     def partial_update(self, *args, **kwargs):

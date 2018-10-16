@@ -53,7 +53,7 @@ class AlarmViewset(
                               "Exclui dados retornados. Lista separada por vírgula dos campos a serem excluídos. Campos aninhados são suportados. Exemplo: `exclude=campo1,campo2{sub_campo1, sub_campo2}`", type=openapi.TYPE_STRING)
         ],
         security=[
-            {'unicaronas auth': ['alarms:read']}
+            {'OAuth2': ['alarms:read']}
         ]
     )
     def retrieve(self, *args, **kwargs):
@@ -78,7 +78,7 @@ class AlarmViewset(
                               "Exclui dados retornados. Lista separada por vírgula dos campos a serem excluídos. Campos aninhados são suportados. Exemplo: `exclude=campo1,campo2{sub_campo1, sub_campo2}`", type=openapi.TYPE_STRING)
         ],
         security=[
-            {'unicaronas auth': ['alarms:read']}
+            {'OAuth2': ['alarms:read']}
         ]
     )
     def list(self, *args, **kwargs):
@@ -96,7 +96,7 @@ class AlarmViewset(
             400: 'Dados do pedido contém erros'
         },
         security=[
-            {'unicaronas auth': ['alarms:write']}
+            {'OAuth2': ['alarms:write']}
         ]
     )
     def create(self, request, *args, **kwargs):
@@ -130,7 +130,7 @@ class AlarmViewset(
             400: 'Dados do pedido contém erros',
         },
         security=[
-            {'unicaronas auth': ['alarms:write']}
+            {'OAuth2': ['alarms:write']}
         ]
     )
     def update(self, request, *args, **kwargs):
@@ -147,7 +147,7 @@ class AlarmViewset(
             404: 'Alarme não existe, já aconteceu, ou você não tem permissão para acessá-lo',
         },
         security=[
-            {'unicaronas auth': ['alarms:write']}
+            {'OAuth2': ['alarms:write']}
         ]
     )
     def partial_update(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class AlarmViewset(
             404: 'Alarme não existe, já aconteceu, ou você não tem permissão para acessá-lo',
         },
         security=[
-            {'unicaronas auth': ['alarms:write']}
+            {'OAuth2': ['alarms:write']}
         ]
     )
     def destroy(self, *args, **kwargs):
