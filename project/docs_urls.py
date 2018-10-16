@@ -49,7 +49,7 @@ Os limites são aplicados ao mesmo tempo, de forma que se você superar 60 pedid
 # Webhooks
 O Unicaronas também oferece [webhooks](https://www.chargebee.com/blog/what-are-webhooks-explained/) como um serviço opcional externo à API que pode ser útil para você.
 
-Nossos webhooks são enviados automaticamente como pedidos **POST** em resposta a alguns eventos dos usuários. Para recebê-los, seu aplicativo terá que ter uma *URI válida* definida em suas configurações e ter as *permissões corretas em tokens não expirados* fornecidos pelo usuário.
+Nossos webhooks são enviados automaticamente como pedidos **POST** em resposta a alguns eventos dos usuários. Para recebê-los, seu aplicativo terá que ter uma *URI válida* definida em suas configurações e ter as *permissões corretas em pelo menos um token* fornecido pelo usuário.
 
 Todos os webhooks são enviados como *JSON* e contém o seguinte objeto em seu corpo:
 ```json
