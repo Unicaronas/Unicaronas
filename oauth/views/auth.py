@@ -1,13 +1,13 @@
-from oauth2_provider.views import base
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.models import get_access_token_model
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from ..serializers import DebugTokenSerializer
 from ..forms import CustomAllowForm
+from .pkce_auth import PKCEAuthorizationView
 
 
-class CustomAuthorizationView(base.AuthorizationView):
+class CustomAuthorizationView(PKCEAuthorizationView):
     """Custom Auth
 
     Custom auth view that lets users select which permissions to allow
@@ -16,16 +16,9 @@ class CustomAuthorizationView(base.AuthorizationView):
     form_class = CustomAllowForm
 
     def get_initial(self):
+        initial_data = super().get_initial()
         all_scopes = get_scopes_backend().get_all_scopes()
-        scopes = self.oauth2_data.get("scope", self.oauth2_data.get("scopes", []))
-        initial_data = {
-            "redirect_uri": self.oauth2_data.get("redirect_uri", None),
-            "scope": scopes,
-            "scope_choices": str([(s_name, all_scopes[s_name]) for s_name in scopes]),
-            "client_id": self.oauth2_data.get("client_id", None),
-            "state": self.oauth2_data.get("state", None),
-            "response_type": self.oauth2_data.get("response_type", None),
-        }
+        initial_data["scope_choices"] = str([(s_name, all_scopes[s_name]) for s_name in initial_data['scope'].split()])
         return initial_data
 
     def get_context_data(self, *args, **kwargs):

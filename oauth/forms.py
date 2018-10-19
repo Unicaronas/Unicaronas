@@ -1,24 +1,36 @@
-from django import forms
+from django import forms as forms
 from oauth2_provider import models, scopes
+from oauth2_provider import forms as o_forms
 from oauth2_provider.scopes import get_scopes_backend
+from oauth2_provider.models import get_grant_model
 from versatileimagefield.forms import VersatileImageFormField
 
+Grant = get_grant_model()
 
-class CustomAllowForm(forms.Form):
+
+class PCKEEnabledAllowForm(o_forms.AllowForm):
+    """Custom allow form that enables the use of PKCE code challenges"""
+    code_challenge = forms.CharField(
+        widget=forms.HiddenInput(),
+        required=False
+    )
+    code_challenge_method = forms.ChoiceField(
+        widget=forms.HiddenInput(),
+        required=False,
+        choices=Grant.CODE_CHALLENGE_METHODS
+    )
+
+
+class CustomAllowForm(PCKEEnabledAllowForm):
     """Custom allow form
 
     When requesting permission from user, this form is showed
     This allows users to select which permissions to give using
     checkboxes
     """
-    allow = forms.BooleanField(required=False)
-    redirect_uri = forms.CharField(widget=forms.HiddenInput())
     scope = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(
         attrs={'class': 'form-check-input'}), required=False)
     scope_choices = forms.CharField(widget=forms.HiddenInput())
-    client_id = forms.CharField(widget=forms.HiddenInput())
-    state = forms.CharField(required=False, widget=forms.HiddenInput())
-    response_type = forms.CharField(widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
