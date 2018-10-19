@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <!-- Custom styles for this template -->
     <link rel="stylesheet" type="text/css" href="{% static 'oauth/css/consumer.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
 </head>
 
 <body data-gr-c-s-loaded="true">
@@ -53,9 +55,6 @@
                                         <kbd>profile:read</kbd> em <b>scope</b>
                                     </li>
                                     <li>
-                                        <kbd>confidential</kbd> em <b>client_type</b>
-                                    </li>
-                                    <li>
                                         <kbd>authorization-code</kbd> em <b>authorization_grant_type</b>
                                     </li>
                                 </ul>
@@ -81,6 +80,21 @@
                             <div class="form-group">
                                 <label for="auth_scopes">Scopes</label>
                                 <input class="form-control" type="text" id="auth_scopes" value="profile:read">
+                            </div>
+                            <div class="form-group" id="client_type">
+                                <label for="auth_scopes">Tipo de client</label>
+                                <div class="form-check">
+                                    <input name="client_type" class="form-check-input" type="radio" value="confidential" checked>
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Confidential
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="client_type" class="form-check-input" type="radio" value="public">
+                                    <label class="form-check-label" for="exampleRadios2">
+                                        Public
+                                    </label>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-primary" onclick="request_access()">Pronto!</button>
@@ -260,7 +274,15 @@
         var auth_url = $('#auth_url').val();
         var redirect_uri = $('#current_url').text();
         var scope = $('#auth_scopes').val();
-        var redirect = auth_url + '?client_id=' + client_id + '&response_type=' + response_type + '&state=' + state + '&redirect_uri=' + redirect_uri + '&scope=' + scope;
+        var client_type = get_client_type();
+        if (client_type == 'public') {
+            var code_challenge = create_code_challenge();
+            var code_challenge_method = 'S256';
+            var redirect = auth_url + '?client_id=' + client_id + '&response_type=' + response_type + '&state=' + state + '&redirect_uri=' + redirect_uri + '&scope=' + scope + '&code_challenge=' + code_challenge + '&code_challenge_method=' + code_challenge_method;
+        }
+        else {
+            var redirect = auth_url + '?client_id=' + client_id + '&response_type=' + response_type + '&state=' + state + '&redirect_uri=' + redirect_uri + '&scope=' + scope;
+        }
         document.location.href = redirect;
     }
 
@@ -286,12 +308,20 @@
         var app_secret = $("#client_secret").val();
         var redirect_url = $('#current_url').text();
         var grant_type = 'authorization_code';
+        var client_type = get_client_type();
 
+        var data = { code: code, redirect_uri: redirect_url, grant_type: grant_type };
+        if (client_type == 'public') {
+            data['code_verifier'] = get_code_verfier();
+            data['client_id'] = app_id;
+        }
         $.ajax({
             url: exchange_url,
             type: 'POST',
-            data: { code: code, redirect_uri: redirect_url, grant_type: grant_type },
+            data: data,
             beforeSend: function(request) {
+                if (client_type == 'public')
+                    return;
                 request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
             },
             success: update_refresh_page,
@@ -305,12 +335,18 @@
         var app_id = $("#client_id2").val();
         var app_secret = $("#client_secret").val();
         var grant_type = 'refresh_token';
-
+        var client_type = get_client_type();
+        var data = { refresh_token: refresh_token, grant_type: grant_type };
+        if (client_type == 'public') {
+            data['client_id'] = app_id;
+        }
         $.ajax({
             url: exchange_url,
             type: 'POST',
-            data: { refresh_token: refresh_token, grant_type: grant_type },
+            data: data,
             beforeSend: function(request) {
+                if (client_type == 'public')
+                    return;
                 request.setRequestHeader("Authorization", "Basic " + btoa(app_id + ":" + app_secret));
             },
             success: update_refresh_page,
@@ -355,6 +391,55 @@
                 $("#request_error").text(data.statusCode().status + ' ' + data.statusCode().statusText + ' : ' + data.responseText);
             }
         })
+    }
+
+    function base64URLEncode(str) {
+        return str.toString('base64')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=/g, '');
+    }
+
+    function create_code_verifier() {
+        var code_verifier = generateRandomString(64);
+        Cookies.set('code_verifier', code_verifier);
+        return code_verifier;
+    }
+
+    function get_code_verfier(argument) {
+        return Cookies.get('code_verifier');
+    }
+
+    function create_code_challenge() {
+        var code_verifier = create_code_verifier();
+        var code_challenge = base64URL(CryptoJS.SHA256(code_verifier));
+        Cookies.set('code_challenge', code_challenge);
+        return code_challenge;
+    }
+
+    function set_client_type(client_type) {
+        Cookies.set('consumer_client_type', client_type);
+    }
+
+    function get_client_type() {
+        var client_type = Cookies.get('consumer_client_type');
+        if (!location.search || !client_type) {
+            client_type = $('#client_type input:radio:checked').val();
+            set_client_type(client_type);
+        }
+        return client_type;
+    }
+
+    function generateRandomString(length) {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (var i = 0; i < length; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+    }
+    function base64URL(string) {
+        return btoa(string).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
     }
     </script>
 </body>
