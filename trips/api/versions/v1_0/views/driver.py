@@ -223,7 +223,6 @@ class DriverPassengerActionsViewset(
         mixins.RetrieveModelMixin,
         mixins.ListModelMixin,
         PatchModelMixin,
-        mixins.DestroyModelMixin,
         viewsets.GenericViewSet):
     """
     Ações que o motorista pode executar nos passageiros de suas caronas
@@ -326,25 +325,6 @@ class DriverPassengerActionsViewset(
         > **Dica:** Você também pode usar os parâmetros GET `fields` e `exclude` para filtrar os campos retornados pela API
         """
         return super().list(*args, **kwargs)
-
-    @swagger_auto_schema(
-        responses={
-            404: 'Passageiro não existe ou a carona já aconteceu'
-        },
-        security=[
-            {'OAuth2': ['trips:driver:write']}
-        ]
-    )
-    def destroy(self, *args, **kwargs):
-        """Remover passageiro
-
-        Para acessar, use a ID de uma carona(`trip_id`) que o usuário é motorista e a ID do passageiro(`passenger_user_id`)
-
-        Permite remover passageiros de caronas que **ainda não aconteceram** e que o usuário criou. Caso a carona já tenha acontecido, a resposta desse endpoint será um erro *404*.
-        """
-        passenger = self.get_object()
-        passenger.forfeit()
-        return Response(status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         responses={
