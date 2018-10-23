@@ -581,6 +581,30 @@ Location: https://meu_site.com/unicaronas/callback/?
                     <b>Atenção</b>, o <code>refresh_token</code> não é incluído na resposta desse flow, logo, para renovar o token você terá que pedir permissão para o usuário novamente.
                 </p>
                 <div class="ui section divider"></div>
+                <h1 class="ui header">Fazendo pedidos pela API</h1>
+                <p>
+                    Para fazer pedidos para a API é bem simples, a partir do momento que você possui um <code>access_token</code> de um resource owner.
+                </p>
+                <p>
+                    Para fazer pedidos, basta adicionar um <i>Header</i> de Authorization Bearer com o seu <code>access_token</code>. Para isso, escolha o endpoint que quer acessar pela <a href="{% url 'docs:schema-redoc'|versioned_url %}">documentação</a>.
+                    <br>
+                    Como exemplo, vamos ver um pedido usando o endpoint de criação de <a href="{% url 'docs:schema-redoc'|versioned_url %}#operation/trips_driver_create" target="_blank">caronas para motoristas</a>:
+                </p>
+                <pre><code>POST {% url 'api:driver-trips-list'|versioned_url %} HTTP/1.1
+Host: <span class="host-span"></span>
+Content-Type: application/json
+Authorization: Bearer UZvstuZ4DpLzROrBppv3S0p63S3y2O
+
+{
+    "origin": "Unicamp",
+    "destination": "Metrô Santa Cruz",
+    "price": 20,
+    "datetime": "2018-10-23T14:30",
+    "max_seats": 2,
+    "auto_approve": true,
+    "details": "Pego no posto da 1 e levo até o metrô santa cruz em SP. Levar mala pequena"
+}</code></pre>
+                <div class="ui section divider"></div>
                 <h1 class="ui header">Criando Aplicativos (Clients)</h1>
                 <p>
                     Para começar a interagir com a API do Unicaronas, é necessário criar um aplicativo. Esse aplicativo vai agir como <b>Client</b> dentro do authorization server.<br>
