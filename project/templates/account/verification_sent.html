@@ -12,8 +12,15 @@
                 </div>
                 <div class="ui divider hidden"></div>
                 <p>Te enviamos um email com instruções para finalização do seu registro.</p>
+                <div class="ui divider hidden"></div>
+                <p>Já confirmou seu email? Complete seu login:</p>
+                <a id="complete_login_button" href="" class="ui button primary">Completar login</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $('#complete_login_button').attr('href', document.referrer);
+</script>
 {% endblock %}
