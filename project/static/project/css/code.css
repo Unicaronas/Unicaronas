@@ -1,0 +1,11 @@
+/*Inline and block code styles*/
+
+/*User input typically entered via keyboard*/
+code {
+  padding: .2rem .4rem;
+  font-size: 87.5%;
+  color: black;
+  background-color: #eff0f1;
+  border-radius: .2rem;
+}
+

@@ -10,8 +10,8 @@ class Index(generic.TemplateView):
         return context
 
 
-class BecomeDev(generic.TemplateView):
-    template_name = 'project/become_dev.html'
+class OAuthHelp(generic.TemplateView):
+    template_name = 'project/oauth_help.html'
 
 
 class TermsAndConditions(generic.TemplateView):

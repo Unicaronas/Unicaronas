@@ -1,7 +1,7 @@
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.models import get_access_token_model
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAdminUser
 from ..serializers import DebugTokenSerializer
 from ..forms import CustomAllowForm
 from .pkce_auth import PKCEAuthorizationView
@@ -49,7 +49,7 @@ class DebugToken(generics.RetrieveAPIView):
     """
     versioning_class = None
     authentication_classes = []
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
     queryset = get_access_token_model().objects.all()
     lookup_field = 'token'
     lookup_url_kwarg = 'input_token'

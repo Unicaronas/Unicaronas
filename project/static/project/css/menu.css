@@ -43,11 +43,11 @@
     padding: 8em 0em;
 }
 .ui.vertical.stripe h3 {
-    font-size: 2em;
+    /*font-size: 2em;*/
 }
 .ui.vertical.stripe .button + h3,
 .ui.vertical.stripe p + h3 {
-    margin-top: 3em;
+    /*margin-top: 3em;*/
 }
 .ui.vertical.stripe .floated.image {
     clear: both;

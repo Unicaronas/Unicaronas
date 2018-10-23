@@ -1,0 +1,692 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+{% load versioning %}
+{% block extend_scripts %}
+<script type="text/javascript" src="{% static 'project/js/TOCGen.js' %}"></script>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.1/build/highlight.min.js"></script>
+{% endblock %}
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/code.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'project/css/material-dark-highlightjs.css' %}">
+<style type="text/css">
+h1:target {
+    animation: highlight 1s ease;
+}
+
+h2:target {
+    animation: highlight 1s ease;
+}
+
+h3:target {
+    animation: highlight 1s ease;
+}
+
+h4:target {
+    animation: highlight 1s ease;
+}
+
+h5:target {
+    animation: highlight 1s ease;
+}
+
+h6:target {
+    animation: highlight 1s ease;
+}
+
+@keyframes highlight {
+    from {
+        background: yellow;
+    }
+
+    to {
+        background: white;
+    }
+}
+
+.toc a:hover,
+.toc a:active {
+    text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #E20505 !important;
+}
+</style>
+
+
+{% endblock %}
+{% block content %}
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="row">
+            <h1 class="ui huge header">OAuth 2.0
+                <div class="sub header">Guia completo</div>
+            </h1>
+        </div>
+        <div class="ui row left aligned">
+            <div class="column six wide left aligned toc">
+                <div class="ui styled accordion">
+                    <div class="title">
+                        <i class="dropdown icon"></i>
+                        Nessa página você encontrará:
+                    </div>
+                    <div id="toc" class="content"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ui row left aligned">
+            <div id="doc_body" class="column twelve wide left aligned">
+                <p>
+                    Você já visitou um site recentemente e encontrou a opção de se cadastrar usando algum serviço externo (Facebook, Google, etc)? Claro que sim! Isso é basicamente o que OAuth tenta solucionar: dar permissão para algum terceiro fazer algo por você - nesse caso, fazer login.
+                </p>
+                <p>
+                    A questão é: OAuth é capaz de muito mais que apenas login e, nesse artigo, você vai aprender sobre várias outras de suas funcionalidades.
+                </p>
+                <div class="ui section divider"></div>
+                <h1 class="ui header">Então, o que é OAuth?</h1>
+                <p>
+                    OAuth (ou Open Authorization) é uma plataforma que dá a usuários a habilidade de fornecer permissões sobre dados que estão em um lugar para outro lugar. Por exemplo dar permissão para o Spotify ler dados do seu Facebook:<br>
+                    <img class="ui image centered" src="{% static 'project/img/misc/sptf-fb.png' %}">
+                    <br>
+                    A ideia é que você está dando certas permissões para que o Spotify possa acessar coisas como seu perfil, as coisas que você curte, sua lista de amigos, etc.<br>
+                    Ao mesmo tempo, informações mais sensíveis, como suas conversas, ficam fora do alcance do Spotify. Ele apenas consegue acesso a aquilo que foi <i>autorizado</i> por você.
+                    <img class="ui image centered" src="{% static 'project/img/misc/sptf-accss.png' %}">
+                </p>
+                <div class="ui section divider"></div>
+                <h1 class="ui header">De onde veio o OAuth?</h1>
+                <p>
+                    Antes de existirem iniciativas como OAuth, você precisaria dar suas informações de login para o Spotify conseguir acessar os dados do seu Facebook.
+                </p>
+                <p>
+                    OAuth foi criado em 2007 por um grupo que buscava padronizar a forma como delegamos permissões entre serviços. A versão mais recente, OAuth 2.0, é incompatível com a versão 1.0, que agora está descontinuada. Apesar disso, a versão 1.0 ainda está em uso pela web, inclusive ainda é utilizada pelo Twitter.
+                </p>
+                <p>
+                    Daqui pra frente, sempre que nos referirmos a OAuth, estaremos nos referindo à versão 2.0.
+                </p>
+                <div class="ui section divider"></div>
+                <h1 class="ui header">Como OAuth funciona?</h1>
+                <p>
+                    Para entender como OAuth funciona, precisamos primeiro entender algumas características que definem a plataforma.
+                </p>
+                <h2 class="ui header">Funções (ou Roles)</h2>
+                <p>
+                    Primeiro precisamos entender como separar as responsabilidades dos nossos pedidos.<br>
+                    Funções são usadas para separar os atores envolvidos no pedido.
+                </p>
+                <h3 class="ui header">O Cliente (Client)</h3>
+                <p>
+                    O <b>Client</b> é o aplicativo que está tentando acessar as informações do usuário. Ele precisa de Autorização para isso.
+                </p>
+                <p>
+                    Ele pode ser um site, um aplicativo de celular e até um bot de Messenger. No nosso exemplo, ele seria o Spotify.
+                </p>
+                <h3 class="ui header">O Servidor de Recursos (Resource Server)</h3>
+                <p>
+                    O <b>Resource Server</b> é o local onde as informações do usuário estão salvas. No nosso exemplo, seria o Facebook.
+                </p>
+                <h3 class="ui header">O Servidor de Autorização (Authorization Server)</h3>
+                <p>
+                    O <b>Authorization Server</b> é o serviço que pergunta ao usuário se ele autoriza o acesso do aplicativo aos seus dados. No nosso exemplo esse também seria o Facebook, mas não necessariamente seria o mesmo servidor onde as informações do usuário estão salvas.
+                </p>
+                <p>
+                    No caso do Unicaronas, eles são o mesmo servidor.
+                </p>
+                <h3 class="ui header">O Dono do Recurso (Resource Owner)</h3>
+                <p>
+                    <b>Resource Owner</b> é a pessoa que está dando acesso aos seus dados. Portanto se você está dando permissão ao Spotify para acessar os seus dados No Facebook, você é o <b>Resource Owner</b>.
+                </p>
+                <h2 class="ui header">Tipos de concessão (ou Grant Types)</h2>
+                <p>
+                    Um Grant representa a permissão de um usuário aos seus dados, e pode ser usado para obter um Token de Acesso(Access Token). A especificação OAuth descreve 4 fluxos(Flows) para obter um Access Token. Esses Flows são chamados de Grant Types. No Unicaronas você poderá usar apenas dois:
+                </p>
+                <h3 class="ui header">Código de Autorização (Authorization Code)</h3>
+                <p>
+                    Esse é o Grant mais comum e geralmente é usado por aplicativos Web sendo executados em servidores. Antigamente ele não era recomendado para aplicativos nativos(de Android, iOS, etc) ou SPAs(Single Page Applications), mas o OAuth recebeu uma <a href="https://tools.ietf.org/html/rfc8252" target="_blank">alteração</a> que garante uma forma segura de usar esse Grant Type nesses outros tipos de apps.
+                </p>
+                <p>
+                    O Unicaronas implementa essa alteração e recomenda que você use esse Grant Type na maioria das vezes. Você poderá ver mais detalhes sobre essa alteração abaixo.
+                </p>
+                <p>
+                    Você pode ler a especificação do <b>Authorization Code</b> <a href="https://tools.ietf.org/html/rfc6749#section-4.1">na seção 4.1 da spec</a>.
+                </p>
+                <h3 class="ui header">Implícito (Implicit Grant)</h3>
+                <p>
+                    Esse Grant é consideravelmente mais simples que o <b>Authorization Code</b>, o tornando uma boa escolha para SPAs que não persistem estado. O ponto negativo é que com esse tipo de Grant o aplicativo não receberá um <code>refresh_token</code>, o que limita suas capacidades.
+                </p>
+                <p>
+                    Você pode ler a especificação do <b>Implicit Grant</b> <a href="http://tools.ietf.org/html/rfc6749#section-4.2">na seção 4.2 da spec</a>.
+                </p>
+                <h2 class="ui header">Tokens de Acesso (Access Tokens)</h2>
+                <p>
+                    <b>Access Tokens</b> representam a Autorização do usuário aos seus dados no <b>Resource Server</b>. Você precisa realizar a 'troca' do seu grant por um access token, que terá uma data de validade.
+                </p>
+                <p>
+                    Access tokens expiram para que nenhum uso malicioso consiga causar danos por muito tempo. Quando o token expirar, você precisará conseguir outro usando um dos métodos descritos nos <b>Flows</b> nas seções seguintes.
+                    No Unicaronas, os tokens têm 1 hora de validade.
+                </p>
+                <p>
+                    <img class="ui image centered" src="{% static 'project/img/misc/basic-oauth2-flow.png' %}">
+                </p>
+                <h2 class="ui header">Tokens de Atualização (Refresh Tokens)</h2>
+                <p>
+                    <b>Refresh Tokens</b> são um tipo especial de token que pode ser mantido <i>com segurança</i> pelo <b>Client</b> com o propósito de ser capaz de pedir um novo access token ao <b>Authorization Server</b> quando o token original tiver expirado. Refresh tokens também podem expirar, mas não o fazem no Unicaronas.
+                </p>
+                <p>
+                    O <b>Authorization Server</b> é capaz de revogar refresh tokens a qualquer momento, mas no Unicaronas ele só o fará a pedido do <b>Resource Owner</b> ou do <b>Client</b>.
+                </p>
+                <p>
+                    Como veremos nos Flows nas seções seguintes, refresh tokens só são fornecidos durante o flow do <b>Authorization Code</b>, não sendo fornecidos no <b>Implicit Grant</b>.
+                </p>
+                <p>
+                    <img class="ui image centered" src="{% static 'project/img/misc/refresh-oauth2-flow.png' %}">
+                </p>
+                <h2 class="ui header">Permissões (Scopes)</h2>
+                <p>
+                    <b>Scopes</b> são os escopos de permissões que um <b>Access Token</b> tem acesso.
+                </p>
+                <p>
+                    Durante o pedido inicial do <b>Client</b> ao <b>Authorization Server</b>, será possível especificar quais scopes são necessários. O <b>Resource Owner</b>, então, poderá ver e editar quais scopes serão vinculados ao acesso e aprovar ou negar o pedido. Após aprovado, o access token terá permissão para acessar os endpoints e resources que estiverem contidos nos scopes autorizados.
+                </p>
+                <p>
+                    Os access tokens não compartilham scopes, ou seja, cada token deverá possuir os scopes necessários em si para realizar todas as ações necessárias pelo client. Durante a renovação do token com o refresh token, as scopes anteriores são passadas para o novo token.
+                </p>
+                <div class="ui section divider"></div>
+                <h1 class="ui header">OAuth no Unicaronas</h1>
+                <p>
+                    O Unicaronas implementa OAuth à risca, então se você já tiver experiência usando outros serviços protegidos por OAuth, perceberá que usar o Unicaronas será bastante familiar.
+                </p>
+                <div class="ui section divider"></div>
+                <h1 class="ui header">Flows no Unicaronas</h1>
+                <p>
+                    Como dito acima, o Unicaronas suporta dois tipos de grants; authorization code e implicit, com dois modos de autorização pelo authorization code dependendo do tipo de aplicativo que você for usar.
+                </p>
+                <p>
+                    Abaixo vamos ver o passo-a-passo dos fluxos e instruções de como implementá-los.
+                </p>
+                <h2 class="ui header">Authorization Code para Web Apps</h2>
+                <p>
+                    Implementa <a href="https://tools.ietf.org/html/rfc6749#section-4.1">rfc6749 seção 4.1</a>
+                </p>
+                <p>
+                    Esse flow é principalmente indicado para clients que tenham seu próprio servidor, sendo capazes de guardar com segurança as suas credenciais.
+                    <br>
+                    Por esse motivo, aplicativos de celular, nativos ou Single Page Apps não devem usar esse flow, pois podem ser corrompidos pelo usuário.
+                </p>
+                <p>
+                    Dessa forma, o tipo de client que poderá usar esse flow é o <a href="https://tools.ietf.org/html/rfc6749#section-2.1" target="_blank"><b>Confidential Client</b></a>.
+                </p>
+                <p>
+                    Esse flow acontece em 2 passos. Um que exige interação do <b>Resource Owner</b>, e outro apenas entre o seu servidor e o <b>Authorization Server</b>.
+                </p>
+                <h3 class="ui header">Passo 1: Pedindo autorização</h3>
+                <p>
+                    O primeiro passo do flow de authorization code é conseguir a permissão do resource owner na forma de um authorization grant code. Para fazer isso, você precisa construir uma URL que permitirá que o resource owner logue no authorization server com sua conta, veja informações sobre o seu app e decida se o autoriza ou não.
+                </p>
+                <p>
+                    A URL que você vai gerar deve seguir as especificações abaixo:
+                </p>
+                <pre><code>GET {% url 'oauth2_provider:authorize' %} HTTP/1.1
+Host: <span class='host-span'></span></code></pre>
+                <p>
+                    Onde <code>https://<span class='host-span'></span>{% url 'oauth2_provider:authorize' %}</code> é a URL de autorização do Unicaronas.
+                    <br>
+                    A URL também deve conter os seguintes parâmetros <i>GET</i>:
+                    <div class="ui list bulleted">
+                        <div class="item"><code>response_type</code>: Use <code>code</code> para indicar que o <b>authorization code</b> flow deve ser usado</div>
+                        <div class="item"><code>scope</code>: Lista, separada por <b>espaços</b>, dos scopes que você quer pedir. A lista completa pode ser encontrada na <a href="{% url 'docs:schema-redoc'|versioned_url %}#section/Authentication" target="_blank">documentação</a></div>
+                        <div class="item"><code>client_id</code>: Client ID que você receberá quando criar seu aplicativo.</div>
+                        <div class="item"><code>state</code>: Valor aleatório que seu client pode usar para garantir que o pedido de autorização veio mesmo de você, e não de um terceiro.</div>
+                        <div class="item"><code>redirect_uri</code>: URI para a qual o Unicaronas redirecionará o resource owner após sua autenticação. Deve ser uma das opções definidas durante a criação do aplicativo.</div>
+                    </div>
+                    No fim a URL deve ficar parecida com:
+                    <pre><code class="http">https://<span class='host-span'></span>{% url 'oauth2_provider:authorize' %}?
+    response_type=code
+    &scope=profile:read trips:read
+    &client_id=3ZmIB7301jRc75Ny5VvKYlT1UFpFjYjRIsMWj8UO
+    &state=my_random_string
+    &redirect_uri=https://meu_site.com/unicaronas/callback/</code></pre>
+                </p>
+                <p>
+                    Você então usará um <b>browser nativo</b> para redirecionar seu usuário para essa URL gerada. Assim que seu usuário tiver terminado o processo de autenticação e autorização, o Unicaronas automaticamente o redirecionará de volta para seu aplicativo usando a <code>redirect_uri</code> definida por você.
+                </p>
+                <p>
+                    Após provar sua identidade, o usuário verá uma tela com informações do seu app e listando as permissões que seu app está pedindo. Ele terá aqui a opção de autorizar ou não o acesso do seu aplicativo. Ele também poderá aprovar apenas um subconjunto das permissões pedidas.
+                </p>
+                <img class="ui image large centered" src="{% static 'project/img/misc/auth_view.png' %}">
+                <p>
+                    Por conta disso, não assuma que o resource owner sempre aprovará seu pedido ou que todas as permissões serão garantidas.
+                </p>
+                <p>
+                    Em caso de não aprovação, o Unicaronas redirecionará o usuário para a URI definida por você com o erro <code>access_denied</code>. <br>
+                    Caso o usuário aprove seu app, mas não todas as scopes pedidas, você poderá refazer seu pedido de autorização.
+                </p>
+                <p>
+                    Para a lista e descrição dos possíveis erros, veja a <a href="https://tools.ietf.org/html/rfc6749#section-4.1.2.1">rfc6749 seção 4.1.2.1</a>.
+                </p>
+                <p>
+                    Para garantir que o usuário aprove todas as permissões, seja o mais transparente possível sobre o motivo de você pedir cada informação e peça apenas as permissões que você usará.
+                </p>
+                <p>
+                    Caso o usuário aprove seu app, a resposta virá no seguinte formato:
+                </p>
+                <pre><code>HTTP/1.1 302 Found
+Location: https://meu_site.com/unicaronas/callback/?
+    code=FvXUiivMYRhBWFzfQkOXFdARx9hmC6
+    &state=my_random_string</code></pre>
+                <p>
+                    Aqui é recomendado que você verifique o valor de <code>state</code> para certificar-se de que o pedido não foi alterado e que veio mesmo de você.
+                </p>
+                <p>
+                    O outro parâmetro <i>GET</i> retornado é <code>code</code>. Esse parâmetro é o grant que usaremos no próximo passo para conseguir o access token.
+                </p>
+                <h3 class="ui header">Passo 2: Conseguindo os tokens</h3>
+                <p>
+                    Nessa etapa usaremos o valor de <code>code</code> conseguido no passo anterior para conseguir um <code>access_token</code> e um <code>refresh_token</code>.
+                </p>
+                <p>
+                    Para isso, seu servidor deve fazer um pedido <i>POST</i> para o authorization server no seguinte formato:
+                </p>
+                <pre><code>POST {% url 'oauth2_provider:token' %} HTTP/1.1
+Host: <span class="host-span"></span>
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+
+grant_type=authorization_code
+ &code=FvXUiivMYRhBWFzfQkOXFdARx9hmC6
+ &redirect_uri=https://meu_site.com/unicaronas/callback/</code></pre>
+                <p>
+                    Nesse pedido temos 2 dados no pedido:
+                    <div class="ui bulleted list">
+                        <div class="item"><code>code</code>: O código conseguido no primeiro passo</div>
+                        <div class="item"><code>redirect_uri</code>: O mesmo <code>redirect_uri</code> que você usou no primeiro passo</div>
+                    </div>
+                </p>
+                <p>
+                    Além disso, perceba que foi incluído um <i>Header</i>: <code>Authorization</code> do tipo <i>Basic</i>. <br>
+                    Esse <i>Header</i> é para provar sua identidade, e é formado pelo <code>client_id</code> e <code>client_secret</code>, que você recebe ao criar um app, unidos por um : (dois pontos). O resultado, <code>client_id:client_secret</code>, deve ser então codificado para base64.
+                </p>
+                <p>
+                    O <i>Header</i>, então, será: <code>Authorization: Basic base64(client_id:client_secret)</code>
+                </p>
+                <p>
+                    A resposta, caso o seu <code>code</code> esteja correto e não tenha expirado e você tenha construído o Authorization <i>Header</i> corretamente, será no formato:
+                </p>
+                <pre><code>HTTP/1.1 200
+content-type: application/json
+
+{
+    "access_token": "UZvstuZ4DpLzROrBppv3S0p63S3y2O",
+    "expires_in": 3600,
+    "token_type": "Bearer",
+    "scope": "profile:read trips:read basic:read",
+    "refresh_token": "iwXouKbVApeQQqyM7ApFBnwR55Uoli"
+}</code></pre>
+                <p>
+                    Essa resposta contém tudo que você precisará para fazer chamadas à API:
+                    <div class="ui bulleted list">
+                        <div class="item"><code>access_token</code>: O access token que você usará para autenticar seus pedidos</div>
+                        <div class="item"><code>expires_in</code>: O tempo, em segundos, até o <code>access_token</code> expirar</div>
+                        <div class="item"><code>token_type</code>: O tipo de token. Essa informação é usada na hora de fazer os pedidos à API.</div>
+                        <div class="item"><code>scope</code>: As permissões aprovadas pelo resource owner. Aqui você poderá ver se todas as permissões pedidas por você foram concedidas. Note também que há uma permissão nova aqui: <code>basic:read</code>. Essa é a permissão base obrigatória e ela sempre será dada aos tokens</div>
+                        <div class="item"><code>refresh_token</code>: O refresh token que você poderá usar para conseguir access tokens novos quando o atual expirar. A forma de pedir tokens novos com o access token é explicada no próximo passo.</div>
+                    </div>
+                </p>
+                <h3 class="ui header">Passo 3: Renovando tokens expirados</h3>
+                <p>
+                    Quando seu <code>access_token</code> expirar, você pode usar o <code>refresh_token</code> para conseguir um novo par. Para fazer isso, basta fazer um pedido <i>POST</i> no seguinte formato:
+                </p>
+                <pre><code>POST {% url 'oauth2_provider:token' %} HTTP/1.1
+Host: <span class="host-span"></span>
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+
+grant_type=refresh_token
+ &refresh_token=iwXouKbVApeQQqyM7ApFBnwR55Uoli</code></pre>
+                <p>
+                    Onde <code>refresh_token</code> é o que você conseguiu no segundo passo.
+                    Perceba que nesse pedido também é enviado o <i>Header</i> Authorization do tipo Basic. Ele deve ser construído da mesma forma que no segundo passo.
+                </p>
+                <p>
+                    A resposta desse pedido será no formato:
+                </p>
+                <pre><code>HTTP/1.1 200
+content-type: application/json
+
+{
+    "access_token": "OBqcSbDOymEL8FabYwfq69yrfVM84a",
+    "expires_in": 3600,
+    "token_type": "Bearer",
+    "scope": "profile:read trips:read basic:read",
+    "refresh_token": "2Hv0WfzsCtgfukIoMYSpqBZ12cz1xD"
+}</code></pre>
+                <p>
+                    Que é idêntica à resposta do segundo passo, mas com valores completamente novos.
+                </p>
+                <p>
+                    Quando você atualizar seu token, seu <code>refresh_token</code> também será atualizado, então tome cuidado para salvar ambos os valores.
+                </p>
+                <p>
+                    Seus scopes também são mantidos.
+                </p>
+                <h2 class="ui header">Authorization Code para Native Apps e SPAs</h2>
+                <p>
+                    Implementa <a href="https://tools.ietf.org/html/rfc8252">rfc8252</a>.
+                </p>
+                <p>
+                    Assim como no flow descrito anteriormente, esse flow usa um authorization code e retorna um <code>access_code</code> e um <code>refresh_token</code>. A diferença é que nesse flow não é necessário enviar o <code>client_secret</code> como parâmetro, pois assumimos que o client não é capaz de seguramente armazenar essa informação.
+                </p>
+                <p>
+                    Dessa forma, a garantia de segurança é feita por meio da <code>redirect_uri</code>, que assumimos ser exclusiva do client em questão. Como só o client poderá receber respostas nessa URI, só ele poderá se comunicar seguramente com o servidor, garantindo sua identidade.
+                </p>
+                <p>
+                    A maioria dos sistemas operacionais permitem a utilização de URIs personalizadas, que redirecionam o usuário direto para o aplicativo em sua abertura. Casos particulares dessas URIs são URIs com schemes personalizados, ou seja, que não usam http ou https (ex: <code>meuapp://meu_link</code>). Em android, esses são chamados <a href="https://developer.android.com/training/app-links/deep-linking">Deep Links</a> e em iOS <a href="https://developer.apple.com/documentation/uikit/core_app/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app">URL Schemes</a>.<br>
+                    Com esses dois métodos, porém, nada garante que outros apps não criarão URIs iguais às suas. Isso é um problema, pois, durante o redirecionamento e entrega do code grant, o sistema operacional pode entregar a resposta pro app errado.
+                </p>
+                <p>
+                    O Unicaronas implementa PKCE<a href="https://tools.ietf.org/html/rfc7636">[RFC7636]</a> para mitigar esse problema. Com PKCE você sempre tem a garantia de que apenas o seu aplicativo será capaz de receber access tokens do authorization server. Mais detalhes sobre PKCE em seguida.
+                </p>
+                <p>
+                    Caso você tenha acesso a domínios próprios, poderá implementar outras formas de redirecionamento para URIs usando as técnicas consideradas como <i>best practices</i>. São elas <a href="https://developer.android.com/training/app-links/">App Links</a> para Android e <a href="https://developer.apple.com/documentation/uikit/core_app/allowing_apps_and_websites_to_link_to_your_content">Universal Links</a> para iOS. Com essas técnicas, não é necessário utilizar PKCE em suas chamadas.
+                </p>
+                <p>
+                    SPAs também não precisam usar PKCE, já que não precisam compartilhar URI schemes com outros apps e podem usar http ou https com seus próprios domínios.
+                </p>
+                <p>
+                    Os clients para os quais esse flow é recomendado são apps nativos(iOS, Android, etc) e Single Page Apps.
+                </p>
+                <p>
+                    Por essa razão, o tipo de client que poderá usar esse flow é o <a href="https://tools.ietf.org/html/rfc6749#section-2.1" target="_blank"><b>Public Client</b></a>.
+                </p>
+                <h3 class="ui header">Passo 1: Pedindo Autorização</h3>
+                <p>
+                    Esse passo é idêntico ao primeiro passo do flow descrito anteriormente, com exceção de apps que utilizam URIs com schemes personalizados. Para detalhes, consulte o primeiro passo dele.
+                </p>
+                <p>
+                    Aplicativos que possuem URIs schemes personalizados <b>devem</b> implementar PKCE e utilizá-lo em sua comunicação com o Unicaronas.
+                </p>
+                <p>
+                    Recomendamos que desenvolvedores usem o AppAuth para <a href="https://github.com/openid/AppAuth-Android">Android</a> e <a href="https://github.com/openid/AppAuth-iOS">iOS</a> se quiserem facilitar o flow OAuth em geral. Ele possui suporte nativo para PKCE, então você não terá que se preocupar com isso.
+                </p>
+                <p>
+                    Caso você prefira não usar o AppAuth, poderá construir seu pedido manualmente com PKCE.
+                </p>
+                <h4 class="ui header">Implementando PKCE</h4>
+                <p>
+                    PKCE se baseia na ideia de um segredo compartilhado entre você e o authorization server do Unicaronas. Todas a sua comunicação com ele se baseará nas propriedades criptograficas desse segredo, e isso impedirá quaisquer aplicativos maliciosos de roubarem as chaves dos seus usuários.
+                </p>
+                <p>
+                    O primeiro passo para fazer um pedido usando PKCE é criar um segredo único para aquele chamado. Esse segredo, que chamaremos de <code>code_verifier</code>, deverá ser uma string criptograficamente aleatória com apenas os caracteres A-Z, a-z, 0-9 e os caracteres de pontuação -._~ (hífen, ponto, underline e til), e possuir entre 43 e 128 caracteres. <br>
+                    Seu método para gerar o <code>code_verifier</code> não importa, contanto que ele siga as especificações acima.
+                </p>
+                <p>
+                    Agora, você deve executar uma transformação no <code>code_verifier</code> para transformá-lo em algo chamado <code>code_challenge</code>. O Unicaronas suporta dois tipos de transformações:
+                    <div class="ui list bulleted">
+                        <div class="item"><code>plain</code>: Nenhuma transformação</div>
+                        <div class="item"><code>S256</code>: A versão URL encoded do Base64 do hash SHA256 do <code>code_verifier</code> (<code>urlsafe_b64encode(sha256(code_verifier))</code> <b>sem o padding <code>=</code> que vem no final</b></div>
+                    </div>
+                    Aplicativos capazes de usar a transformação <code>S256</code> sempre devem optar por utilizá-la.
+                </p>
+                <p>
+                    Agora você tem tudo que precisa para fazer pedidos com PKCE.
+                </p>
+                <p>
+                    Para iniciar seu pedido de autorização, você deve construir uma URL <i>GET</i> para o seguinte endereço:
+                    <pre><code>GET {% url 'oauth2_provider:authorize' %} HTTP/1.1
+Host: <span class='host-span'></span></code></pre>
+                    E ela deve conter o seguintes parâmetros
+                    <div class="ui list bulleted">
+                        <div class="item"><code>response_type</code>: Use <code>code</code> para indicar que o <b>authorization code</b> flow deve ser usado</div>
+                        <div class="item"><code>scope</code>: Lista, separada por <b>espaços</b>, dos scopes que você quer pedir. A lista completa pode ser encontrada na <a href="{% url 'docs:schema-redoc'|versioned_url %}#section/Authentication" target="_blank">documentação</a></div>
+                        <div class="item"><code>client_id</code>: Client ID que você receberá quando criar seu aplicativo.</div>
+                        <div class="item"><code>state</code>: Valor aleatório que seu client pode usar para garantir que o pedido de autorização veio mesmo de você, e não de um terceiro.</div>
+                        <div class="item"><code>redirect_uri</code>: URI para a qual o Unicaronas redirecionará o resource owner após sua autenticação. Deve ser uma das opções definidas durante a criação do aplicativo.</div>
+                        <div class="item"><code>code_challenge</code>: Se estiver usando PKCE, é o <code>code_challenge</code> construído usando as instruções acima</div>
+                        <div class="item"><code>code_challenge_method</code>: Se estiver usando PKCE, é o algoritmo de transformação escolhido (pode ser <code>plain</code> ou <code>S256</code>)</div>
+                    </div>
+                </p>
+                <p>
+                    No fim ela se parecerá com:
+                    <pre><code class="http">https://<span class='host-span'></span>{% url 'oauth2_provider:authorize' %}?
+    response_type=code
+    &scope=profile:read trips:read
+    &client_id=3ZmIB7301jRc75Ny5VvKYlT1UFpFjYjRIsMWj8UO
+    &state=my_random_string
+    &redirect_uri=https://meu_site.com/unicaronas/callback/
+    &code_challenge=NzMyMWI5ZWVhMzdhZTBhYmY1MjZmOTAxNWY5MDE3ODkxZmEzNzA3M2Q5ZTFkMzBiN2ZmOTBhNmI1MzZjYWYwZA
+    &code_challenge_method=S256</code></pre>
+                </p>
+                <p>
+                    <b>Importante!</b> O uso de navegadores incorporados(embedded browsers), como WebViews, para essa parte do flow de autorização é proíbido! Desenvolvedores que usarem esse tipo de navegador para realizar a autorização dos seus usuários serão banidos. Referência: <a href="https://tools.ietf.org/html/rfc8252#section-8.12">rfc8252 seção 8.12</a>.
+                </p>
+                <p>
+                    Após o resource owner ter aprovado seu aplicativo, você receberá uma resposta em <code>redirect_uri</code> com os seguintes dados:
+                </p>
+                <pre><code>HTTP/1.1 302 Found
+Location: https://meu_site.com/unicaronas/callback/?
+    code=FvXUiivMYRhBWFzfQkOXFdARx9hmC6
+    &state=my_random_string</code></pre>
+                <p>
+                    Assim como no flow descrito anteriormente, você usará o valor de <code>code</code> para o segundo passo.
+                </p>
+                <h3 class="ui header">Passo 2: Conseguindo tokens</h3>
+                <p>
+                    Nessa etapa vamos usar o <code>code</code> conseguido acima para obter um <code>access_token</code> e um <code>refresh_token</code>.
+                </p>
+                <p>
+                    Se estiver usando PKCE, você também usará seu <code>code_verifier</code> nesse passo para provar que seu app é o autor do pedido original.
+                </p>
+                <p>
+                    Agora que as coisas vão ser um pouco diferentes do flow anterior. Ao invés de você enviar seu <code>client_id</code> e <code>client_secret</code> em um Authorization <i>Header</i>, você enviará apenas o <code>client_id</code> dentro do corpo do pedido POST.
+                </p>
+                <p>
+                    Ele ficará assim:
+                </p>
+                <pre><code>POST {% url 'oauth2_provider:token' %} HTTP/1.1
+Host: <span class="host-span"></span>
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code
+ &code=FvXUiivMYRhBWFzfQkOXFdARx9hmC6
+ &redirect_uri=https://meu_site.com/unicaronas/callback/
+ &client_id=3ZmIB7301jRc75Ny5VvKYlT1UFpFjYjRIsMWj8UO
+ &code_verifier=xqJjbZylkCjFDW4zJIobhzZ8d9dvpE2B203U0Y0V6Fwicduyg7rybQ3SPg06xwal</code></pre>
+                <p>
+                    <i>Lembrando que o <code>code_verifier</code> só deve ser incluído se você estiver usando PKCE.</i>
+                </p>
+                <p>
+                    Se tudo ocorrer corretamente, você receberá como resposta os seguintes dados:
+                </p>
+                <pre><code>HTTP/1.1 200
+content-type: application/json
+
+{
+    "access_token": "UZvstuZ4DpLzROrBppv3S0p63S3y2O",
+    "expires_in": 3600,
+    "token_type": "Bearer",
+    "scope": "profile:read trips:read basic:read",
+    "refresh_token": "iwXouKbVApeQQqyM7ApFBnwR55Uoli"
+}</code></pre>
+                <p>
+                    Essa resposta contém tudo que você precisará para fazer chamadas à API:
+                    <div class="ui bulleted list">
+                        <div class="item"><code>access_token</code>: O access token que você usará para autenticar seus pedidos</div>
+                        <div class="item"><code>expires_in</code>: O tempo, em segundos, até o <code>access_token</code> expirar</div>
+                        <div class="item"><code>token_type</code>: O tipo de token. Essa informação é usada na hora de fazer os pedidos à API.</div>
+                        <div class="item"><code>scope</code>: As permissões aprovadas pelo resource owner. Aqui você poderá ver se todas as permissões pedidas por você foram concedidas. Note também que há uma permissão nova aqui: <code>basic:read</code>. Essa é a permissão base obrigatória e ela sempre será dada aos tokens</div>
+                        <div class="item"><code>refresh_token</code>: O refresh token que você poderá usar para conseguir access tokens novos quando o atual expirar. A forma de pedir tokens novos com o access token é explicada no próximo passo.</div>
+                    </div>
+                </p>
+                <h3 class="ui header">Passo 3: Renovando tokens expirados</h3>
+                <p>
+                    Esse passo é idêntico ao do flow de authorization code normal. Você não precisará usar PKCE nessa etapa, mesmo se estiver usando aplicativos nativos com URI schemes personalizados.
+                </p>
+                <p>
+                    Para todos os detalhes dessa etapa, consulte o flow anterior.
+                </p>
+                <h2 class="ui header">Implicit Flow</h2>
+                <p>
+                    Implementa <a href="https://tools.ietf.org/html/rfc6749#section-4.2">rfc6749 seção 4.2</a>
+                </p>
+                <p>
+                    O Implicit Flow é especial pois ele não usa <b>code grants</b> e nem requer que o <b>client</b> seja capaz de fazer pedidos POST. Basta ser capaz de receber redirecionamentos por URI.
+                </p>
+                <p>
+                    Antigamente esse era o único método recomendado para SPAs, mas com a evolução das specs do OAuth, foi criada a opção de utilizar o flow do authorization code sem enviar o <code>client_secret</code>, como descrito no flow anterior. Por conta disso, não é recomendado que esse flow seja utilizado. Ele é apenas mantido aqui como uma alternativa ao authorization code flow para desenvolvedores que optarem por tal.
+                </p>
+                <p>
+                    Por essa razão, o tipo de client que poderá usar esse flow é o <a href="https://tools.ietf.org/html/rfc6749#section-2.1" target="_blank"><b>Public Client</b></a>.
+                </p>
+                <h3 class="ui header">Passo 1: Pedindo autorização e conseguindo tokens</h3>
+                <p>
+                    No Implicit Flow, tudo acontece em um único passo. Como nos outros flows, você começa conseguindo permissão do resource owner para acessar seus dados. A diferença é que ao invés de receber um code grant como resposta, você receberá o token diretamente, sem refresh token.
+                </p>
+                <p>
+                    Para começar o flow, redirecione o seu usuário para a seguinte URL:
+                </p>
+                <pre><code>GET {% url 'oauth2_provider:authorize' %} HTTP/1.1
+Host: <span class='host-span'></span></code></pre>
+                <p>
+                    E ela deve conter o seguintes parâmetros
+                    <div class="ui list bulleted">
+                        <div class="item"><code>response_type</code>: Use <code>token</code> para indicar que o <b>Implicit</b> flow deve ser usado</div>
+                        <div class="item"><code>scope</code>: Lista, separada por <b>espaços</b>, dos scopes que você quer pedir. A lista completa pode ser encontrada na <a href="{% url 'docs:schema-redoc'|versioned_url %}#section/Authentication" target="_blank">documentação</a></div>
+                        <div class="item"><code>client_id</code>: Client ID que você receberá quando criar seu aplicativo.</div>
+                        <div class="item"><code>state</code>: Valor aleatório que seu client pode usar para garantir que o pedido de autorização veio mesmo de você, e não de um terceiro.</div>
+                        <div class="item"><code>redirect_uri</code>: URI para a qual o Unicaronas redirecionará o resource owner após sua autenticação. Deve ser uma das opções definidas durante a criação do aplicativo.</div>
+                    </div>
+                </p>
+                <p>
+                    No fim ela se parecerá com:
+                    <pre><code class="http">https://<span class='host-span'></span>{% url 'oauth2_provider:authorize' %}?
+    response_type=token
+    &scope=profile:read trips:read
+    &client_id=3ZmIB7301jRc75Ny5VvKYlT1UFpFjYjRIsMWj8UO
+    &state=my_random_string
+    &redirect_uri=https://meu_site.com/unicaronas/callback/</code></pre>
+                </p>
+                <p>
+                    A resposta, após a autorização do resource owner, conterá os seguintes dados:
+                </p>
+                <pre><code>HTTP/1.1 302 Found
+Location: https://meu_site.com/unicaronas/callback/?
+    access_token=UZvstuZ4DpLzROrBppv3S0p63S3y2O
+    &expires_in=3600
+    &token_type=Bearer
+    &scope=profile:read trips:read basic:read
+    &state=my_random_string</code></pre>
+                <p>
+                    Como você pode ver, todas as informações do access token foram incluídas na URL de resposta. Você deve agora extrair o token e usá-lo.
+                </p>
+                <p>
+                    <b>Atenção</b>, o <code>refresh_token</code> não é incluído na resposta desse flow, logo, para renovar o token você terá que pedir permissão para o usuário novamente.
+                </p>
+                <div class="ui section divider"></div>
+                <h1 class="ui header">Criando Aplicativos (Clients)</h1>
+                <p>
+                    Para começar a interagir com a API do Unicaronas, é necessário criar um aplicativo. Esse aplicativo vai agir como <b>Client</b> dentro do authorization server.<br>
+                    Para criar aplicativos, vá para o <a href="{% url 'apps_create' %}" target="_blank">formulário de criação de apps</a>.
+                </p>
+                <p>
+                    Vamos ver agora o que significa cada opção do formulário:
+                </p>
+                <h2 class="ui header">Nome do Aplicativo</h2>
+                <p>
+                    É o nome do seu aplicativo. É usado para que os seus usuários identifiquem o seu app e é mostrado em todas as telas que listam ou detalham o app.
+                </p>
+                <h2 class="ui header">Descrição</h2>
+                <p>
+                    Descrição do que o seu app faz. Tente mantê-la curta e direto ao ponto, pois ela serve para ajudar seus usuários a decidirem se usarão seu app ou não.
+                </p>
+                <h2 class="ui header">Tipo de cliente</h2>
+                <p>
+                    Permite decidir entre <b>Public Client</b> e <b>Confidential Client</b>.
+                </p>
+                <p>
+                    Como visto acima, public clients são clients que não são capazes de armazenar seguramente o seu <code>client_secret</code>. Por conta disso, public clients não terão acesso ao <code>client_secret</code> e terão seu flow de <b>Authorization Code</b> modificado para não receber o <code>client_secret</code>. Para detalhes sobre o flow de public clients, consulte a seção de flows acima.
+                </p>
+                <p>
+                    Confidential clients, ao contrário de public clients, declaram que são capazes de armazenar seu <code>client_secret</code> de forma segura. Por conta disso, seu flow de <b>Authorization Code</b> permanece inalterado e requer que você envie o <code>client_secret</code> como parâmetro durante a etapa de troca do grant pelo access token.
+                </p>
+                <p>
+                    Tipicamente, você seguirá a regra:
+                    <div class="ui list bulleted">
+                        <div class="item"><b>Confidential Client</b>: Web Apps com servidores, Bots de Telegram/Messenger e outros serviços com servidores seguros</div>
+                        <div class="item"><b>Public Client</b>: Single Page Apps, aplicativos nativos ou mobile e outros serviços que não possuem servidores seguros</div>
+                    </div>
+                </p>
+                <h2 class="ui header">Tipo de autorização</h2>
+                <p>
+                    Permite escolher qual <b>Grant Type</b> o app poderá usar para interagir com o <b>Authorization Server</b>. As opções são <b>Authorization Code</b> e <b>Implicit Grant</b>.
+                </p>
+                <p>
+                    Detalhes sobre a implementação e diferenças entre os dois grants podem ser encontrados na seção de Flows acima.
+                </p>
+                <p>
+                    Tipicamente, você seguirá a regra:
+                    <div class="ui list bulleted">
+                        <div class="item"><b>Implicit Grant</b>: Serviços de public clients que não conseguem fazer POST</div>
+                        <div class="item"><b>Authorization Code</b>: Todo o resto</div>
+                    </div>
+                </p>
+                <h2 class="ui header">Plataforma</h2>
+                <p>
+                    Permite que você declare em qual plataforma o seu client operará. Esse parâmetro não interefere nos flows OAuth e serve apenas para estatísticas internas e para que os usuários sejam capazes de escolher apps com base na sua plataforma de preferência.
+                </p>
+                <h2 class="ui header">Permissões</h2>
+                <p>
+                    Permite selecionar os <b>Scopes</b> que o app poderá pedir durante os flows OAuth.
+                </p>
+                <p>
+                    Você pode ver a lista completa de scopes disponíveis e seus códigos na <a href="{% url 'docs:schema-redoc'|versioned_url %}#section/Authentication" target="_blank">documentação</a>.
+                </p>
+                <p>
+                    As descrições dos scopes estão escritas como se estivessem direcionadas ao resource owner, para que você saiba o que ele verá quando for autorizar o acesso do seu app.
+                </p>
+                <p>
+                    Evite selecionar mais scopes do que necessário. Caso as credenciais do seu app sejam roubadas por terceiros, limitar as scopes permitidas impedirá danos muito graves.
+                </p>
+                <h2 class="ui header">URIs de redirecionamento</h2>
+                <p>
+                    Permite descrever as URIs de redirecionamento permitidas.
+                </p>
+                <p>
+                    Apenas URIs definidas aqui serão aceitas como redirecionamentos válidos durante a comunicação com o <b>Authorization Server</b>.
+                </p>
+                <p>
+                    A URI deve conter o protocolo (http, https ou personalizado) a ser usado no redirecionamento.
+                </p>
+                <p>
+                    Você pode declarar mais de uma URI colocando uma nova em cada linha.
+                </p>
+                <h2 class="ui header">URL para receber Webhooks</h2>
+                <p>
+                    O Unicaronas também oferece um serviço de webhooks para recebimentos de eventos em tempo real. A URL definida aqui será usada como destino dos eventos enviados por ações dos seus usuários.
+                </p>
+                <p>
+                    Para detalhes sobre o serviço de webhooks, <a href="{% url 'docs:schema-redoc'|versioned_url %}#section/Webhooks">veja a documentação</a>.
+                </p>
+                <h2 class="ui header">Página do app/Link para Download</h2>
+                <p>
+                    Caso seu app já esteja publicado, você pode adicionar a URL dele ou seu link para download, para que usuários possam começar a usá-lo.
+                </p>
+                <h2 class="ui header">Logo</h2>
+                <p>
+                    Você pode fazer o upload de um logo para o seu app. Ele será mostrado em todas as telas que detalham o seu app, inclusive na tela de autorização do resource owner.
+                </p>
+                <p>
+                    Seu logo deve ser um arquivo válido de imagem, quadrado, entre 512x512 e 1024x1024 pixels.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+generate_toc('doc_body', 'toc');
+$('.ui.accordion').accordion();
+hljs.initHighlightingOnLoad();
+
+$('.host-span').each(function(index) {
+    $(this).text(location.host);
+})
+</script>
+{% endblock %}

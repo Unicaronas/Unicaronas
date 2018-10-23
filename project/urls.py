@@ -67,10 +67,9 @@ third_parties_patterns = [
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
-    path('develop/', views.BecomeDev.as_view(), name='become_dev'),
     path('terms_and_conditions/', views.TermsAndConditions.as_view(), name='terms_and_conditions'),
     path('privacy_policy/', views.PrivacyPolicy.as_view(), name='privacy_policy'),
-    path('what_is_oauth/', views.BecomeDev.as_view(), name='oauth_help'),
+    path('what_is_oauth/', views.OAuthHelp.as_view(), name='oauth_help'),
 ]
 
 urlpatterns += api_urlpatterns

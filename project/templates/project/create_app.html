@@ -28,7 +28,7 @@
                 <form class="ui form" enctype="multipart/form-data" method="post">
                     {% csrf_token %}
                     <h1 class="ui header">Basta preencher o formulário abaixo
-                        <div class="sub header">Com problemas para preencher? <a href="">Aprenda mais sobre OAuth2 aqui!</a></div>
+                        <div class="sub header">Com problemas para preencher? <a href="{% url 'oauth_help' %}">Aprenda mais sobre OAuth2 aqui!</a></div>
                     </h1>
                     <div class="field {% if form.name.errors.as_text %}error{% endif %}">
                         <label>{{ form.name.label}}</label>
