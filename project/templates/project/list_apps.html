@@ -36,7 +36,7 @@
                     <div class="content">
                         <div class="ui large header">
                             {% if app.logo %}
-                            <img class="ui circular image" src="{{ app.logo.thumbnail.60x60 }}">
+                            <img class="ui rounded image" src="{{ app.logo.thumbnail.60x60 }}">
                             {% endif %}
                             <div class="content">
                                 {{ app.name }}
@@ -58,36 +58,6 @@
                             <p>
                                 {{ app.description | linebreaksbr | truncatewords:50  }}
                             </p>
-                        </div>
-                        <div class="extra">
-                            {% if spotted.attachment %}
-                            <div class="ui label blue small">
-                                <i class="linkify icon"></i>
-                                Tem anexo
-                            </div>
-                            {% endif %}
-                            {% if spotted.author == user %}
-                            <div class="ui label pink small">
-                                <i class="key icon"></i>
-                                Você enviou
-                            </div>
-                            {% elif spotted.author %}
-                            <div class="ui label pink small">
-                                <i class="key icon"></i>
-                                Tem autor
-                            </div>
-                            {% endif %}
-                            {% if spotted.target == user %}
-                            <div class="ui label red small">
-                                <i class="heart icon"></i>
-                                Te enviaram
-                            </div>
-                            {% elif spotted.target %}
-                            <div class="ui label red small">
-                                <i class="heart icon"></i>
-                                Tem crush
-                            </div>
-                            {% endif %}
                         </div>
                         <div class="mobile hidden">
                             <div class="extra">
