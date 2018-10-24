@@ -62,18 +62,23 @@ inverted
     <div class="ui middle center aligned stackable grid container">
         <div class="column eight wide">
             <h2 class="ui icon header">
-                <i style="color: #22b8cf" class="fas fa-car fa-3x">
+                <i style="color: #22b8cf" class="fas fa-search fa-3x">
                 </i>
                 <div class="content">
-                    Caronas
+                    <b>Para passageiros</b>
                     <div class="sub header">
                     </div>
                 </div>
             </h2>
         </div>
         <div class="column eight wide">
-            <h2>Titulo</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis ultricies purus, a efficitur purus feugiat eu. Nullam lobortis urna vel massa sagittis, sed auctor dui dignissim. Nullam vel nunc vel dolor gravida imperdiet a vel nibh. Vivamus consequat iaculis tortor at vehicula. Vivamus porttitor diam ut diam molestie, ac interdum augue pulvinar. Nam non diam justo. Cras tincidunt placerat nisi eu aliquet. Etiam semper justo id ultrices bibendum. Mauris vel ultricies risus. Pellentesque elit arcu, tincidunt eget arcu eget, interdum imperdiet est.</p>
+            <h2>Todas as caronas em um lugar</h2>
+            <p>
+                Existem milhares de caronas por aí, mas encontrar a certa pra você pode ser bem difícil
+            </p>
+            <p>
+                O Unicaronas junta caronas <b>próprias</b>, de grupos de <b>Facebook</b> e até do <b>BlaBlaCar</b> para formar o maior acervo de caronas para universitários existente
+            </p>
         </div>
     </div>
 </div>
@@ -81,15 +86,20 @@ inverted
 <div class="ui vertical stripe">
     <div class="ui middle center aligned stackable grid container">
         <div class="column eight wide">
-            <h2>Titulo</h2>
-            <p>Donec dapibus enim odio, et pellentesque est maximus luctus. Suspendisse nec justo purus. Vestibulum eu interdum eros, quis sollicitudin nunc. Vivamus imperdiet eros eget nulla blandit consectetur vitae vel felis. Phasellus luctus leo mauris, vitae tincidunt libero commodo vitae. Aenean in eros metus. Vivamus sed sollicitudin ante. Quisque vehicula sed odio ac fermentum. Vestibulum tortor orci, porttitor quis fringilla id, varius vel est. Sed dapibus mi vitae libero tempor tincidunt. Nunc cursus leo non tortor elementum, sed laoreet velit maximus. Phasellus ultrices interdum quam sit amet venenatis.</p>
+            <h2>Controle e segurança</h2>
+            <p>
+                Não se preocupe com sua carona não ser vista ou com estranhos viajando com você
+            </p>
+            <p>
+                Crie caronas pelo Unicaronas para garantir uma <b>viagem cheia</b>, ter <b>controle total</b> sobre suas viagens e ter <b>segurança</b> no trajeto
+            </p>
         </div>
         <div class="column eight wide">
             <h2 class="ui icon header">
-                <i style="color: gray" class="privacy icon">
+                <i style="color: teal" class="fas fa-car fa-3x">
                 </i>
                 <div class="content">
-                    Privacidade
+                    <b>Para motoristas</b>
                     <div class="sub header">
                     </div>
                 </div>
@@ -105,8 +115,8 @@ inverted
                 <i style="color: green" class="fas fa-dollar-sign fa-3x">
                 </i>
             </h2>
-            <h2>Titulo</h2>
-            <p>Donec quis libero commodo, porttitor ante eget, cursus eros. Sed commodo justo eu pellentesque dictum. Aliquam suscipit varius leo, in sodales turpis consequat id. Vestibulum tortor odio, consectetur volutpat lectus ultricies, lacinia viverra risus. Proin feugiat pretium neque, porttitor egestas risus pellentesque ac. Nullam convallis felis sed finibus hendrerit. Fusce at nisi dapibus ex varius molestie vel vitae lectus. Curabitur semper tellus vel pretium rhoncus. Vestibulum tincidunt tincidunt dolor sit amet condimentum. Etiam commodo id mauris nec ultrices. Sed est enim, bibendum vel velit vel, aliquam viverra arcu. Praesent sed sodales est.</p>
+            <h2>Grátis para sempre</h2>
+            <p>O Unicaronas <b>não cobra nada</b> para motoristas ou passageiros e <i>nunca</i> vamos cobrar<br><b>Sério.</b></p>
         </div>
         <div class="column eight wide">
             <h2 class="ui icon header">
@@ -114,7 +124,8 @@ inverted
                 </i>
             </h2>
             <h2>Desenvolvedores = ❤️</h2>
-            <p>Sed nibh sem, dictum a auctor ut, mollis ac mi. Praesent eleifend ac ligula in euismod. Vivamus rhoncus tincidunt mauris, et ultricies metus interdum sit amet. Suspendisse dictum eros quis nisi dignissim, sed tincidunt est mattis. Nulla orci eros, sagittis ac dui eget, vehicula lobortis turpis. Quisque vel fringilla purus, et sodales nisl. Mauris posuere velit elementum quam lacinia, nec varius massa porttitor. Proin quis orci a orci blandit cursus.</p>
+            <p>Nossa <i>comunidade</i> é formada por pessoas <b>como você</b> e nossos <i>aplicativos</i> também</p>
+            <p>Qualquer membro pode criar aplicativos que têm <b>acesso total</b> à nossa API e dados com alguns cliques!</p>
         </div>
     </div>
 </div>
@@ -132,8 +143,11 @@ inverted
         <div class="row">
             <div class="column eight wide">
                 <h2>A maior comunidade de caronas universitárias</h2>
-                <p>Nunc vehicula ac ante eu blandit. Sed sit amet dui dignissim, auctor enim vitae, maximus erat. Cras accumsan, augue in vestibulum eleifend, nisi neque imperdiet elit, ac sagittis sapien odio et ipsum. Donec convallis, risus eu efficitur mollis, urna magna porta ipsum, at lobortis erat felis quis mauris. Ut sollicitudin elementum risus vel lobortis. Sed id auctor purus, aliquet aliquet orci. Maecenas id tortor vel dui scelerisque mattis. Proin porttitor risus fermentum ultricies dignissim. Quisque id sem erat.</p>
-                {% if not user.is_authenticated %}<p>Se você ainda não faz parte dessa comunidade, <a href="">entre agora</a>.{% endif %}
+                <p>Unicaronas é muito mais que um serviço de caronas</p>
+                <p>
+                    Com você, ajudamos milhares de universitários a visitarem seus familiares todo final de semana!
+                </p>
+                {% if not user.is_authenticated %}<p>Se você ainda não faz parte dessa comunidade, <a href="{% url 'account_signup' %}">entre agora</a>{% endif %}
                 </div>
             </div>
         </div>
