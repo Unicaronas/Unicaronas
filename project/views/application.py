@@ -16,7 +16,10 @@ class DetailApplications(generic.DetailView):
     template_name = 'project/detail_apps.html'
 
     def get_queryset(self, *args, **kwargs):
-        return self.model.objects.filter(published=True)
+        qs = self.model.objects.filter(published=True)
+        qs = annotate_final_score(qs)
+        qs = qs.select_related('user')
+        return qs
 
 
 class ListApplications(generic.ListView):

@@ -1,22 +1,48 @@
 {% extends "project/base.html" %}
 {% load staticfiles %}
-
+{% load application_helpers %}
+{% load humanize %}
 {% block content %}
 
-<div class="ui vertical stripe">
-    <div class="ui middle aligned stackable grid container">
-        <div class="row">
+<div class="ui vertical segment">
+    <div class="ui stackable grid container">
+        <div class="ui middle aligned row">
             <div class="center aligned sixteen wide column">
-                <h1 class="ui header">Página de detalhes do app!
-                    <div class="sub header">Ainda falta fazer</div>
+                {% if application.logo %}
+                <img class="ui image small centered rounded" src="{{ application.logo.thumbnail.150x150 }}" alt="">
+                {% endif %}
+                <h1 class="ui huge header">{{ application.name }}
+                    <div class="sub header">Por {{ application.user.get_full_name }}</div>
                 </h1>
-                <p>
-                    Mas vai ter vários detalhes do app que ainda não sei quais vão ser
-                </p>
-                <p>
-                    Talvez o email do dev para contato
-                </p>
+                {% if application.website %}
+                <a class="ui button blue large labeled icon" href="{{ application.website }}"><i class="ui icon download"></i> Ver/Baixar app</a>
+                {% endif %}
             </div>
+        </div>
+        <div class="row">
+            <div class="four wide column center aligned">
+                <div class="ui label image blue basic large">
+                    Feito para
+                    <div class="detail">{{ application.get_platform_display }}</div>
+                </div>
+                <div class="ui label image black basic large">
+                    {{ application | obfuscate_user_count}}
+                    <div class="detail">usuários</div>
+                </div>
+                <div class="ui label image red red basic large">
+                    Criado há
+                    <div class="detail">{{ application | humanize_created }}</div>
+                </div>
+                <div class="ui label image red green basic large">
+                    Pontuação
+                    <div class="detail">{{ application.final_score }}%</div>
+                </div>
+            </div>
+            <div class="eight wide column">
+                <div class="ui header medium">Descrição:</div>
+                {{ application.description | linebreaks }}
+            </div>
+
         </div>
     </div>
 </div>
