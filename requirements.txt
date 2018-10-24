@@ -2,7 +2,7 @@
 dj-database-url
 Django
 gunicorn
-psycopg2
+psycopg2-binary
 whitenoise
 django-extensions
 Werkzeug
