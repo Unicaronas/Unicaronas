@@ -117,6 +117,19 @@
                                 </div>
                             </div>
                         </div>
+                        {% if app.webhook_url %}
+                        <div class="meta">
+                            <div class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    URL do Webhook
+                                </div>
+                                <div class="content">
+                                    <b>{{ app.webhook_url }}</b>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                         <div class="description">
                             <div class="ui accordion">
                                 <div class="title">
