@@ -1,6 +1,8 @@
 import hashlib
+from urllib.parse import urlparse
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -8,7 +10,9 @@ from versatileimagefield.fields import VersatileImageField
 from oauth2_provider import models as omodels
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.settings import oauth2_settings
+from oauth2_provider.validators import WildcardSet, RedirectURIValidator
 from project.validators import MaxImageDimensionsValidator, MinImageDimensionsValidator, SquareImageValidator, CustomURLValidator
+from ..validators import URISchemeWildcardSet
 
 
 from ..utils import Cipher
@@ -138,6 +142,38 @@ class Application(omodels.AbstractApplication):
 
     def get_users(self):
         return User.objects.filter(oauth2_provider_accesstoken__application=self).distinct()
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        grant_types = (
+            omodels.AbstractApplication.GRANT_AUTHORIZATION_CODE,
+            omodels.AbstractApplication.GRANT_IMPLICIT,
+        )
+
+        redirect_uris = self.redirect_uris.strip().split()
+        allowed_schemes = self.get_allowed_schemes()
+
+        if redirect_uris:
+            validator = RedirectURIValidator(WildcardSet())
+            for uri in redirect_uris:
+                validator(uri)
+                scheme = urlparse(uri).scheme
+                if scheme not in allowed_schemes:
+                    raise ValidationError(_(
+                        "Esquema de redirecionamento não autorizado: {scheme}"
+                    ).format(scheme=scheme))
+
+        elif self.authorization_grant_type in grant_types:
+            raise ValidationError(_(
+                "redirect_uris não podem ser vazias com o grant_type {grant_type}"
+            ).format(grant_type=self.authorization_grant_type))
+
+    def get_allowed_schemes(self):
+        """
+        Allow any redirect uri schemes if client type is public.
+        """
+        return URISchemeWildcardSet() if self.client_type == self.CLIENT_PUBLIC else oauth2_settings.ALLOWED_REDIRECT_URI_SCHEMES
 
     class Meta(omodels.AbstractApplication.Meta):
         swappable = "OAUTH2_PROVIDER_APPLICATION_MODEL"
