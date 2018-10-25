@@ -41,3 +41,7 @@ Then run the app with `./run.sh` and go to `localhost:8000/admin/`.
 There you can configure your site at the `Sites` model and your social logins as social accounts model.
 
 Done!
+
+# Deploying to Heroku
+You can also deploy to Heroku
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
