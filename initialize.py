@@ -154,6 +154,30 @@ env = [
         'ask': True,
         'required': True
     },
+    {
+        'name': 'AWS_ACCESS_KEY_ID',
+        'title': 'ID do seu usuário IAM na AWS. Usado para salvar logos de app',
+        'ask': True,
+        'required': True
+    },
+    {
+        'name': 'AWS_SECRET_ACCESS_KEY',
+        'title': 'Secret do seu usuário IAM na AWS. Usado para salvar logos de app',
+        'ask': True,
+        'required': True
+    },
+    {
+        'name': 'AWS_STORAGE_BUCKET_NAME',
+        'title': 'Bucket na AWS. Usado para salvar logos de app',
+        'ask': True,
+        'required': True
+    },
+    {
+        'name': 'BLABLACAR_API_KEY',
+        'title': 'API key do BlaBlaCar para pesquisas',
+        'ask': True,
+        'required': True
+    }
 ]
 
 

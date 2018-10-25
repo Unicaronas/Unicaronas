@@ -44,9 +44,9 @@ ALLOWED_HOSTS = eval(os.environ.get('ALLOWED_HOSTS', '["*"]'))
 
 # Sentry
 
-if not DEBUG:
+if not DEBUG and os.environ.get('SENTRY_DSN'):
     sentry_sdk.init(
-        dsn="https://3d1c47f0749e4f10a41024096b499c1f@sentry.io/1292000",
+        dsn=os.environ.get('SENTRY_DSN'),
         integrations=[DjangoIntegration()]
     )
 
@@ -206,7 +206,7 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
 
-STATIC_HOST = os.environ.get('STATIC_HOST', '')
+STATIC_HOST = os.environ.get('STATIC_HOST', ROOT_URL)
 STATIC_URL = STATIC_HOST + '/static/'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -217,7 +217,7 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_AUTO_CREATE_BUCKET = True
 
 # Celery stuff
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_BROKER_URL = REDIS_URL
 CELERY_IMPORTS = ['project.tasks']
 
@@ -257,7 +257,7 @@ EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
 
 # Debug Toolbar
-SHOW_TOOLBAR_CALLBACK = eval(os.environ.get('SHOW_TOOLBAR_CALLBACK', 'True'))
+SHOW_TOOLBAR_CALLBACK = eval(os.environ.get('SHOW_TOOLBAR_CALLBACK', DEBUG))
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda r: SHOW_TOOLBAR_CALLBACK and r.user.is_superuser  # disables it
 }
@@ -328,7 +328,7 @@ REST_FRAMEWORK = {
 
 
 # Sites framework
-SITE_ID = 2
+SITE_ID = int(os.environ.get('SITE_ID', '1'))
 
 # AllAuth settings
 ACCOUNT_AUTHENTICATION_METHOD = "username"

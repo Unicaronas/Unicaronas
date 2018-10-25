@@ -12,12 +12,11 @@
     "heroku-postgresql:hobby-dev",
     "heroku-redis:hobby-dev"
   ],
-  "stack": "cedar-14",
   "env": {
     "ADMIN_ACCOUNT": {
-        "value": "",
-        "description": "Endereço de email para envio de logs de erro",
-        "required": true
+      "value": "",
+      "description": "Endereço de email para envio de logs de erro",
+      "required": true
     },
     "ALLOWED_HOSTS": {
       "value": "['*']",
@@ -62,6 +61,38 @@
     "SHOW_TOOLBAR_CALLBACK": {
       "description": "Mostrar toolbar de debug do Django",
       "value": "True"
+    },
+    "AWS_ACCESS_KEY_ID": {
+      "description": "ID do seu usuário IAM na AWS. Usado para salvar logos de app",
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "Secret do seu usuário IAM na AWS. Usado para salvar logos de app",
+      "required": true
+    },
+    "AWS_STORAGE_BUCKET_NAME": {
+      "description": "Bucket na AWS. Usado para salvar logos de app",
+      "required": true
+    },
+    "BLABLACAR_API_KEY": {
+      "description": "API key do BlaBlaCar para pesquisas",
+      "required": true
+    },
+    "GOOGLE_ANALYTICS_PROPERTY_ID": {
+      "description": "ID do Google Analytics",
+      "required": false
+    },
+    "RECAPTCHA_PRIVATE_KEY": {
+      "description": "Chave privada do ReCaptcha",
+      "required": true
+    },
+    "RECAPTCHA_PUBLIC_KEY": {
+      "description": "Chave pública do ReCaptcha",
+      "required": true
+    },
+    "SENTRY_DSN": {
+      "description": "DSN no Sentry, se usado",
+      "required": false
     }
   }
 }
