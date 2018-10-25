@@ -1,5 +1,5 @@
 # cmd1="python manage.py runserver"
-cmd1="python manage.py runserver"
+cmd1="python manage.py runserver_plus"
 cmd1name="Django"
 cmd2="redis-server"
 cmd2name="Redis"
