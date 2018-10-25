@@ -1,8 +1,9 @@
-from .base import BaseFinder
 import re
 import pickle
 from collections import Counter
 from unidecode import unidecode
+from .base import BaseFinder
+from .redis import RedisFinder
 
 
 def words(text):
@@ -92,6 +93,20 @@ class GrammarCorrectorFinder(BaseFinder):
         to perform word corrections on it
         and find a known synonym that is better
         understood by the later finders
+
+        Since it takes a long time to correct each sentence, cache
+        corrected results for some time.
         """
-        corrected_term = self.correct_sentence(term.query)
+        # Use redis as cache
+        cache = RedisFinder()
+
+        # Get the cached results if available
+        cached_result = cache.get_key(term.query)
+        if cached_result is not None:
+            corrected_term = cached_result
+        else:
+            # If the corrected term is not cached, process it normally
+            corrected_term = self.correct_sentence(term.query)
+            # and then cache it
+            cache.set_key(term.query, corrected_term)
         return self.perform_transform(term, corrected_term)

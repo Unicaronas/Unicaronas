@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from project.utils import local_versioned_url_name
 from third_parties.utils import get_search_keys
@@ -47,3 +48,14 @@ class ThirdPartyQuerySerializer(serializers.Serializer):
         required=False,
         help_text=f"Fontes das caronas. Lista separada por espaços com as opções `{', '.join(get_search_keys())}`, ou `all` para todas. `all` por padrão"
     )
+
+    def validate_datetime_gte(self, value):
+        return max(timezone.now(), value)
+
+    def validate_datetime_lte(self, value):
+        return max(timezone.now(), value)
+
+    def validate(self, data):
+        if data['datetime_lte'] < data['datetime_gte']:
+            raise serializers.ValidationError("'datetime_gte' deve ser antes que 'datetime_lte'")
+        return data

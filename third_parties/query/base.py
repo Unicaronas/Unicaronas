@@ -1,7 +1,7 @@
+from django.http import HttpRequest
 from search.term.base import BaseTerm
 from datetime import datetime
 from rest_framework.request import Request
-from django.http import HttpRequest
 
 
 class BaseSearchQuery(object):

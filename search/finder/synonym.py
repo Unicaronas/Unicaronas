@@ -14,39 +14,43 @@ class SynonymFinder(BaseFinder):
         """Get a map of synonyms
         Used on autocorrected words to find the result
         """
+        POSTO_IPIRANGA = 'posto ipiranga, unicamp'
+        SP = 'sao paulo, sp'
+        RODOVIARIA_TIETE = 'rodoviaria tiete, sao paulo'
+
         s_map = [
             # Map to posto ipiranga, Barão geraldo
-            ('unicamp', 'posto ipiranga, unicamp'),
-            ('unicamp', 'posto ipiranga unicamp'),
-            ('universidade estadual de campinas', 'posto ipiranga, unicamp'),
+            ('unicamp', POSTO_IPIRANGA),
+            ('unichamps', POSTO_IPIRANGA),
+            ('universidade estadual de campinas', POSTO_IPIRANGA),
 
-            ('posto ipiranga, unicamp', 'posto ipiranga, unicamp'),
-            ('posto ipiranga unicamp', 'posto ipiranga, unicamp'),
-            ('posto ipiranga', 'posto ipiranga, unicamp'),
-            ('posto da 1', 'posto ipiranga, unicamp'),
-            ('posto', 'posto ipiranga, unicamp'),
+            ('posto ipiranga, unicamp', POSTO_IPIRANGA),
+            ('posto ipiranga unicamp', POSTO_IPIRANGA),
+            ('posto ipiranga', POSTO_IPIRANGA),
+            ('posto da 1', POSTO_IPIRANGA),
+            ('posto', POSTO_IPIRANGA),
 
-            ('barao geraldo', 'posto ipiranga, unicamp'),
-            ('barao', 'posto ipiranga, unicamp'),
-            ('bg', 'posto ipiranga, unicamp'),
+            ('barao geraldo', POSTO_IPIRANGA),
+            ('barao', POSTO_IPIRANGA),
+            ('bg', POSTO_IPIRANGA),
 
             # Map to generic São Paulo, SP
-            ('sao paulo, sao paulo', 'sao paulo, sp'),
-            ('sao paulo sao paulo', 'sao paulo, sp'),
-            ('sao paulo, sp', 'sao paulo, sp'),
-            ('sao paulo sp', 'sao paulo, sp'),
-            ('sao paulo', 'sao paulo, sp'),
-            ('sp', 'sao paulo, sp'),
-            ('sampa', 'sao paulo, sp'),
+            ('sao paulo, sao paulo', SP),
+            ('sao paulo sao paulo', SP),
+            ('sao paulo, sp', SP),
+            ('sao paulo sp', SP),
+            ('sao paulo', SP),
+            ('sp', SP),
+            ('sampa', SP),
 
             # Map to rodoviária tietê
-            ('rodoviaria tiete, sao paulo', 'rodoviaria tiete, sao paulo'),
-            ('rodoviaria tiete sao paulo', 'rodoviaria tiete, sao paulo'),
-            ('rodoviaria tiete, sp', 'rodoviaria tiete, sao paulo'),
-            ('rodoviaria tiete sp', 'rodoviaria tiete, sao paulo'),
-            ('rodoviaria tiete', 'rodoviaria tiete, sao paulo'),
-            ('estacao tiete', 'rodoviaria tiete, sao paulo'),
-            ('tiete', 'rodoviaria tiete, sao paulo'),
+            ('rodoviaria tiete, sao paulo', RODOVIARIA_TIETE),
+            ('rodoviaria tiete sao paulo', RODOVIARIA_TIETE),
+            ('rodoviaria tiete, sp', RODOVIARIA_TIETE),
+            ('rodoviaria tiete sp', RODOVIARIA_TIETE),
+            ('rodoviaria tiete', RODOVIARIA_TIETE),
+            ('estacao tiete', RODOVIARIA_TIETE),
+            ('tiete', RODOVIARIA_TIETE),
         ]
         return OrderedDict(s_map)
 
