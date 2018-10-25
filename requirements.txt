@@ -36,7 +36,7 @@ djangorestframework-gis
 git+git://github.com/philipn/django-rest-framework-filters.git
 django-filter>=2
 drf-nested-routers
-# gdal
+gdal
 
 # Documentation
 drf-yasg
