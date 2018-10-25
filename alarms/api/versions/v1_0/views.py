@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.db.models import Q
 from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -31,9 +32,8 @@ class AlarmViewset(
         qs = super().get_queryset()
         # Only allow editing and viewing the user's alarms
         qs = qs.filter(user=self.request.user)
-        # If the alarm already happened, only allow GET
-        if self.request.method != 'GET':
-            qs = qs.filter(datetime_lte__gte=timezone.now())
+        # Only list alarms that didn't happen
+        qs = qs.filter(Q(datetime_lte__isnull=True) | Q(datetime_lte__gte=timezone.now()))
         return qs
 
     def get_serializer_class(self):
@@ -151,7 +151,7 @@ class AlarmViewset(
         ]
     )
     def partial_update(self, *args, **kwargs):
-        """Atualizar parcialmente carona
+        """Atualizar parcialmente alarme
 
         Permite a alteração de dados de alarmes que **ainda não aconteceram**. Caso o alarme já tenha acontecido, a resposta desse endpoint será um erro *404*.
         """

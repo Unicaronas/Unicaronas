@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 from versatileimagefield.fields import VersatileImageField
 from oauth2_provider import models as omodels
@@ -231,7 +230,7 @@ class Application(omodels.AbstractApplication):
         return user
 
 
-@receiver(post_save, sender=Application, dispatch_uid="refresh_app_logos")
+@receiver(models.signals.post_save, sender=Application, dispatch_uid="refresh_app_logos")
 def refresh_app_logos(sender, instance, **kwargs):
     instance.logo.delete_all_created_images()
 
