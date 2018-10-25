@@ -16,6 +16,14 @@ import dj_database_url
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+_GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH', None)
+if _GDAL_LIBRARY_PATH:
+    GDAL_LIBRARY_PATH = _GDAL_LIBRARY_PATH
+_GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH', None)
+if _GEOS_LIBRARY_PATH:
+    GEOS_LIBRARY_PATH = _GEOS_LIBRARY_PATH
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
