@@ -44,7 +44,7 @@ def get_redirect_uri(request):
     if request.is_secure():
         redirect_uri = 'https://' + request.get_host() + reverse('third_parties:fb_group_callback')
     else:
-        redirect_uri = 'http://' + request.get_host() + reverse('third_parties:fb_group_callback')
+        redirect_uri = 'https://' + request.get_host() + reverse('third_parties:fb_group_callback')
     return redirect_uri
 
 
