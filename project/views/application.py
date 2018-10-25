@@ -115,7 +115,6 @@ class TogglePublish(LoginRequiredMixin, generic.View):
                 if not app.published_past:
                     # Send published email to users
                     new_app_published.delay(app.id)
-                else:
                     app.published_past = True
             app.published = not app.published
             app.save()
