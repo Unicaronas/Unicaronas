@@ -11,6 +11,8 @@ class BaseTripCreateUpdateSerializer(serializers.HyperlinkedModelSerializer):
     Base Serializer for drivers to create and update trips
     """
 
+    auto_approve = serializers.BooleanField(required=False, default=True)
+
     def create(self, validated_data):
         user = self.context['request'].user
         app = getattr(self.context['request'].auth, 'application', None)
