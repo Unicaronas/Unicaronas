@@ -72,7 +72,7 @@ Abaixo está a lista de webhooks disponíveis com seus eventos ativadores e o co
 
 ## Webhooks para passageiros
 |Evento|Detalhes|Permissão necessária|
-|--|--|--|--|--|
+|--|--|--|
 |`passenger_pending`|Seu usuário está pendente em uma carona|`trips:passenger:read`|
 |`passenger_approved`|Seu usuário foi aprovado em uma carona|`trips:passenger:read`|
 |`passenger_denied`|Seu usuário foi negado em uma carona pelo motorista|`trips:passenger:read`|
@@ -137,7 +137,7 @@ Abaixo está a lista de webhooks disponíveis com seus eventos ativadores e o co
 ```
 ## Webhooks para motoristas
 |Evento|Detalhes|Permissão necessária|
-|--|--|--|--|--|
+|--|--|--|
 |`driver_passenger_pending`|Um passageiro está pendente em uma carona do seu usuário|`trips:driver:read`|
 |`driver_passenger_approved`|Um passageiro foi aprovado em uma carona do seu usuário|`trips:driver:read`|
 |`driver_passenger_give_up`|Um passageiro em uma carona do seu usuário desistiu da viagem|`trips:driver:read`|
@@ -181,7 +181,7 @@ Abaixo está a lista de webhooks disponíveis com seus eventos ativadores e o co
 ```
 ## Webhooks para alarmes
 |Evento|Detalhes|Permissão necessária|
-|--|--|--|--|--|
+|--|--|--|
 |`alarm_dispatched`|Uma carona compatível com um alarme do seu usuário foi criada|`trips:read`|
 
 ### Formato de `alarm_dispatched`:
