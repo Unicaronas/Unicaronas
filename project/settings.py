@@ -292,15 +292,11 @@ OAUTH2_PROVIDER = {
     "DEFAULT_SCOPES": ['basic:read'],
     'REQUEST_APPROVAL_PROMPT': 'auto',
     'APPLICATION_MODEL': 'oauth.Application',
-    'GRANT_MODEL': 'oauth.PKCEGrant',
     'SCOPES_BACKEND_CLASS': 'oauth.scopes.CustomSettingsScopes',
     "REFRESH_TOKEN_GRACE_PERIOD_SECONDS": 120,
     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,
-    "OAUTH2_VALIDATOR_CLASS": "oauth.oauth2_validators.PKCEOAuth2Validator",
-    "OAUTH2_BACKEND_CLASS": "oauth.oauth2_backends.PKCEOAuthLibCore",
 }
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.Application'
-OAUTH2_PROVIDER_GRANT_MODEL = 'oauth.PKCEGrant'
 
 
 # Rest settings

@@ -2,26 +2,10 @@ from django import forms as forms
 from oauth2_provider import models, scopes
 from oauth2_provider import forms as o_forms
 from oauth2_provider.scopes import get_scopes_backend
-from oauth2_provider.models import get_grant_model
 from versatileimagefield.forms import VersatileImageFormField
 
-Grant = get_grant_model()
 
-
-class PCKEEnabledAllowForm(o_forms.AllowForm):
-    """Custom allow form that enables the use of PKCE code challenges"""
-    code_challenge = forms.CharField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
-    code_challenge_method = forms.ChoiceField(
-        widget=forms.HiddenInput(),
-        required=False,
-        choices=Grant.CODE_CHALLENGE_METHODS
-    )
-
-
-class CustomAllowForm(PCKEEnabledAllowForm):
+class CustomAllowForm(o_forms.AllowForm):
     """Custom allow form
 
     When requesting permission from user, this form is showed

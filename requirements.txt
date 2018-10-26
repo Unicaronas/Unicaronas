@@ -32,8 +32,7 @@ requests-futures
 # REST
 djangorestframework
 rest-condition
-djangorestframework-gis
-git+git://github.com/philipn/django-rest-framework-filters.git
+https://github.com/philipn/django-rest-framework-filters/archive/master.zip
 django-filter>=2
 drf-nested-routers
 
@@ -45,7 +44,8 @@ drf-yasg[validation]
 django-allauth
 
 # oauth2
-django-oauth-toolkit
+https://github.com/Maronato/django-oauth-toolkit/archive/pkce-support.zip
+# django-oauth-toolkit
 cryptography
 
 # Captcha

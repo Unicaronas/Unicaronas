@@ -1,13 +1,13 @@
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.models import get_access_token_model
+from oauth2_provider.views.base import AuthorizationView
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 from ..serializers import DebugTokenSerializer
 from ..forms import CustomAllowForm
-from .pkce_auth import PKCEAuthorizationView
 
 
-class CustomAuthorizationView(PKCEAuthorizationView):
+class CustomAuthorizationView(AuthorizationView):
     """Custom Auth
 
     Custom auth view that lets users select which permissions to allow
