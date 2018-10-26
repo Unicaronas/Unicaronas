@@ -33,8 +33,7 @@ class CustomSignupForm(SignupForm):
         if not email:
             # If no email was provided, validation failed. Return
             return
-        if not re.match(UNIVERSITY_EMAIL_VALIDATORS[university], email, re.I):
-            raise forms.ValidationError({'email': [f"Email inválido para {university}"]})
+        UNIVERSITY_EMAIL_VALIDATORS[university](email, university)
         cleaned_data['university_email'] = email.lower()
 
         # Validate university ID
@@ -42,8 +41,7 @@ class CustomSignupForm(SignupForm):
         if not uid:
             # If no username was provided, validation failed. Return
             return
-        if not re.match(UNIVERSITY_ID_VALIDATORS[university], uid, re.I):
-            raise forms.ValidationError({'username': [f"ID inválido para {university}"]})
+        UNIVERSITY_ID_VALIDATORS[university](uid, university)
         cleaned_data['university_id'] = uid.lower()
         return cleaned_data
 
