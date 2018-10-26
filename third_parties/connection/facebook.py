@@ -34,7 +34,7 @@ class FacebookConnection(BaseConnection):
         params = {
             'access_token': access_token,
             'fields': 'message,created_time,id',
-            'limit': 200
+            'limit': 100
         }
         return {'url': url, 'params': params}
 
