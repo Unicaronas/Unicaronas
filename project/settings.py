@@ -357,8 +357,9 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 # Captcha Settings
 NOCAPTCHA = True
-RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
-RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+if not DEBUG:
+    RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
+    RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
 # Documentation settings
 SWAGGER_SETTINGS = {
