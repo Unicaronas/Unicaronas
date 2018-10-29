@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'rest_framework',
     'rest_framework_filters',
+    'corsheaders',
 
     'django_extensions',
 
@@ -105,6 +106,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'silk.middleware.SilkyMiddleware',
     'nplusone.ext.django.NPlusOneMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -440,3 +442,8 @@ if _GDAL_LIBRARY_PATH:
 _GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH', None)
 if _GEOS_LIBRARY_PATH:
     GEOS_LIBRARY_PATH = _GEOS_LIBRARY_PATH
+
+
+# CORS Settings
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^(\/api\/.*|\/o\/token\/)$'
