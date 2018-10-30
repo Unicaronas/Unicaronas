@@ -100,13 +100,17 @@ class GrammarCorrectorFinder(BaseFinder):
         # Use redis as cache
         cache = RedisFinder()
 
+        request = term.request
+        setattr(term, '_request', None)
+
         # Get the cached results if available
-        cached_result = cache.get_key(term.query)
+        cached_result = cache.get_key(cache.encode(term))
         if cached_result is not None:
             corrected_term = cached_result
         else:
             # If the corrected term is not cached, process it normally
             corrected_term = self.correct_sentence(term.query)
             # and then cache it
-            cache.set_key(term.query, corrected_term)
+            cache.set_key(cache.encode(term), corrected_term)
+        setattr(term, '_request', request)
         return self.perform_transform(term, corrected_term)
