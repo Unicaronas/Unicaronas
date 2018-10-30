@@ -32,15 +32,15 @@ class ThirdPartyQuerySerializer(serializers.Serializer):
         required=True,
         help_text='Destino da carona'
     )
-    price_lte = serializers.IntegerField(
+    price__lte = serializers.IntegerField(
         required=True,
         help_text='Preço máximo da carona'
     )
-    datetime_gte = serializers.DateTimeField(
+    datetime__gte = serializers.DateTimeField(
         required=True,
         help_text='Data e hora mínima para saída da carona'
     )
-    datetime_lte = serializers.DateTimeField(
+    datetime__lte = serializers.DateTimeField(
         required=True,
         help_text='Data e hora máxima para saída da carona'
     )
@@ -56,6 +56,9 @@ class ThirdPartyQuerySerializer(serializers.Serializer):
         return max(timezone.now(), value)
 
     def validate(self, data):
-        if data['datetime_lte'] < data['datetime_gte']:
-            raise serializers.ValidationError("'datetime_gte' deve ser antes que 'datetime_lte'")
+        if data['datetime__lte'] < data['datetime__gte']:
+            raise serializers.ValidationError("'datetime__gte' deve ser antes que 'datetime__lte'")
+        data['datetime_gte'] = data.pop('datetime__gte')
+        data['datetime_lte'] = data.pop('datetime__lte')
+        data['price_lte'] = data.pop('price__lte')
         return data
