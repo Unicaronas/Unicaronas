@@ -4,7 +4,8 @@ from project.utils import import_current_version_module, local_versioned_url_nam
 from search.pipeline import RequestPipeline
 from ....models import Alarm
 
-PointSerializer = import_current_version_module('trips', 'serializers').PointSerializer
+PointSerializer = import_current_version_module(
+    'trips', 'serializers').PointSerializer
 
 
 class AlarmCreateSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,8 +13,19 @@ class AlarmCreateSerializer(serializers.HyperlinkedModelSerializer):
     Base Serializer for the creation of alarms
     """
 
-    origin = serializers.CharField(label='Endereço de origem do alarme', required=True)
-    destination = serializers.CharField(label='Endereço de destino do alarme', required=True)
+    origin = serializers.CharField(
+        label='Endereço de origem do alarme', required=True)
+    destination = serializers.CharField(
+        label='Endereço de destino do alarme', required=True)
+
+    datetime__gte = serializers.DateTimeField(
+        label="Datetime máxima de saída da carona", source="datetime_gte", required=False)
+    datetime__lte = serializers.DateTimeField(
+        label="Datetime máxima de saída da carona", source="datetime_lte", required=False)
+    seats_left__gte = serializers.IntegerField(
+        label='Mínimo número de assentos na carona', source="min_seats", required=False)
+    price__lte = serializers.IntegerField(
+        label='Preço máximo da carona em reais', source="price", required=False)
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -23,14 +35,28 @@ class AlarmCreateSerializer(serializers.HyperlinkedModelSerializer):
     def validate(self, data):
         data = super().validate(data)
 
+        if data.get('seats_left__gte'):
+            data['min_seats'] = data.pop('seats_left__gte')
+
+        if data.get('datetime__lte'):
+            data['datetime_lte'] = data.pop('datetime__lte')
+
+        if data.get('datetime__gte'):
+            data['datetime_gte'] = data.pop('datetime__gte')
+
+        if data.get('price__lte'):
+            data['price'] = data.pop('price__lte')
+
         if data.get('origin'):
-            pipe_origin = RequestPipeline(query_type='origin', request=self.context['request'])
+            pipe_origin = RequestPipeline(
+                query_type='origin', request=self.context['request'])
             result_origin = pipe_origin.search(data['origin'])
             data['origin'] = result_origin.address
             data['origin_point'] = result_origin.point
 
         if data.get('destination'):
-            pipe_destination = RequestPipeline(query_type='destination', request=self.context['request'])
+            pipe_destination = RequestPipeline(
+                query_type='destination', request=self.context['request'])
             result_destination = pipe_destination.search(data['destination'])
             data['destination'] = result_destination.address
             data['destination_point'] = result_destination.point
@@ -39,8 +65,8 @@ class AlarmCreateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Alarm
         fields = [
-            'origin', 'destination', 'origin_radius', 'destination_radius', 'price',
-            'auto_approve', 'datetime_lte', 'datetime_gte', 'min_seats'
+            'origin', 'destination', 'origin_radius', 'destination_radius', 'price__lte',
+            'auto_approve', 'datetime__lte', 'datetime__gte', 'seats_left__gte'
         ]
 
 
@@ -67,20 +93,37 @@ class AlarmListRetrieveSerializer(
         view_name=local_versioned_url_name('api:alarms-detail', __file__, 1)
     )
 
+    datetime__gte = serializers.DateTimeField(
+        label="Datetime máxima de saída da carona",
+        source="datetime_gte",
+        required=False
+    )
+    datetime__lte = serializers.DateTimeField(
+        label="Datetime máxima de saída da carona",
+        source="datetime_lte",
+        required=False
+    )
+    seats_left__gte = serializers.IntegerField(
+        label='Mínimo número de assentos na carona',
+        source="min_seats",
+        required=False
+    )
+    price__lte = serializers.IntegerField(
+        label='Preço máximo da carona em reais',
+        source="price",
+        required=False
+    )
+
     class Meta:
         model = Alarm
         fields = [
             'url', 'origin', 'destination', 'origin_coordinates',
             'destination_coordinates', 'origin_radius', 'destination_radius',
-            'price', 'datetime_lte', 'datetime_gte', 'auto_approve',
-            'min_seats'
+            'price__lte', 'datetime__lte', 'datetime__gte', 'auto_approve',
+            'seats_left__gte'
         ]
         extra_kwargs = {
             'origin': {'required': False},
             'destination': {'required': False},
-            'price': {'required': False},
-            'datetime_lte': {'required': False},
-            'datetime_gte': {'required': False},
             'auto_approve': {'required': False},
-            'min_seats': {'required': False},
         }
