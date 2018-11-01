@@ -1,4 +1,5 @@
-from django.db.models import Count, F, Q
+from django.db.models import F, Q, Sum
+from django.db.models.functions import Coalesce
 from rest_framework import serializers
 from project.mixins import PrefetchMixin, QueryFieldsMixin
 from search.pipeline import RequestPipeline
@@ -24,13 +25,15 @@ class BaseTripCreateUpdateSerializer(serializers.HyperlinkedModelSerializer):
         data = super().validate(data)
 
         if data.get('origin'):
-            pipe_origin = RequestPipeline(query_type='origin', request=self.context['request'])
+            pipe_origin = RequestPipeline(
+                query_type='origin', request=self.context['request'])
             result_origin = pipe_origin.search(data['origin'])
             data['origin'] = result_origin.address
             data['origin_point'] = result_origin.point
 
         if data.get('destination'):
-            pipe_destination = RequestPipeline(query_type='destination', request=self.context['request'])
+            pipe_destination = RequestPipeline(
+                query_type='destination', request=self.context['request'])
             result_destination = pipe_destination.search(data['destination'])
             data['destination'] = result_destination.address
             data['destination_point'] = result_destination.point
@@ -72,10 +75,11 @@ class BaseTripListRetrieveSerializer(
     @classmethod
     def setup_eager_loading(cls, queryset):
         queryset = super().setup_eager_loading(queryset)
-        seats_left = F('max_seats') - Count(
-            'passengers',
-            filter=~Q(passengers__status="denied")
-        )
+        seats_left = F('max_seats') - Coalesce(
+            Sum(
+                'passengers__seats',
+                filter=~Q(passengers__status="denied")
+            ), 0)
         queryset = queryset.annotate(seats_left=seats_left)
         return queryset
 

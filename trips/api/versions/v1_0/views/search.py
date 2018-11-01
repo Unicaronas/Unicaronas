@@ -11,7 +11,7 @@ from ..inspectors import DjangoFilterDescriptionInspector
 from ..filters import TripFilterSet, LocalizedOrderingFilter
 from ..serializers import SearchTripSerializer, FuturePassengerActionsSerializer
 from .....models import Trip
-from .....exceptions import TripFullError, PassengerBookedError
+from .....exceptions import TripFullError, PassengerBookedError, NotEnoughSeatsError
 
 
 class SearchTripViewset(
@@ -166,19 +166,24 @@ class SearchTripViewset(
         | Ação          | Efeito                        |
         | ------------- |-------------------------------|
         | `book`     |Usuário entra para a fila de passageiros na carona|
+
+        Também recebe um parâmetro `seats` com o número de assentos que devem ser reservados
         """
         return super().partial_update(*args, **kwargs)
 
     def perform_update(self, serializer):
         action = serializer.validated_data['action']
+        seats = serializer.validated_data.get('seats', 1)
 
         trip = self.get_object()
         action_map = {
             'book': trip.book_user,
         }
         try:
-            action_map[action](self.request.user)
+            action_map[action](self.request.user, seats)
         except TripFullError:
             raise ValidationError({'detail': 'Carona já está cheia'}, code=status.HTTP_400_BAD_REQUEST)
+        except NotEnoughSeatsError:
+            raise ValidationError({'detail': 'Não há vagas suficientes'}, code=status.HTTP_400_BAD_REQUEST)
         except PassengerBookedError:
             raise ValidationError({'detail': 'Usuário já é passageiro da carona'}, code=status.HTTP_400_BAD_REQUEST)

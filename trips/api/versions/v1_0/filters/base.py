@@ -1,4 +1,5 @@
-from django.db.models import Count, F, Q
+from django.db.models import F, Q, Sum
+from django.db.models.functions import Coalesce
 from django.contrib.gis.measure import D
 from rest_framework_filters import FilterSet, filters
 from rest_framework import filters as ofilters
@@ -7,15 +8,20 @@ from .....models import Trip
 
 
 class TripFilterSet(FilterSet):
-    seats_left__gte = filters.NumberFilter(label="Assentos restantes ou mais", method='get_seats_left')
-    origin_radius = filters.NumberFilter(label="Raio de pesquisa na origem em km", method='get_radius')
-    destination_radius = filters.NumberFilter(label="Raio de pesquisa no destino em km", method='get_radius')
-    origin = filters.CharFilter(label="Endereço de origem", method='get_origin')
-    destination = filters.CharFilter(label="Endereço de destino", method='get_destination')
+    seats_left__gte = filters.NumberFilter(
+        label="Assentos restantes ou mais", method='get_seats_left')
+    origin_radius = filters.NumberFilter(
+        label="Raio de pesquisa na origem em km", method='get_radius')
+    destination_radius = filters.NumberFilter(
+        label="Raio de pesquisa no destino em km", method='get_radius')
+    origin = filters.CharFilter(
+        label="Endereço de origem", method='get_origin')
+    destination = filters.CharFilter(
+        label="Endereço de destino", method='get_destination')
 
     def get_seats_left(self, qs, name, value):
-        seats_left = F('max_seats') - Count('passengers',
-                                            filter=~Q(passengers__status="denied"))
+        seats_left = F('max_seats') - Coalesce(Sum('passengers__seats',
+                                                   filter=~Q(passengers__status="denied")), 0)
         qs = qs.annotate(s_left=seats_left)
         val = value
         expr = name.split('__')[1] if len(name.split('__')) > 1 else 'exact'

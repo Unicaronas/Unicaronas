@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from django.core import validators
 from oauth2_provider.settings import oauth2_settings
 from project.utils import import_current_version_module
-from .exceptions import PassengerBookedError, TripFullError, PassengerNotBookedError, UserNotDriverError, PassengerApprovedError, PassengerDeniedError, PassengerPendingError
+from .exceptions import PassengerBookedError, TripFullError, PassengerNotBookedError, UserNotDriverError, PassengerApprovedError, PassengerDeniedError, PassengerPendingError, NotEnoughSeatsError
 from .utils import user_is_driver
 # Create your models here.
 
@@ -53,11 +55,17 @@ class Trip(models.Model):
         """Quantos assentos restam na carona
         Apenas passageiros em espera e confirmados são considerados
         """
-        return max(0, self.max_seats - self.passengers.exclude(status="denied").count())
+        seats_taken = self.passengers.exclude(
+            status="denied"
+        ).aggregate(seats_taken=Coalesce(Sum('seats'), 0))['seats_taken']
+        return max(0, self.max_seats - seats_taken)
 
     @property
     def is_full(self):
         return self.get_seats_left() == 0
+
+    def has_n_seats(self, seats):
+        return self.get_seats_left() >= seats
 
     def check_is_passenger(self, user, raise_on_error=True):
         """Checks whether the user is a passenger. Raises error if not"""
@@ -73,15 +81,18 @@ class Trip(models.Model):
             raise PassengerBookedError("Usuário é passageiro nessa carona")
         return passenger
 
-    def book_user(self, user):
+    def book_user(self, user, seats):
         """to-be Passenger books the trip"""
         if self.is_full:
             raise TripFullError("Carona cheia")
+        if not self.has_n_seats(seats):
+            raise NotEnoughSeatsError("Sem assentos suficientes")
         self.check_is_not_passenger(user)
 
         passenger = Passenger(
             user=user,
-            trip=self
+            trip=self,
+            seats=seats
         )
         passenger.save()
         if self.auto_approve:
@@ -169,6 +180,10 @@ class Passenger(models.Model):
     book_time = models.DateTimeField(
         "Hora que o passageiro fez a reserva",
         auto_now_add=True
+    )
+    seats = models.PositiveSmallIntegerField(
+        "Número de assentos reservados",
+        default=1
     )
 
     def approve(self):

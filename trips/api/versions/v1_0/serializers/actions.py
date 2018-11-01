@@ -16,6 +16,12 @@ class FuturePassengerActionsSerializer(serializers.Serializer):
         choices=(('book', 'Entrar na carona'),),
         required=True
     )
+    seats = serializers.IntegerField(
+        label='Número de assentos a reservar',
+        required=False,
+        min_value=1,
+        max_value=10
+    )
 
 
 class PassengerActionsSerializer(serializers.Serializer):

@@ -14,6 +14,10 @@ class TripFullError(BaseTripException):
     """The trip is already full"""
 
 
+class NotEnoughSeatsError(BaseTripException):
+    """Not enough seats on a trip"""
+
+
 class PassengerBookedError(BasePassengerException):
     """The passeger has alrady booked for this specific trip
     includes approved, denied and forfeit passengers
