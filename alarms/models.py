@@ -38,7 +38,7 @@ class Alarm(models.Model):
         default=5,
         validators=[validators.MaxValueValidator(20), validators.MinValueValidator(0.05)],
     )
-    price = models.PositiveSmallIntegerField("Preço da carona em reais", null=True)
+    price = models.PositiveSmallIntegerField("Preço máximo da carona em reais", null=True)
     auto_approve = models.NullBooleanField("Aprovação automática de passageiros", null=True)
     datetime_lte = models.DateTimeField("Datetime máxima de saída da carona", null=True)
     datetime_gte = models.DateTimeField("Datetime mínima de saída da carona", null=True)

@@ -50,7 +50,7 @@ class ThirdPartyTripSearchView(APIView):
         query_serializer.is_valid(raise_exception=True)
         query_data = query_serializer.validated_data
         query_data['request'] = request
-        sources = re.split(', ', query_data.pop('sources', 'all'))
+        sources = re.split(' ', query_data.pop('sources', 'all'))
         pipe = Pipeline(sources)
         results = pipe.search(**query_data)
         return Response(data=results.validated_data)

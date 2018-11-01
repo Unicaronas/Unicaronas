@@ -23,6 +23,7 @@ class SynonymFinder(BaseFinder):
             ('unicamp', POSTO_IPIRANGA),
             ('unichamps', POSTO_IPIRANGA),
             ('universidade estadual de campinas', POSTO_IPIRANGA),
+            ('unicamp, campinas', POSTO_IPIRANGA),
 
             ('posto ipiranga, unicamp', POSTO_IPIRANGA),
             ('posto ipiranga unicamp', POSTO_IPIRANGA),
