@@ -35,7 +35,7 @@ class BlaBlaCarConnection(BaseConnection):
             'params': params
         }
 
-    def normalize_response(self, response):
+    def _normalize_response(self, response):
         trips = response['trips']
         results = []
 
