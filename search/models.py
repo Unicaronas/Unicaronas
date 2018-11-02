@@ -22,7 +22,7 @@ class DBResult(models.Model):
     """
     query = models.CharField(
         "Pesquisa original",
-        max_length=100
+        max_length=500
     )
     address = models.TextField(
         "Enderço completo da pesquisa",
