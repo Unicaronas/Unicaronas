@@ -259,7 +259,7 @@ EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
 
 # Debug Toolbar
-SHOW_TOOLBAR_CALLBACK = eval(os.environ.get('SHOW_TOOLBAR_CALLBACK', DEBUG))
+SHOW_TOOLBAR_CALLBACK = eval(os.environ.get('SHOW_TOOLBAR_CALLBACK', 'DEBUG'))
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda r: SHOW_TOOLBAR_CALLBACK and r.user.is_superuser  # disables it
 }
