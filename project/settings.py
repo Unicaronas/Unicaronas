@@ -162,11 +162,13 @@ class HeaderHack(object):
 
 
 # Since the site is behind Cloudflare, manually set it to use https
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', HeaderHack()) if not DEBUG else None
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-os.environ['wsgi.url_scheme'] = 'https'
-os.environ['HTTPS'] = "on"
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', HeaderHack()) if not DEBUG else None
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    os.environ['wsgi.url_scheme'] = 'https'
+    os.environ['HTTPS'] = "on"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
