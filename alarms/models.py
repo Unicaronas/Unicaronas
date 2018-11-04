@@ -60,7 +60,7 @@ class Alarm(models.Model):
         # and then filter using expensive fields
         alarms = cls.objects.exclude(
             # Alarms that already ended should not be queried
-            Q(datetime_lte__isnull=False) & Q(datetime_lte__gte=timezone.now())
+            Q(datetime_lte__isnull=False) & Q(datetime_lte__lte=timezone.now())
         ).filter(
             # If the alarm defined auto_approve, filter it
             Q(auto_approve__isnull=True) | Q(auto_approve=trip.auto_approve)
