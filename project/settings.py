@@ -154,16 +154,9 @@ DATABASES = {
 }
 
 
-class HeaderHack(object):
-    """Hack that makes django use https by default"""
-
-    def __eq__(self, other):
-        return True
-
-
 # Since the site is behind Cloudflare, manually set it to use https
-if not DEBUG:
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', HeaderHack()) if not DEBUG else None
+if eval(os.environ.get('USE_HTTPS', 'False')):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
