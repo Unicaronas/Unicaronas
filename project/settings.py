@@ -153,6 +153,9 @@ DATABASES = {
     }
 }
 
+# Since the site is behind Cloudflare, manually set it to use https
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if not DEBUG else None
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
