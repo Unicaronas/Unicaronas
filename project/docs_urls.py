@@ -31,6 +31,7 @@ Por isso, disponibilizamos uma Sandbox da API para você usar. Nada que você fi
 - Não é necessário confirmar o email em contas criadas
 - O login social foi desabilitado
 - Pesquisas por caronas usando um app só retornam caronas que foram criadas usando esse app
+- Pesquisas por caronas no Facebook não retornarão nenhum resultado. Os resultados são quase idênticos aos retornados pelo BlaBlaCar
 - Algumas features podem não estar disponíveis imediatamente após serem adicionadas ao servidor principal
 
 Você pode acessar a sandbox em [https://sandbox.unicaronas.com](https://sandbox.unicaronas.com). **Lembre-se de fazer todos os pedidos para esse domínio.**
