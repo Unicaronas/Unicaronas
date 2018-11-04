@@ -19,6 +19,22 @@ Criamos o Unicaronas pois percebemos que pegar caronas é uma parte essencial da
 
 Dessa forma, para suprir a demanda de um serviço de caronas seguro e gratuito para universitários, nasceu o Unicaronas!
 
+# API Sandbox
+Durante o desenvolvimento do seu app, será muito útil fazer chamadas à API para testar se tudo está funcionando. O problema de fazer isso no servidor principal do Unicaronas é que tudo que você fizer afetará o serviço usado por todos os usuários. Nós dois não queremos isso, né?
+
+Por isso, disponibilizamos uma Sandbox da API para você usar. Nada que você fizer nela afetará o serviço principal do Unicaronas e todo o seu banco de dados é apagado periodicamente. As principais características da Sandbox são:
+- **Não há validação de email acadêmico**. Você pode colocar qualquer string que se pareça com um email e seja único
+- **Não há validação de identidade acadêmica**. Você pode usar qualquer string que seja única. (Esse campo será usado para fazer login na conta)
+- **Todo dia de manhã as caronas e alarmes são apagados**
+- **Toda segunda de manhã o banco de dados inteiro é apagado**. Isso inclui os seus usuários e apps
+- Nenhum email é enviado pela Sandbox
+- Não é necessário confirmar o email em contas criadas
+- O login social foi desabilitado
+- Pesquisas por caronas usando um app só retornam caronas que foram criadas usando esse app
+- Algumas features podem não estar disponíveis imediatamente após serem adicionadas ao servidor principal
+
+Você pode acessar a sandbox em [https://sandbox.unicaronas.com](https://sandbox.unicaronas.com). **Lembre-se de fazer todos os pedidos para esse domínio.**
+
 # Antes de começar
 Para começar a usar e fazer chamadas para a API, é necessário que você [crie sua conta](/accounts/signup/) em nosso serviço e depois [crie um aplicativo](/applications/create/).
 > **Obs**: Apenas estudantes universitários serão capazes de criar uma conta
