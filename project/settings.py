@@ -157,6 +157,8 @@ DATABASES = {
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if not DEBUG else None
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+os.environ['wsgi.url_scheme'] = 'https'
+os.environ['HTTPS'] = "on"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
