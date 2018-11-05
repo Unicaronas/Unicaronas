@@ -26,7 +26,8 @@ def geocode_address(address):
     payload = {
         'address': address,
         'key': api_key,
-        'region': 'br'
+        'region': 'br',
+        'language': 'pt-BR'
     }
     r = requests.get(url, params=payload)
     r.raise_for_status()
