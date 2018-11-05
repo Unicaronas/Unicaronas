@@ -51,6 +51,7 @@ class PassengerTripListRetrieveSerializer(BaseTripListRetrieveSerializer):
     driver = DriverDetailedInfo(help_text="Dados completos do motorista. Disponível se o passageiro **tiver** sido aprovado na carona.", source='user', required=False)
     driver_basic = DriverBasic2Info(help_text="Dados básicos do motorista. Disponível se o passageiro **não tiver** sido aprovado na carona.", source='user', required=False)
     status = serializers.SerializerMethodField(help_text="Status do passageiro na carona")
+    seats = serializers.SerializerMethodField(help_text="Número de assentos reservados")
     approved_passengers = BasicPassengerSerializer(help_text="Passageiros aprovados na carona. Disponível se o passageiro **tiver** sido aprovado na carona.", many=True, required=False)
 
     @swagger_serializer_method(serializer_or_field=serializers.ChoiceField(choices=STATUS_CHOICES))
@@ -58,6 +59,12 @@ class PassengerTripListRetrieveSerializer(BaseTripListRetrieveSerializer):
         user = self.context['request'].user
         passenger = obj.passengers.filter(user=user).first()
         return passenger.status if passenger is not None else None
+
+    @swagger_serializer_method(serializer_or_field=serializers.IntegerField())
+    def get_seats(self, obj):
+        user = self.context['request'].user
+        passenger = obj.passengers.filter(user=user).first()
+        return passenger.seats if passenger is not None else None
 
     @classmethod
     def setup_eager_loading(cls, queryset):
@@ -83,7 +90,7 @@ class PassengerTripListRetrieveSerializer(BaseTripListRetrieveSerializer):
 
     class Meta(BaseTripListRetrieveSerializer.Meta):
         fields = BaseTripListRetrieveSerializer.Meta.fields + \
-            ['url', 'status', 'driver', 'driver_basic', 'approved_passengers']
+            ['url', 'status', 'seats', 'driver', 'driver_basic', 'approved_passengers']
         select_related_fields = ['user__driver', 'user__profile', 'user__student']
 
 
