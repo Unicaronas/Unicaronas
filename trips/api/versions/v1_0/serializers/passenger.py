@@ -115,10 +115,10 @@ class PassengerSerializer(
     )
     trip = serializers.HyperlinkedRelatedField(
         label="Detalhes da carona",
-        lookup_url_kwarg='trip_id',
+        lookup_url_kwarg='id',
         read_only=True,
         view_name=local_versioned_url_name(
-            'api:driver-trips-passengers-list', __file__, 2)
+            'api:driver-trips-detail', __file__, 2)
     )
     first_name = serializers.CharField(
         source='user.first_name',
