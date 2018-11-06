@@ -1,5 +1,5 @@
 from django.utils import timezone
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, Http404
 from rest_framework import viewsets, status, mixins
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -260,17 +260,17 @@ class DriverPassengerActionsViewset(
             # Get app and passenger user from the scoped user id
             app2, passenger = get_application_model().recover_scoped_user_id(passenger_user_id, True)
         except InvalidScopedUserId:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404
         if app1.id != app2.id:
             # Assert that the app from the scoped user id is the one from the token
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404
         trip = Trip.objects.filter(id=trip_id, user=self.request.user).first()
         if trip is None:
             # Assert that the trip from the path parameter exists and belongs to the token owner
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404
         if trip.check_is_passenger(passenger, raise_on_error=False) is None:
             # Assert that the passenger belongs to the trip
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404
         user = get_object_or_404(qs, user=passenger)
         return user
 
