@@ -228,7 +228,7 @@ class DriverPassengerActionsViewset(
     Ações que o motorista pode executar nos passageiros de suas caronas
     """
     lookup_url_kwarg = 'passenger_user_id'
-    queryset = Passenger.objects.all()
+    queryset = Trip.objects.all()
     serializer_class = PassengerSerializer
     swagger_tags = ['Motorista']
     permission_classes = [TokenMatchesOASRequirements, UserIsDriver]
@@ -239,10 +239,14 @@ class DriverPassengerActionsViewset(
     }
 
     def get_queryset(self):
-        # Só pode editar caronas que ainda não aconteceram
-        if self.request.method != 'GET' and Trip.objects.get(pk=self.kwargs['trip_id']).datetime <= timezone.now():
+        qs = super().get_queryset()
+        # Só permitir caronas em que o usuário é motorista
+        qs = qs.filter(user=self.request.user)
+        trip = qs.filter(id=self.kwargs['trip_id']).first()
+        # Só permitir editar caronas futuras
+        if not trip or self.request.method != 'GET' and trip.datetime < timezone.now():
             return Passenger.objects.none()
-        return super().get_queryset().filter(trip=self.kwargs['trip_id'])
+        return trip.passengers.all()
 
     def get_serializer_class(self):
         if self.request.method == 'PATCH':
