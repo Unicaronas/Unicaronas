@@ -1,12 +1,13 @@
 from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.exceptions import ValidationError
+from rest_framework_filters.backends import RestFrameworkFilterBackend
 from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from project.mixins import PrefetchQuerysetModelMixin, PatchModelMixin
 from ..inspectors import DjangoFilterDescriptionInspector
-from ..filters import LocalizedOrderingFilter
+from ..filters import LocalizedOrderingFilter, BasicTripFilterSet
 from ..serializers import PassengerTripListRetrieveSerializer, PassengerActionsSerializer
 from .....models import Trip, Passenger
 from .....exceptions import PassengerDeniedError, PassengerNotBookedError
@@ -26,10 +27,12 @@ class PassengerTripViewset(
     limit = 10
     filter_backends = (
         LocalizedOrderingFilter,
+        RestFrameworkFilterBackend
     )
     ordering_fields = [
         'datetime', 'price'
     ]
+    filter_class = BasicTripFilterSet
     ordering = ['-datetime', 'price']
     serializer_class = PassengerTripListRetrieveSerializer
     permission_classes = [TokenMatchesOASRequirements]

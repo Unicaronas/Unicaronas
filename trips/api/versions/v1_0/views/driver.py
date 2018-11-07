@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, Http404
 from rest_framework import viewsets, status, mixins
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework_filters.backends import RestFrameworkFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
@@ -12,7 +13,7 @@ from oauth.exceptions import InvalidScopedUserId
 from user_data.permissions import UserIsDriver
 from alarms.tasks import dispatch_alarms
 from ..inspectors import DjangoFilterDescriptionInspector
-from ..filters import LocalizedOrderingFilter
+from ..filters import LocalizedOrderingFilter, BasicTripFilterSet
 from ..serializers import DriverTripCreateUpdateSerializer, DriverTripListRetrieveSerializer, PassengerSerializer, DriverActionsSerializer
 from .....models import Trip, Passenger
 from .....exceptions import PassengerPendingError, PassengerApprovedError, PassengerDeniedError, TripFullError
@@ -32,7 +33,9 @@ class DriverTripViewset(
     limit = 10
     filter_backends = (
         LocalizedOrderingFilter,
+        RestFrameworkFilterBackend
     )
+    filter_class = BasicTripFilterSet
     ordering_fields = [
         'price', 'datetime'
     ]
