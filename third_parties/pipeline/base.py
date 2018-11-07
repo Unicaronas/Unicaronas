@@ -1,6 +1,6 @@
 from datetime import datetime
 from search.term import Term
-from search.finder import TermPreparationFinder, SynonymFinder, GrammarCorrectorFinder
+from search.finder import TermPreparationFinder, GeographicSynonymFinder, GrammarCorrectorFinder
 from ..search.base import BaseThirdPartySearch
 from ..query import SearchQuery
 from ..result import Result
@@ -26,7 +26,7 @@ class BasePipeline(object):
 
         preparation = TermPreparationFinder()
         grammar = GrammarCorrectorFinder()
-        synonym = SynonymFinder()
+        synonym = GeographicSynonymFinder()
 
         origin = Term(origin, 'both', request)
         destination = Term(destination, 'both', request)
