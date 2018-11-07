@@ -16,8 +16,8 @@ class RedisFinder(BaseCacheFinder):
         self.timeout = timeout
 
     def config_cache_engine(self):
+        global global_redis_pool
         if global_redis_pool is None:
-            global global_redis_pool
             # Only open one connection per worker/server
             kwargs = {
                 'max_connections': 10,
