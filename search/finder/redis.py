@@ -4,8 +4,8 @@ import redis
 from .base import BaseCacheFinder
 
 
-# Global redis connection that is kept open forever
-global_redis = None
+# Global redis pool that is kept open forever
+global_redis_pool = None
 
 
 class RedisFinder(BaseCacheFinder):
@@ -16,16 +16,15 @@ class RedisFinder(BaseCacheFinder):
         self.timeout = timeout
 
     def config_cache_engine(self):
-        global global_redis
-        if global_redis is None:
+        if global_redis_pool is None:
+            global global_redis_pool
             # Only open one connection per worker/server
             kwargs = {
                 'max_connections': 10,
                 'timeout': 5
             }
-            pool = redis.BlockingConnectionPool.from_url(self.url, **kwargs)
-            global_redis = redis.StrictRedis(connection_pool=pool)
-        self._cache_engine = global_redis
+            global_redis_pool = redis.BlockingConnectionPool.from_url(self.url, **kwargs)
+        self._cache_engine = redis.StrictRedis(connection_pool=global_redis_pool)
 
     def extend_key(self, key):
         self.cache_engine.expire(key, self.timeout)
