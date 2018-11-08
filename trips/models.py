@@ -107,8 +107,6 @@ class Trip(models.Model):
         Driver approves the passenger (or is automatically approved)
         Also allows driver to approve denied passengers
         """
-        if self.is_full:
-            raise TripFullError('Carona cheia')
         passenger = self.check_is_passenger(user)
         passenger.approve()
         return passenger
