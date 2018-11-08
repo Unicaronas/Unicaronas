@@ -21,7 +21,11 @@ from .....exceptions import PassengerPendingError, PassengerApprovedError, Passe
 
 class DriverTripViewset(
         PrefetchQuerysetModelMixin,
-        viewsets.ModelViewSet):
+        mixins.RetrieveModelMixin,
+        mixins.ListModelMixin,
+        mixins.CreateModelMixin,
+        mixins.DestroyModelMixin,
+        viewsets.GenericViewSet):
     """Endpoint dos motoristas
 
     Permite a criação de caronas, listagem de caronas que criou e edição delas
@@ -158,51 +162,6 @@ class DriverTripViewset(
         dispatch_alarms.delay(instance.id)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    @swagger_auto_schema(
-        responses={
-            200: DriverTripListRetrieveSerializer,
-            404: 'Carona não existe, já aconteceu, ou você não tem permissão para acessá-la',
-            400: 'Dados do pedido contém erros',
-        },
-        security=[
-            {'OAuth2': ['trips:driver:write']}
-        ]
-    )
-    def update(self, request, *args, **kwargs):
-        """Atualizar carona
-
-        Permite a alteração de dados de caronas que **ainda não aconteceram**. Caso a carona já tenha acontecido, a resposta desse endpoint será um erro *404*.
-        """
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        serializer = DriverTripListRetrieveSerializer(instance=instance, context=self.get_serializer_context())
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
-
-    @swagger_auto_schema(
-        responses={
-            200: DriverTripListRetrieveSerializer,
-            400: 'Dados do pedido contém erros',
-            404: 'Carona não existe, já aconteceu, ou você não tem permissão para acessá-la'
-        },
-        security=[
-            {'OAuth2': ['trips:driver:write']}
-        ]
-    )
-    def partial_update(self, *args, **kwargs):
-        """Atualizar parcialmente carona
-
-        Permite a alteração de dados de caronas que **ainda não aconteceram**. Caso a carona já tenha acontecido, a resposta desse endpoint será um erro *404*.
-        """
-        return super().partial_update(*args, **kwargs)
 
     @swagger_auto_schema(
         responses={
