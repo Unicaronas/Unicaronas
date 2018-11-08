@@ -24,9 +24,9 @@ class AlarmViewset(
         LocalizedOrderingFilter,
     )
     ordering_fields = [
-        'datetime__gte', 'datetime__lte'
+        'datetime_gte', 'datetime_lte'
     ]
-    ordering = ['datetime__gte']
+    ordering = ['datetime_gte']
     permission_classes = [TokenMatchesOASRequirements]
     required_alternate_scopes = {
         "GET": [["alarms:read"]],
