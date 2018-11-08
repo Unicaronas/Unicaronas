@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from project.mixins import PrefetchQuerysetModelMixin
+from project.filters import LocalizedOrderingFilter
 from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
 from .serializers import AlarmCreateSerializer, AlarmListRetrieveSerializer
 from ....models import Alarm
@@ -13,12 +14,19 @@ class AlarmViewset(
         PrefetchQuerysetModelMixin,
         viewsets.ModelViewSet):
 
+    swagger_tags = ['Alarmes']
     lookup_field = 'id'
     serializer_class = AlarmCreateSerializer
     queryset = Alarm.objects.all()
     max_limit = 50
     limit = 10
-    swagger_tags = ['Alarmes']
+    filter_backends = (
+        LocalizedOrderingFilter,
+    )
+    ordering_fields = [
+        'datetime__gte', 'datetime__lte'
+    ]
+    ordering = ['datetime__gte']
     permission_classes = [TokenMatchesOASRequirements]
     required_alternate_scopes = {
         "GET": [["alarms:read"]],

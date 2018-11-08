@@ -1,11 +1,9 @@
 from rest_framework import serializers
 from project.mixins import PrefetchMixin, QueryFieldsMixin
-from project.utils import import_current_version_module, local_versioned_url_name
+from project.utils import local_versioned_url_name
+from project.serializers import PointSerializer
 from search.pipeline import RequestPipeline
 from ....models import Alarm
-
-PointSerializer = import_current_version_module(
-    'trips', 'serializers').PointSerializer
 
 
 class AlarmCreateSerializer(serializers.HyperlinkedModelSerializer):

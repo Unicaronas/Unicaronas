@@ -7,8 +7,9 @@ from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRe
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from project.mixins import PrefetchQuerysetModelMixin, PatchModelMixin
-from ..inspectors import DjangoFilterDescriptionInspector
-from ..filters import TripFilterSet, LocalizedOrderingFilter
+from project.inspectors import DjangoFilterDescriptionInspector
+from project.filters import LocalizedOrderingFilter
+from ..filters import TripFilterSet
 from ..serializers import SearchTripSerializer, FuturePassengerActionsSerializer
 from .....models import Trip
 from .....exceptions import TripFullError, PassengerBookedError, NotEnoughSeatsError

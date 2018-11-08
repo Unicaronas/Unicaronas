@@ -1,7 +1,7 @@
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos.error import GEOSException
 from rest_framework import serializers
-from project.mixins import QueryFieldsMixin
+from ..mixins import QueryFieldsMixin
 
 
 class PointSerializer(

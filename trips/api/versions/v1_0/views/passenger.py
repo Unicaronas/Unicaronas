@@ -5,9 +5,10 @@ from rest_framework_filters.backends import RestFrameworkFilterBackend
 from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from project.filters import LocalizedOrderingFilter
 from project.mixins import PrefetchQuerysetModelMixin, PatchModelMixin
-from ..inspectors import DjangoFilterDescriptionInspector
-from ..filters import LocalizedOrderingFilter, BasicTripFilterSet
+from project.inspectors import DjangoFilterDescriptionInspector
+from ..filters import BasicTripFilterSet
 from ..serializers import PassengerTripListRetrieveSerializer, PassengerActionsSerializer
 from .....models import Trip, Passenger
 from .....exceptions import PassengerDeniedError, PassengerNotBookedError

@@ -8,12 +8,13 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from oauth2_provider.contrib.rest_framework.permissions import TokenMatchesOASRequirements
 from project.mixins import PrefetchQuerysetModelMixin, PatchModelMixin
+from project.inspectors import DjangoFilterDescriptionInspector
+from project.filters import LocalizedOrderingFilter
 from oauth2_provider.models import get_application_model
 from oauth.exceptions import InvalidScopedUserId
 from user_data.permissions import UserIsDriver
 from alarms.tasks import dispatch_alarms
-from ..inspectors import DjangoFilterDescriptionInspector
-from ..filters import LocalizedOrderingFilter, BasicTripFilterSet
+from ..filters import BasicTripFilterSet
 from ..serializers import DriverTripCreateUpdateSerializer, DriverTripListRetrieveSerializer, PassengerSerializer, DriverActionsSerializer
 from .....models import Trip, Passenger
 from .....exceptions import PassengerPendingError, PassengerApprovedError, PassengerDeniedError, TripFullError

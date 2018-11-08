@@ -3,7 +3,7 @@ from django.db.models.functions import Coalesce
 from rest_framework import serializers
 from project.mixins import PrefetchMixin, QueryFieldsMixin
 from search.pipeline import RequestPipeline
-from .base import PointSerializer
+from project.serializers import PointSerializer
 from .....models import Trip
 
 
