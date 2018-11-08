@@ -117,7 +117,7 @@ class AlarmListRetrieveSerializer(
     class Meta:
         model = Alarm
         fields = [
-            'url', 'origin', 'destination', 'origin_coordinates',
+            'url', 'id', 'origin', 'destination', 'origin_coordinates',
             'destination_coordinates', 'origin_radius', 'destination_radius',
             'price__lte', 'datetime__lte', 'datetime__gte', 'auto_approve',
             'seats_left__gte'
