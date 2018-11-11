@@ -18,6 +18,10 @@ class BasicPassengerSerializer(
     Passenger serializer for passengers
     Used when displaying information about passengers to other passengers on a trip
     """
+    user_id = ScopedUserIDField(
+        source='user',
+        label='ID do passageiro'
+    )
     first_name = serializers.CharField(
         source='user.first_name',
         required=False
@@ -35,7 +39,7 @@ class BasicPassengerSerializer(
 
     class Meta:
         model = Passenger
-        fields = ['first_name', 'profile', 'student', 'seats']
+        fields = ['user_id', 'first_name', 'profile', 'student', 'seats']
         select_related_fields = ['user', 'user__profile', 'user__student']
 
 
