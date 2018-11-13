@@ -37,7 +37,7 @@
             </div>
             <div class="column eight wide left aligned">
 
-                <form class="login ui form" method="POST" action="{% url 'account_login' %}">
+                <form class="login ui form" method="POST">
                     {% csrf_token %}
                     {{ form.as_p }}
                     {% if redirect_field_value %}
@@ -65,9 +65,36 @@
         form.attr('action', form.attr('action') + window.location.search);
     }
 
-    $("form").each(function(i, form) {
-        add_search_query_form($(form));
-    })
+        // $("form").each(function(i, form) {
+        //     add_search_query_form($(form));
+        // })
+
+
+    // Deals with a bug in which firefox injects the url query two times
+    // Force clean url search
+    window.history.replaceState('', '', window.location.search.slice(window.location.search.slice(1).indexOf('?') + 1))
+
+    function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    };
+
+    // Searches for the 'next' field and updates it
+    var next = document.getElementsByName('next')
+    if (next) {
+        next = next[0]
+        next.value = getUrlParameter('next')
+    }
 
 </script>
 {% endblock %}

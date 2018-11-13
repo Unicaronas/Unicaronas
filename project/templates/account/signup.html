@@ -47,7 +47,7 @@
                 {% endfor %}
                 {% endfor %}
                 {% endif %}
-                <form class="signup ui form" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                <form class="signup ui form" id="signup_form" method="post">
                     {% csrf_token %}
                     {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
@@ -229,9 +229,33 @@
         form.attr('action', form.attr('action') + window.location.search);
     }
 
-    $("form").each(function(i, form) {
-        add_search_query_form($(form));
-    })
+    // $("form").each(function(i, form) {
+    //     add_search_query_form($(form));
+    // })
+
+    window.history.replaceState('', '', window.location.search.slice(window.location.search.slice(1).indexOf('?') + 1))
+
+    function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    };
+
+    // Searches for the 'next' field and updates it
+    var next = document.getElementsByName('next')
+    if (next) {
+        next = next[0]
+        next.value = getUrlParameter('next')
+    }
 
 
     $("#id_gender").dropdown();
