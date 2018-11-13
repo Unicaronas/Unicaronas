@@ -435,7 +435,7 @@ WATCHMAN_ENABLE_PAID_CHECKS = not DEBUG
 # Scout settings
 SCOUT_MONITOR = not DEBUG
 SCOUT_KEY = os.environ.get('SCOUT_KEY')
-SCOUT_NAME = "Unicaronas"
+SCOUT_NAME = os.environ.get('SCOUT_NAME', 'Unicaronas')
 
 
 # Email variables

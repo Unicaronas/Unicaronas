@@ -1,4 +1,5 @@
 import os
+import scout_apm.celery
 from celery import Celery
 from .read_env import read_env
 
@@ -24,3 +25,6 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
+
+
+scout_apm.celery.install()
