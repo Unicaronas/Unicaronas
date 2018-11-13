@@ -251,9 +251,8 @@
     };
 
     // Searches for the 'next' field and updates it
-    var next = document.getElementsByName('next')
+    var next = $("[name='next']")[0]
     if (next) {
-        next = next[0]
         next.value = getUrlParameter('next')
     }
 
