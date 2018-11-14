@@ -84,10 +84,10 @@ class Alarm(models.Model):
             destination_distance=Distance('destination_point', trip.destination_point)
         ).filter(
             # Filter origin
-            origin_distance__lte=F('origin_radius')
+            origin_distance__lte=F('origin_radius') * 1000
         ).filter(
             # Filter destination
-            destination_distance__lte=F('destination_radius')
+            destination_distance__lte=F('destination_radius') * 1000
         )
         alarm_webhooks.MultipleAlarmsWebhook(alarms, trip).send()
         # Clear selected alarms
