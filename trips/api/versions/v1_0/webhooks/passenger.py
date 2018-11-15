@@ -1,4 +1,3 @@
-from django.utils import timezone
 from django.shortcuts import reverse
 from django.conf import settings
 from oauth2_provider.models import get_access_token_model, get_application_model
@@ -20,8 +19,7 @@ class BasePassengerWebhook(MultiplePayloadsWebhook):
 
     def get_valid_apps(self, user):
         access_tokens = get_access_token_model().objects.filter(
-            user=user,
-            expires__gt=timezone.now()
+            user=user
         )
         valid_access_tokens = [token for token in access_tokens if token.allow_scopes(self.permissions)]
 
