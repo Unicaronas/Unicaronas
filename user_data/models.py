@@ -46,6 +46,7 @@ UNIVERSITY_CHOICES = (
     ('unicamp', 'Unicamp'),
     ('pucc', 'PUC-Campinas'),
     ('usp', 'USP'),
+    ('ifsp', 'IFSP')
 )
 
 UNIVERSITY_EMAIL_VALIDATORS = {
@@ -59,6 +60,10 @@ UNIVERSITY_EMAIL_VALIDATORS = {
     ),
     'usp': UniRegexValidator(
         r'^([a-zA-Z\.-_]+@([a-zA-Z-_]+\.)*usp\.br)$',
+        "Email inválido para {0}"
+    ),
+    'ifsp': UniRegexValidator(
+        r'^[a-zA-Z\.-_]+@ifsp\.edu\.br$',
         "Email inválido para {0}"
     )
 }
@@ -74,6 +79,10 @@ UNIVERSITY_ID_VALIDATORS = {
     ),
     'usp': UniRegexValidator(
         r'^\d{4,10}$',
+        "RA inválido para {0}"
+    ),
+    'ifsp': UniRegexValidator(
+        r'^[a-zA-Z]{2}\d{6}$',
         "RA inválido para {0}"
     )
 }
