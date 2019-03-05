@@ -1,6 +1,7 @@
 from datetime import datetime
 from django import forms
 from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
 from .models import Profile, Student, Driver, Preferences
 from .models import GENDER_CHOICES, PET_CHOICES, SMOKING_CHOICES, TALKING_CHOICES, MUSIC_CHOICES, UNIVERSITY_CHOICES
 from phonenumber_field.formfields import PhoneNumberField
@@ -111,7 +112,7 @@ class ExtraSignupFields(forms.Form):
     )
 
     # Captcha
-    captcha = ReCaptchaField(attrs={"callback": "captchaSpottedCallback", })
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={"data-callback": "captchaSpottedCallback"}))
 
     def clean(self):
         cleaned_data = self.cleaned_data

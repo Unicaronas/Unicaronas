@@ -370,6 +370,8 @@ NOCAPTCHA = True
 if not DEBUG:
     RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
     RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+else:
+    SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 # Documentation settings
 SWAGGER_SETTINGS = {
