@@ -190,8 +190,7 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
         parameters = self.add_manual_parameters(parameters)
 
         operation_id = self.get_operation_id(operation_keys)
-        description = self.get_description()
-        summary = self.get_summary()
+        summary, description = self.get_summary_and_description()
         security = self.get_security()
         assert security is None or isinstance(security, list), "security must be a list of securiy requirement objects"
         deprecated = self.is_deprecated()
