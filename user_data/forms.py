@@ -12,16 +12,32 @@ class CustomSignupForm(SignupForm):
                                widget=forms.TextInput(
                                    attrs={'placeholder':
                                           '123456',
-                                          'autofocus': 'autofocus'}))
+                                          'autofocus': 'autofocus',
+                                          'data-validation': 'required'}))
     email = forms.EmailField(
         label="Email universitário",
         widget=forms.TextInput(
             attrs={'type': 'email',
-                   'placeholder': 'Seu email na sua universidade'}))
+                   'placeholder': 'Seu email na sua universidade',
+                   'data-validation': 'required email'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].label = "Email acadêmico"
+        self.fields['email2'].label = "Email acadêmico (novamente)"
+        self.fields['email2'].widget = forms.TextInput(
+            attrs={'type': 'email',
+                   'placeholder': 'Confirme seu email universitário',
+                   'data-validation': 'required email confirmation',
+                   'data-validation-confirm': 'email'})
+        self.fields['password1'].widget = forms.TextInput(
+            attrs={'type': 'password',
+                   'data-validation': 'required strength',
+                   'data-validation-strength': '2'})
+        self.fields['password2'].widget = forms.TextInput(
+            attrs={'type': 'password',
+                   'data-validation': 'required confirmation',
+                   'data-validation-confirm': 'password1'})
         set_form_field_order(self, ['university'])
 
     def clean_username(self):
@@ -62,16 +78,24 @@ class CustomSocialSignupForm(SocialSignupForm):
                                widget=forms.TextInput(
                                    attrs={'placeholder':
                                           '123456',
-                                          'autofocus': 'autofocus'}))
+                                          'autofocus': 'autofocus',
+                                          'data-validation': 'required'}))
     email = forms.EmailField(
         label="Email universitário",
         widget=forms.TextInput(
             attrs={'type': 'email',
-                   'placeholder': 'Seu email na sua universidade'}))
+                   'placeholder': 'Seu email na sua universidade',
+                   'data-validation': 'required email'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].label = "Email acadêmico"
+        self.fields['email2'].label = "Email acadêmico (novamente)"
+        self.fields['email2'].widget = forms.TextInput(
+            attrs={'type': 'email',
+                   'placeholder': 'Confirme seu email universitário',
+                   'data-validation': 'required email confirmation',
+                   'data-validation-confirm': 'email'})
         set_form_field_order(self, ['university'])
 
     def clean_username(self):

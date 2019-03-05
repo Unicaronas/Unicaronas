@@ -1,25 +1,8 @@
 $('.menu .item').tab();
 
 function can_change_tab(tab) {
-    var current_div = document.querySelectorAll("[data-tab='" + tab.toString() + "']")[1];
-    current_div = $(current_div);
-    var required_fields = $(document.querySelectorAll("[data-tab='" + tab.toString() + "']")[1]).find("input").filter('[required]');
-    var allow = true;
-    required_fields.each(function(field) {
-        var value = $(required_fields[field]).val();
-        if (!value) {
-            $(required_fields[field]).popup({'title': 'Obrigatório!', 'on': 'click', onHide: function(pop) {
-                $(required_fields[field]).popup({'on': 'manual'});
-            }});
-            $(required_fields[field]).popup('show');
-        }
-        if (value) {
-            $(required_fields[field]).popup({'on': 'manual'});
-            $(required_fields[field]).popup('hide');
-        }
-        allow = allow && value;
-    });
-    return allow;
+    var current_div = $("[data-tab='" + tab.toString() + "']")
+    return current_div.isValid('pt');
 }
 
 function change_tab(current, target) {

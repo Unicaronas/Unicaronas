@@ -1,3 +1,4 @@
+from datetime import datetime
 from django import forms
 from captcha.fields import ReCaptchaField
 from .models import Profile, Student, Driver, Preferences
@@ -7,18 +8,34 @@ from phonenumber_field.formfields import PhoneNumberField
 
 class ExtraSignupFields(forms.Form):
     # Basic
-    first_name = forms.CharField(label="Primeiro nome")
-    last_name = forms.CharField(label="Sobrenome")
+    first_name = forms.CharField(
+        label="Primeiro nome",
+        widget=forms.TextInput(
+            attrs={'data-validation': 'required'})
+    )
+    last_name = forms.CharField(
+        label="Sobrenome",
+        widget=forms.TextInput(
+            attrs={'data-validation': 'required'})
+    )
 
     # Profile
     birthday = forms.DateField(
-        label="Data de aniversário"
+        label="Data de aniversário",
+        widget=forms.TextInput(
+            attrs={
+                'data-validation': 'required birthdate',
+                'data-validation-format': 'dd/mm/yyyy'})
     )
     gender = forms.ChoiceField(
         label="Gênero",
         choices=GENDER_CHOICES
     )
-    phone = PhoneNumberField(label="Celular")
+    phone = PhoneNumberField(
+        label="Celular",
+        widget=forms.TextInput(
+            attrs={'data-validation': 'required brphone'})
+    )
 
     # Student
     university = forms.ChoiceField(
@@ -28,21 +45,47 @@ class ExtraSignupFields(forms.Form):
     university_id = forms.CharField(required=False, widget=forms.HiddenInput())
     university_email = forms.CharField(
         required=False, widget=forms.HiddenInput())
-    enroll_year = forms.IntegerField(label="Ano de ingresso")
-    course = forms.CharField(label="Curso")
+    enroll_year = forms.IntegerField(
+        label="Ano de ingresso",
+        widget=forms.TextInput(
+            attrs={
+                'data-validation': 'number',
+                'data-validation-allowing': f"range[{datetime.now().year - 25};{datetime.now().year}]"
+            })
+    )
+    course = forms.CharField(
+        label="Curso",
+        widget=forms.TextInput(
+            attrs={'data-validation': 'required'})
+    )
 
     # Driver info
     car_make = forms.CharField(
         label="Marca do carro",
-        required=False
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'data-validation': 'required',
+                'data-validation-depends-on': 'is_driver'
+            })
     )
     car_model = forms.CharField(
         label="Modelo do carro",
-        required=False
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'data-validation': 'required',
+                'data-validation-depends-on': 'is_driver'
+            })
     )
     car_color = forms.CharField(
         label="Cor do carro",
-        required=False
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'data-validation': 'required',
+                'data-validation-depends-on': 'is_driver'
+            })
     )
 
     # Preferences

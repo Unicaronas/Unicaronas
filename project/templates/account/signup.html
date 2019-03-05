@@ -4,6 +4,8 @@
 
 {% block extend_scripts %}
 <script src="{% static 'project/js/semantic_calendar.js' %}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+<script src="{% static 'project/js/manual_jquery_validator_security.js' %}"></script>
 {% endblock %}
 {% block extend_style %}
 <link rel="stylesheet" type="text/css" href="{% static 'project/css/semantic_calendar.css' %}">
@@ -114,6 +116,11 @@
                         <label>{{ form.email.label }}</label>
                         {{ form.email }}
                     </div>
+                    <div class="field">
+                        <label>{{ form.email2.label }}</label>
+                        {{ form.email2 }}
+                    </div>
+                    <p id="confirm_email_check" class="hidden"><span class="ui red label">Atenção!</span> Tem <b><i>certeza</i></b> de que esse é seu email <b>acadêmico</b> e que ele está correto? Não há como mudar depois!</p>
                     <div class="two fields">
                         <div class="field">
                             <label>{{ form.course.label }}</label>
@@ -135,10 +142,10 @@
                     <br>
                     <div class="two fields">
                         <div class="field">
-                            <button type="button" class="ui button green fluid" onclick="next_tab(2)">Sim</button>
+                            <button type="button" class="ui button green fluid" onclick="is_driver_func(true)">Sim</button>
                         </div>
                         <div class="field">
-                            <button type="button" class="ui button blue fluid" onclick="next_tab(3)">Não</button>
+                            <button type="button" class="ui button blue fluid" onclick="is_driver_func(false)">Não</button>
                         </div>
                     </div>
                     <div style="text-align: right;">
@@ -148,6 +155,7 @@
                 <div class="ui transition fade in top attached tab" data-tab="3">
                     <h1>Como serão suas caronas?</h1>
                     <p>Essas infos só serão compartilhadas com quem confirmar caronas com você</p>
+                    <input hidden id="is_driver" name="is_driver" type="checkbox" value="0">
                     <div class="field">
                         <label>{{ form.car_make.label }}</label>
                         {{ form.car_make }}
@@ -266,6 +274,7 @@
     $("#id_likes_smoking").dropdown();
     $("#id_likes_music").dropdown();
     $("#id_likes_talking").dropdown();
+    $('#confirm_email_check').hide();
 
     function captchaSpottedCallback() {
         $('#submit_button').prop("disabled", false);
@@ -290,5 +299,41 @@
             hideOnScroll: false
         }
     });
+
+
+    //setup before functions
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 1000;  //time in ms, 5 second for example
+
+    //on keyup, start the countdown
+    $('#id_email2').on('keyup', function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(doneTyping, doneTypingInterval);
+    });
+
+    //on keydown, clear the countdown
+    $('#id_email2').on('keydown', function () {
+        clearTimeout(typingTimer);
+    });
+
+    //user is "finished typing," do something
+    function doneTyping () {
+        $('#confirm_email_check').show();
+    }
+
+    $.validate({
+        lang: 'pt',
+        modules: 'brazil, logic'
+    });
+
+    function is_driver_func(attr) {
+        $("#is_driver").prop('checked', attr);
+        if (attr) {
+            next_tab(2);
+        }
+        else {
+            next_tab(3)
+        }
+    }
 </script>
 {% endblock %}
