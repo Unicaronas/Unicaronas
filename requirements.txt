@@ -52,7 +52,7 @@ cryptography==2.6.1
 django-recaptcha==2.0.2
 
 # Error logging
-sentry-sdk==0.7.5
+sentry-sdk==0.7.6
 
 # Other
 unidecode==1.0.23
