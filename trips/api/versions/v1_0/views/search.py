@@ -122,8 +122,8 @@ class SearchTripViewset(
 
         |Parâmetro|Padrão|Mínimo|Máximo|
         | ---|---|---|---|
-        |`origin_radius`|5 km|0.05 km|10 km|
-        |`destination_radius`|5 km|0.05 km|20 km|
+        |`origin_radius`|10 km|0.05 km|20 km|
+        |`destination_radius`|10 km|0.05 km|20 km|
 
         Alguns parâmetros *GET* são obrigatórios:
 

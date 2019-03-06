@@ -25,7 +25,7 @@ class Alarm(models.Model):
     origin_point = models.PointField("Coordenadas de origem da carona")
     origin_radius = models.FloatField(
         "Raio de pesquisa da origem em km",
-        default=5,
+        default=10,
         validators=[validators.MaxValueValidator(10), validators.MinValueValidator(0.05)],
     )
     destination = models.CharField(
@@ -35,7 +35,7 @@ class Alarm(models.Model):
     destination_point = models.PointField("Coordenadas de destino da carona")
     destination_radius = models.FloatField(
         "Raio de pesquisa do destino em km",
-        default=5,
+        default=10,
         validators=[validators.MaxValueValidator(20), validators.MinValueValidator(0.05)],
     )
     price = models.PositiveSmallIntegerField("Preço máximo da carona em reais", null=True)

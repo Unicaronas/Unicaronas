@@ -31,10 +31,10 @@ class TripFilterSet(FilterSet):
         return qs
 
     def get_origin(self, qs, name, value):
-        radius = self.data.get('origin_radius', '5')
+        radius = self.data.get('origin_radius', '10')
         if not radius:
-            radius = '5'
-        radius = min(max(float(radius), 0.05), 10)
+            radius = '10'
+        radius = min(max(float(radius), 0.05), 20)
         pipe = RequestPipeline('origin', self.request)
         result = pipe.search(value)
         if result is None:
@@ -42,9 +42,9 @@ class TripFilterSet(FilterSet):
         return qs.filter(origin_point__distance_lte=(result.point, D(km=radius)))
 
     def get_destination(self, qs, name, value):
-        radius = self.data.get('destination_radius', '5')
+        radius = self.data.get('destination_radius', '10')
         if not radius:
-            radius = '5'
+            radius = '10'
         radius = min(max(float(radius), 0.05), 20)
         pipe = RequestPipeline('destination', self.request)
         result = pipe.search(value)
