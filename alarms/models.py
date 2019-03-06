@@ -49,13 +49,7 @@ class Alarm(models.Model):
     )
 
     @classmethod
-    def find_and_send(cls, trip):
-        """Find and send alarms
-        Takes a newly created trip and searches
-        through all alarms to find matches.
-        If any are found, send them.
-        """
-
+    def find(cls, trip):
         # Start by filtering the easy ones
         # and then filter using expensive fields
         alarms = cls.objects.exclude(
@@ -89,6 +83,23 @@ class Alarm(models.Model):
             # Filter destination
             destination_distance__lte=F('destination_radius') * 1000
         )
+
+        return alarms
+
+    @classmethod
+    def send(cls, alarms, trip):
         alarm_webhooks.MultipleAlarmsWebhook(alarms, trip).send()
+
+    @classmethod
+    def find_and_send(cls, trip):
+        """Find and send alarms
+        Takes a newly created trip and searches
+        through all alarms to find matches.
+        If any are found, send them.
+        """
+
+        alarms = cls.find(trip)
+        cls.send(alarms, trip)
+
         # Clear selected alarms
         alarms.delete()
