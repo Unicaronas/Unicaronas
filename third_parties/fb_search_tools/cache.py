@@ -27,15 +27,15 @@ class BaseCache(object):
 
     def get_key(self, key, extend=True):
         """Gets a key from the cache. None if it does not exist"""
-        value = self.decode(self.cache_engine.get(key))
+        value = self.decode(self.cache_engine.get(self.encode(key)))
         if value is not None and extend:
             # extend key
-            self.extend_key(key)
+            self.extend_key(self.encode(key))
         return value
 
     def set_key(self, key, value):
         """Sets a key and a value, and adds the key to the index"""
-        self.cache_engine.set(key, self.encode(value), self.timeout)
+        self.cache_engine.set(self.encode(key), self.encode(value), self.timeout)
 
 
 class RedisCache(BaseCache):
