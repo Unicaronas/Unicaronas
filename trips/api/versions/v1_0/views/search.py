@@ -1,5 +1,6 @@
 from django.utils import timezone
-from django.db.models import Count, F, Q
+from django.db.models import Sum, F, Q
+from django.db.models.functions import Coalesce
 from rest_framework import viewsets, status
 from rest_framework.exceptions import ValidationError
 from rest_framework_filters.backends import RestFrameworkFilterBackend
@@ -47,6 +48,12 @@ class SearchTripViewset(
         qs = super().get_queryset()
         qs = qs.exclude(passengers__user__in=[self.request.user])
         qs = qs.exclude(user=self.request.user)
+        seats_left = F('max_seats') - Coalesce(
+            Sum(
+                'passengers__seats',
+                filter=~Q(passengers__status="denied")
+            ), 0)
+        qs = qs.annotate(seats_left=seats_left)
         qs = qs.filter(seats_left__gt=0)
         qs = qs.filter(datetime__gt=timezone.now())
         return qs
