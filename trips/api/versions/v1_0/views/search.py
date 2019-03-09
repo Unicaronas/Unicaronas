@@ -47,11 +47,6 @@ class SearchTripViewset(
         qs = super().get_queryset()
         qs = qs.exclude(passengers__user__in=[self.request.user])
         qs = qs.exclude(user=self.request.user)
-        seats_left = F('max_seats') - Count(
-            'passengers',
-            filter=~Q(passengers__status="denied")
-        )
-        qs = qs.annotate(seats_left=seats_left)
         qs = qs.filter(seats_left__gt=0)
         qs = qs.filter(datetime__gt=timezone.now())
         return qs
