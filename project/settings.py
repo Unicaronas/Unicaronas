@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import dj_database_url
 from datetime import timedelta
+from celery.schedules import crontab
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -99,6 +100,7 @@ INSTALLED_APPS = [
     'silk',
     'nplusone.ext.django',
     'djcelery_email',
+    'django_celery_beat',
     'phonenumber_field',
     'watchman',
 
@@ -232,6 +234,12 @@ AWS_AUTO_CREATE_BUCKET = True
 REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_BROKER_URL = REDIS_URL
 CELERY_IMPORTS = ['project.tasks']
+CELERY_BEAT_SCHEDULE = {
+    'task-number-one': {
+        'task': 'oauth.tasks.clear_oauth_tokens',
+        'schedule': crontab(minute=0, hour=3)
+    }
+}
 
 
 # Cache settings

@@ -12,6 +12,7 @@ django-phonenumber-field==2.2.0
 pillow==5.4.1
 django-versatileimagefield==1.10
 django-cors-headers==2.5.0
+django-celery-beat==1.4.0
 
 # Analytics
 django-analytical==2.5.0
