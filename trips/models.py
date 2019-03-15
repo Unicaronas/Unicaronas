@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
+from django.contrib.postgres.fields import JSONField
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from django.core import validators
@@ -27,11 +28,21 @@ class Trip(models.Model):
         max_length=500
     )
     origin_point = models.PointField("Coordenadas de origem da carona")
+    origin_address_components = JSONField(
+        default=list,
+        verbose_name='Componentes do endereço de origem',
+        null=True
+    )
     destination = models.CharField(
         "Enderço de destino da carona",
         max_length=500
     )
     destination_point = models.PointField("Coordenadas de destino da carona")
+    destination_address_components = JSONField(
+        default=list,
+        verbose_name='Componentes do endereço de origem',
+        null=True
+    )
     price = models.PositiveSmallIntegerField("Preço da carona em reais")
     datetime = models.DateTimeField("Datetime de saída da carona")
     max_seats = models.PositiveSmallIntegerField(

@@ -6,13 +6,15 @@ class BaseResult(object):
     Represents a search result
     """
 
-    def __init__(self, query, address, point):
+    def __init__(self, query, address, point, address_components):
         assert isinstance(query, str)
         assert isinstance(address, str)
         assert isinstance(point, Point)
+        assert isinstance(address_components, list)
         self._query = query
         self._address = address
         self._point = point
+        self._address_components = address_components
 
     @property
     def query(self):
@@ -37,6 +39,10 @@ class BaseResult(object):
     @property
     def coords(self):
         return self.latitude, self.longitude
+
+    @property
+    def address_components(self):
+        return self._address_components
 
     @property
     def dict_coords(self):

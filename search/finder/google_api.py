@@ -11,8 +11,8 @@ class GoogleAPIFinder(BaseFinder):
 
     def _search(self, term):
         try:
-            addr, point = geocode_address(term.query)
+            addr, point, address_components = geocode_address(term.query)
         except ValueError:
             # Google API error or no results
             return None
-        return Result(term.query, addr, point)
+        return Result(term.query, addr, point, address_components)

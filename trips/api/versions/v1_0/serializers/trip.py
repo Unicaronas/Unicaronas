@@ -19,7 +19,7 @@ class BaseTripCreateUpdateSerializer(serializers.HyperlinkedModelSerializer):
         app = getattr(self.context['request'].auth, 'application', None)
         validated_data['user'] = user
         validated_data['application'] = app
-        return Trip.create_trip(validated_data)
+        return Trip.create_trip(**validated_data)
 
     def validate(self, data):
         data = super().validate(data)
@@ -30,6 +30,7 @@ class BaseTripCreateUpdateSerializer(serializers.HyperlinkedModelSerializer):
             result_origin = pipe_origin.search(data['origin'])
             data['origin'] = result_origin.address
             data['origin_point'] = result_origin.point
+            data['origin_address_components'] = result_origin.address_components
 
         if data.get('destination'):
             pipe_destination = RequestPipeline(
@@ -37,6 +38,7 @@ class BaseTripCreateUpdateSerializer(serializers.HyperlinkedModelSerializer):
             result_destination = pipe_destination.search(data['destination'])
             data['destination'] = result_destination.address
             data['destination_point'] = result_destination.point
+            data['destination_address_components'] = result_destination.address_components
         return data
 
     class Meta:
@@ -86,8 +88,8 @@ class BaseTripListRetrieveSerializer(
     class Meta:
         model = Trip
         fields = [
-            'id', 'origin', 'destination', 'origin_coordinates',
-            'destination_coordinates', 'price', 'datetime', 'auto_approve',
+            'id', 'origin', 'destination', 'origin_coordinates', 'origin_address_components',
+            'destination_coordinates', 'destination_address_components', 'price', 'datetime', 'auto_approve',
             'max_seats', 'seats_left', 'is_full', 'details'
         ]
         extra_kwargs = {

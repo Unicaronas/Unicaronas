@@ -3,6 +3,7 @@ from django.contrib.gis.db import models
 from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from oauth2_provider.settings import oauth2_settings
 # Create your models here.
 
@@ -29,6 +30,11 @@ class DBResult(models.Model):
         max_length=200
     )
     point = models.PointField("Coordenadas da pesquisa")
+    address_components = JSONField(
+        default=list,
+        null=True,
+        verbose_name='Componentes do endereço'
+    )
     created = models.DateTimeField(
         "Data de adesão da pesquisa",
         auto_now_add=True

@@ -5,7 +5,7 @@ from .models import DBResult, Hit
 
 @admin.register(DBResult)
 class DBResultAdmin(admin.ModelAdmin):
-    list_display = ('id', 'query', 'address', 'point', 'created', 'expires')
+    list_display = ('id', 'query', 'address', 'address_components', 'point', 'created', 'expires')
     list_filter = ('created', 'expires')
 
 

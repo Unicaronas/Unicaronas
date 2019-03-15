@@ -13,7 +13,7 @@ def extract_data_from_response(data, idx=0):
     formatted_address = results['formatted_address']
     latitude = results['geometry']['location']['lat']
     longitude = results['geometry']['location']['lng']
-    return formatted_address, Point(latitude, longitude)
+    return formatted_address, Point(latitude, longitude), results['address_components']
 
 
 def geocode_address(address):
