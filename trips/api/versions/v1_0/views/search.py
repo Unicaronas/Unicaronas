@@ -86,6 +86,9 @@ class SearchTripViewset(
         Para acessar, use a ID de uma carona pesquisada.
 
         > **Dica:** Você também pode usar os parâmetros GET `fields` e `exclude` para filtrar os campos retornados pela API
+
+        **Atenção:** `origin_address_components` e `destination_address_components`, partes da resposta, contém os dados de `address_components` da [API de Geocoding do Google](https://developers.google.com/maps/documentation/geocoding/intro).
+        Por serem features novas, podem ser nulos para back-compatibility
         """
         return super().retrieve(*args, **kwargs)
 
@@ -135,6 +138,9 @@ class SearchTripViewset(
         | `destination`|
 
         > **Dica:** Você também pode usar os parâmetros GET `fields` e `exclude` para filtrar os campos retornados pela API
+
+        **Atenção:** `origin_address_components` e `destination_address_components`, partes da resposta, contém os dados de `address_components` da [API de Geocoding do Google](https://developers.google.com/maps/documentation/geocoding/intro).
+        Por serem features novas, podem ser nulos para back-compatibility
         """
         required_fields = [
             'origin',
