@@ -235,9 +235,13 @@ REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_BROKER_URL = REDIS_URL
 CELERY_IMPORTS = ['project.tasks']
 CELERY_BEAT_SCHEDULE = {
-    'task-number-one': {
+    'Clear old OAuth2 tokens': {
         'task': 'oauth.tasks.clear_oauth_tokens',
         'schedule': crontab(minute=0, hour=3)
+    },
+    'Clear old alarms': {
+        'task': 'alarms.tasks.clear_alarms',
+        'schedule': crontab(minute=30, hour=3)
     }
 }
 
