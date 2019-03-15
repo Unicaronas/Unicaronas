@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import dj_database_url
+from datetime import timedelta
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -306,6 +307,7 @@ OAUTH2_PROVIDER = {
     'SCOPES_BACKEND_CLASS': 'oauth.scopes.CustomSettingsScopes',
     "REFRESH_TOKEN_GRACE_PERIOD_SECONDS": 120,
     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,
+    "REFRESH_TOKEN_EXPIRE_SECONDS": timedelta(days=60)  # Refresh tokens live up to 60 days
 }
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.Application'
 
@@ -384,7 +386,9 @@ SWAGGER_SETTINGS = {
             'description': """
 OAuth2 é uma forma de autenticação que permite que seu aplicativo obtenha acesso granular aos dados dos seus usuários. Seu usuário tem controle total sobre quais informações deseja compartilhar e você acessa a API usando endpoints comuns HTTP. OAuth2 possui flows para aplicativos web, desktop e mobile, todos implementados na API do Unicaronas. Para saber mais, [visite o guia de OAuth2](/what_is_oauth/)
 
-Abaixo você encontrará os `scopes` disponíveis e suas descrições, além das URLs de autorização e troca de tokens.""",
+Abaixo você encontrará os `scopes` disponíveis e suas descrições, além das URLs de autorização e troca de tokens.
+
+*Atenção!* `refresh_token`s do Unicaronas têm vida útil de 60 dias e tokens antigos são removidos todo dia.""",
             'authorizationUrl': f'{ROOT_URL}/o/authorize/',
             'tokenUrl': f'{ROOT_URL}/o/token/',
             'flow': 'accessCode',
