@@ -71,12 +71,14 @@ class DBResult(models.Model):
         query = result.query
         address = result.address
         point = result.point
+        address_components = result.address_components
         cls.objects.update_or_create(
             query=query,
             defaults={
                 "address": address,
                 "point": point,
-                "expires": get_default_expire()
+                "expires": get_default_expire(),
+                "address_components": address_components
             }
         )
 
