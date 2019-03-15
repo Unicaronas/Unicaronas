@@ -19,7 +19,7 @@ class BaseTripCreateUpdateSerializer(serializers.HyperlinkedModelSerializer):
         app = getattr(self.context['request'].auth, 'application', None)
         validated_data['user'] = user
         validated_data['application'] = app
-        return super().create(validated_data)
+        return Trip.create_trip(validated_data)
 
     def validate(self, data):
         data = super().validate(data)

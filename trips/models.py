@@ -5,6 +5,7 @@ from django.db.models.functions import Coalesce
 from django.core import validators
 from oauth2_provider.settings import oauth2_settings
 from project.utils import import_current_version_module
+from alarms.tasks import dispatch_alarms
 from .exceptions import PassengerBookedError, TripFullError, PassengerNotBookedError, UserNotDriverError, PassengerApprovedError, PassengerDeniedError, PassengerPendingError, NotEnoughSeatsError
 from .utils import user_is_driver
 # Create your models here.
@@ -143,8 +144,10 @@ class Trip(models.Model):
         """Creates a trip, checking if the user is a driver"""
         if not user_is_driver(user):
             raise UserNotDriverError(user.get_full_name() + ' não é motorista')
-        trip = cls(user=user, **kwargs)
-        trip.save()
+        trip = cls.objects.create(user=user, **kwargs)
+
+        # Dispatch alarms announcing the new trip to users
+        dispatch_alarms.delay(trip.id)
         return trip
 
     def __str__(self):
