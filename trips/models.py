@@ -9,6 +9,7 @@ from project.utils import import_current_version_module
 from alarms.tasks import dispatch_alarms
 from .exceptions import PassengerBookedError, TripFullError, PassengerNotBookedError, UserNotDriverError, PassengerApprovedError, PassengerDeniedError, PassengerPendingError, NotEnoughSeatsError
 from .utils import user_is_driver
+from .tasks import publish_new_trip_on_fb
 # Create your models here.
 
 
@@ -62,6 +63,25 @@ class Trip(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
+
+    def get_address_component(self, component, source, short=False):
+        attr = 'short_name' if short else 'long_name'
+        try:
+            return next(filter(lambda comp: component in comp['types'], getattr(self, source))).get(attr)
+        except StopIteration:
+            return None
+
+    def get_origin_adm_area_2(self, short=False):
+        return self.get_address_component('administrative_area_level_2', 'origin_address_components', short)
+
+    def get_origin_adm_area_1(self, short=False):
+        return self.get_address_component('administrative_area_level_1', 'origin_address_components', short)
+
+    def get_destination_adm_area_2(self, short=False):
+        return self.get_address_component('administrative_area_level_2', 'destination_address_components', short)
+
+    def get_destination_adm_area_1(self, short=False):
+        return self.get_address_component('administrative_area_level_1', 'destination_address_components', short)
 
     def get_seats_left(self):
         """Quantos assentos restam na carona
@@ -159,6 +179,8 @@ class Trip(models.Model):
 
         # Dispatch alarms announcing the new trip to users
         dispatch_alarms.delay(trip.id)
+        # Publish on Facebook if enabled
+        publish_new_trip_on_fb.delay(trip.id)
         return trip
 
     def __str__(self):

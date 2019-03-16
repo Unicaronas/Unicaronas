@@ -464,6 +464,8 @@ FACEBOOK_HANDLE = os.environ.get('FACEBOOK_HANDLE', 'Unicaronas2.0')
 # BlaBlaCar API Key
 BLABLACAR_API_KEY = os.environ.get('BLABLACAR_API_KEY')
 
+# Facebook Page token
+FACEBOOK_PAGE_ACCESS_TOKEN = os.environ.get('FACEBOOK_PAGE_ACCESS_TOKEN')
 
 # Get GDAL_LIBRARY_PATH from env during heroku's build
 _GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH', None)
