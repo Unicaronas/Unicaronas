@@ -43,5 +43,8 @@ class Command(BaseCommand):
         student = user.student
         student.university_email = new_email
         student.save()
+        print('Setting user email')
+        user.email = new_email
+        user.save()
 
         print('Done')
