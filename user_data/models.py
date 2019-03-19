@@ -44,8 +44,10 @@ MUSIC_CHOICES = (
 
 UNIVERSITY_CHOICES = (
     ('unicamp', 'Unicamp'),
-    ('pucc', 'PUC-Campinas'),
     ('usp', 'USP'),
+    ('unesp', 'Unesp'),
+    ('unifesp', 'Unifesp'),
+    ('pucc', 'PUC-Campinas'),
     ('ifsp', 'IFSP')
 )
 
@@ -54,12 +56,20 @@ UNIVERSITY_EMAIL_VALIDATORS = {
         r'^([a-zA-Z\.-_]+@([a-zA-Z-_]+\.)+unicamp\.br)$',
         "Email inválido para {0}"
     ),
-    'pucc': UniRegexValidator(
-        r'^[a-zA-Z\.-_]+@puccampinas\.edu\.br$',
-        "Email inválido para {0}"
-    ),
     'usp': UniRegexValidator(
         r'^([a-zA-Z\.-_]+@([a-zA-Z-_]+\.)*usp\.br)$',
+        "Email inválido para {0}"
+    ),
+    'unesp': UniRegexValidator(
+        r'^[a-zA-Z\.-_]+@unesp\.br$',
+        "Email inválido para {0}"
+    ),
+    'unifesp': UniRegexValidator(
+        r'^[a-zA-Z\.-_]+@unifesp\.br$',
+        "Email inválido para {0}"
+    ),
+    'pucc': UniRegexValidator(
+        r'^[a-zA-Z\.-_]+@puccampinas\.edu\.br$',
         "Email inválido para {0}"
     ),
     'ifsp': UniRegexValidator(
@@ -73,12 +83,20 @@ UNIVERSITY_ID_VALIDATORS = {
         r'^\d{5,7}$',
         "RA inválido para {0}"
     ),
-    'pucc': UniRegexValidator(
-        r'^\d{8}$',
-        "RA inválido para {0}"
-    ),
     'usp': UniRegexValidator(
         r'^\d{4,10}$',
+        "RA inválido para {0}"
+    ),
+    'unesp': UniRegexValidator(
+        r'^\d{7,11}$',
+        "RA inválido para {0}"
+    ),
+    'unifesp': UniRegexValidator(
+        r'^\d{7,11}$',
+        "RA inválido para {0}"
+    ),
+    'pucc': UniRegexValidator(
+        r'^\d{8}$',
         "RA inválido para {0}"
     ),
     'ifsp': UniRegexValidator(
