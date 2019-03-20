@@ -23,8 +23,8 @@ class AlarmAdmin(admin.ModelAdmin):
     )
     list_filter = (
         'created',
-        'user',
         'auto_approve',
         'datetime_lte',
         'datetime_gte',
     )
+    search_fields = ('origin', 'destination')

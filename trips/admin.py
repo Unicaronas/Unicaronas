@@ -23,9 +23,11 @@ class TripAdmin(admin.ModelAdmin):
         'application',
     )
     list_filter = ('created', 'datetime', 'auto_approve')
+    search_fields = ('user', 'origin', 'destination')
 
 
 @admin.register(Passenger)
 class PassengerAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'trip', 'status', 'book_time')
-    list_filter = ('user', 'trip', 'book_time')
+    list_filter = ('trip', 'book_time', 'status')
+    search_fields = ('user',)

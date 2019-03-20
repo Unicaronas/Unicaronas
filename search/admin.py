@@ -7,6 +7,7 @@ from .models import DBResult, Hit
 class DBResultAdmin(admin.ModelAdmin):
     list_display = ('id', 'query', 'address', 'address_components', 'point', 'created', 'expires')
     list_filter = ('created', 'expires')
+    search_fields = ('address',)
 
 
 @admin.register(Hit)
@@ -22,4 +23,4 @@ class HitAdmin(admin.ModelAdmin):
         'method',
         'query_type',
     )
-    list_filter = ('created',)
+    list_filter = ('created', 'application', 'method', 'query_type')

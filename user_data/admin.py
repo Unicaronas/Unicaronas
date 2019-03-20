@@ -19,7 +19,8 @@ class StudentAdmin(admin.ModelAdmin):
         'enroll_year',
         'course',
     )
-    list_filter = ('user',)
+    list_filter = ('university',)
+    search_fields = ('user', 'university_id',)
 
 
 @admin.register(Driver)
@@ -35,7 +36,7 @@ class DriverAdmin(admin.ModelAdmin):
         'likes_music',
         'likes_talking',
     )
-    list_filter = ('user',)
+    search_fields = ('user',)
 
 
 @admin.register(Preferences)
@@ -48,11 +49,11 @@ class PreferencesAdmin(admin.ModelAdmin):
         'news_notifications',
     )
     list_filter = (
-        'user',
         'updates_notifications',
         'ratings_notifications',
         'news_notifications',
     )
+    search_fields = ('user',)
 
 
 @admin.register(MissingUniversity)
