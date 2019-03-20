@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Student, Driver, Preferences
+from .models import Profile, Student, Driver, Preferences, MissingUniversity
 
 
 @admin.register(Profile)
@@ -53,3 +53,17 @@ class PreferencesAdmin(admin.ModelAdmin):
         'ratings_notifications',
         'news_notifications',
     )
+
+
+@admin.register(MissingUniversity)
+class MissingUniversityAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'name',
+        'email',
+        'university_name',
+        'university_id',
+        'university_email'
+    )
+    list_filter = ('university_name', 'name')
+    search_fields = ('name', 'email', 'university_name', )

@@ -241,3 +241,13 @@ class Preferences(models.Model):
 
     def __str__(self):
         return f"Preferences de {self.user}"
+
+
+class MissingUniversity(models.Model):
+    """Universities that are missing from the API"""
+
+    name = models.CharField('Seu nome', max_length=50)
+    email = models.EmailField('Seu email para contato')
+    university_name = models.CharField('Nome ou sigla da universidade/faculdade', max_length=50)
+    university_id = models.CharField('ID acadêmica (RA, etc)', max_length=50)
+    university_email = models.EmailField('Email acadêmico')

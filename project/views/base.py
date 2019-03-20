@@ -1,4 +1,7 @@
 from django.views import generic
+from django.contrib import messages
+from django.core.mail import mail_admins
+from ..forms import MissingUniversityForm
 
 
 class Index(generic.TemplateView):
@@ -20,3 +23,22 @@ class TermsAndConditions(generic.TemplateView):
 
 class PrivacyPolicy(generic.TemplateView):
     template_name = 'project/privacy_policy.html'
+
+
+class MissingUniversity(generic.edit.CreateView):
+    template_name = 'project/missing_university.html'
+    form_class = MissingUniversityForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            'Sua universidade foi enviada para nossa equipe e será adicionada em breve! Te avisaremos por email quando isso acontecer.'
+        )
+        mail_admins(
+            subject="Universidade submetida",
+            message=f"{form.instance.name} acabou de submeter dados da universidade {form.instance.university_name}",
+            fail_silently=True
+        )
+        return super().form_valid(form)

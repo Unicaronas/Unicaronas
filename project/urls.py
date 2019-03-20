@@ -70,6 +70,7 @@ urlpatterns = [
     path('terms_and_conditions/', views.TermsAndConditions.as_view(), name='terms_and_conditions'),
     path('privacy_policy/', views.PrivacyPolicy.as_view(), name='privacy_policy'),
     path('what_is_oauth/', views.OAuthHelp.as_view(), name='oauth_help'),
+    path('missing_university/', views.MissingUniversity.as_view(), name='missing_university'),
 ]
 
 urlpatterns += api_urlpatterns

@@ -1,0 +1,88 @@
+{% extends "project/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div id="intro" class="ui vertical stripe">
+    <div class="ui middle center aligned middle aligned stackable grid container">
+        <div class="row">
+            <div class="ui huge header">Adicionar universidade
+                <div class="sub header">Queremos a sua também :)</div>
+            </div>
+        </div>
+        <div class="ui hidden divider"></div>
+        <div class="ui row left aligned">
+            <div class="column twelve wide left aligned">
+                <p>
+                    Se você não encontrou sua universidade na nossa lista não pense que temos algo contra ela. Queremos o maior número de universidades e faculdades possível em nossa plataforma e adoraríamos a sua ajuda pra isso :)
+                </p>
+                <p>
+                    Precisamos, porém, de algumas informações que possam nos ajudar a identificar você e seus colegas.
+                </p>
+                <h1 class="ui header">
+                    Então, do que você precisa?
+                </h1>
+                <p>
+                    <div class="ui red horizontal label">Atenção!</div>Se sua universidade não fornece identidade acadêmica ou email acadêmico então infelizmente não poderemos adicioná-la dessa forma. Para essas situações, <a href="mailto:contato@unicaronas.com">entre em contato</a> para que possamos discutir alternativas.
+                </p>
+                <p>
+                    O processo é bem simples: Precisamos confirmar que todo mundo que diz ser de uma universidade realmente é. Para isso nós usamos emails acadêmicos e identidades acadêmicas.<br>Enviamos um email de confirmação para o email acadêmico da pessoa e, se ela realmente for dona desse email, ela será capaz de clicar um link que confirmará sua identidade.
+                </p>
+                <p>
+                    Portanto, para adicionar uma universidade à nossa plataforma basta fornecer um(ou mais) exemplos de emails acadêmicos e identidades acadêmicas válidas para a universidade. Criaremos então uma <a href="https://pt.wikipedia.org/wiki/Express%C3%A3o_regular">Expressão regular</a> a partir dos dados fornecidos e a usaremos para validar o cadastro de usuários futuros.
+                </p>
+                <p>
+                    Também pedimos seu endereço de email para tirar dúvidas sobre o formato dos emails ou identidades acadêmicas e para te notificar quando sua universidade for oficialmente adicionada.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column eight wide left aligned">
+                {% if form.errors %}
+                {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                {% if field == '__all__' %}
+                <div class="ui list">
+                    <div class="item">
+                        <div style="color: red" class="header">Erros:</div>
+                        {{ error }}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+                <form class="ui form" enctype="multipart/form-data" method="post">
+                    {% csrf_token %}
+                    <h1 class="ui header">Nos fale um pouco sobre ela
+                    </h1>
+                    <div class="field {% if form.name.errors.as_text %}error{% endif %}">
+                        <label>{{ form.name.label}}</label>
+                        <span style="color: red" class="small">{{ form.name.errors.as_text }}
+                        </span>{{ form.name }}
+                    </div>
+                    <div class="field {% if form.email.errors.as_text %}error{% endif %}">
+                        <label>{{ form.email.label}}</label>
+                        <span style="color: red" class="small">{{ form.email.errors.as_text }}
+                        </span>{{ form.email }}
+                    </div>
+                    <div class="field {% if form.university_name.errors.as_text %}error{% endif %}">
+                        <label>{{ form.university_name.label}}</label>
+                        <span style="color: red" class="small">{{ form.university_name.errors.as_text }}
+                        </span>{{ form.university_name }}
+                    </div>
+                    <div class="field {% if form.university_id.errors.as_text %}error{% endif %}">
+                        <label>{{ form.university_id.label}}</label>
+                        <span style="color: red" class="small">{{ form.university_id.errors.as_text }}
+                        </span>{{ form.university_id }}
+                    </div>
+                    <div class="field {% if form.university_email.errors.as_text %}error{% endif %}">
+                        <label>{{ form.university_email.label}}</label>
+                        <span style="color: red" class="small">{{ form.university_email.errors.as_text }}
+                        </span>{{ form.university_email }}
+                    </div>
+                    <button class="ui button big centered labeled icon blue"><i class="icon send"></i> Enviar!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
