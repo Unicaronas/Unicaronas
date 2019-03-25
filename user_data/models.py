@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 from project.utils import import_current_version_module
 from .validators import UniRegexValidator
@@ -152,7 +152,6 @@ class Student(models.Model):
         'Ano de ingresso',
         help_text="Ano que você entrou na universidade",
         validators=[
-            MaxValueValidator(timezone.now().year),
             MinValueValidator(timezone.now().year - 25)
         ]
     )
