@@ -53,7 +53,7 @@ UNIVERSITY_CHOICES = (
 
 UNIVERSITY_EMAIL_VALIDATORS = {
     'unicamp': UniRegexValidator(
-        r'^([a-zA-Z\.-_]+@([a-zA-Z-_]+\.)+unicamp\.br)$',
+        r'^([a-zA-Z\.-_]+@([a-zA-Z-_]+\.)*unicamp\.br)$',
         "Email inválido para {0}"
     ),
     'usp': UniRegexValidator(
