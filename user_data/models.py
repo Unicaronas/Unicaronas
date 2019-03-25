@@ -153,7 +153,7 @@ class Student(models.Model):
         help_text="Ano que você entrou na universidade",
         validators=[
             MaxValueValidator(timezone.now().year),
-            MinValueValidator(timezone.now().year - 20)
+            MinValueValidator(timezone.now().year - 25)
         ]
     )
     course = models.CharField('Curso', max_length=100)
