@@ -1,10 +1,17 @@
+import requests
 from django.db import models
+from django.conf import settings
+from django.core.mail import mail_admins
+from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
 from django.utils import timezone
 from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
+from allauth.account.models import EmailAddress
 from project.utils import import_current_version_module
-from .validators import UniRegexValidator
+from .validators import UniRegexValidator, FallbackUniRegexValidator
+from .mailing import approved_student_proof_email
 # Create your models here.
 
 
@@ -48,7 +55,8 @@ UNIVERSITY_CHOICES = (
     ('unesp', 'Unesp'),
     ('unifesp', 'Unifesp'),
     ('pucc', 'PUC-Campinas'),
-    ('ifsp', 'IFSP')
+    ('ifsp', 'IFSP'),
+    ('facamp', 'FACAMP')
 )
 
 UNIVERSITY_EMAIL_VALIDATORS = {
@@ -75,6 +83,10 @@ UNIVERSITY_EMAIL_VALIDATORS = {
     'ifsp': UniRegexValidator(
         r'^[a-zA-Z\.-_]+@ifsp\.edu\.br$',
         "Email inválido para {0}"
+    ),
+    'facamp': FallbackUniRegexValidator(
+        r'a^',
+        "Alunos da {0} deve submeter seu atestado de matrícula/diploma"
     )
 }
 
@@ -101,6 +113,10 @@ UNIVERSITY_ID_VALIDATORS = {
     ),
     'ifsp': UniRegexValidator(
         r'^[a-zA-Z]{2}\d{6}$',
+        "RA inválido para {0}"
+    ),
+    'facamp': UniRegexValidator(
+        r'^\d{7,12}$',
         "RA inválido para {0}"
     )
 }
@@ -247,6 +263,93 @@ class MissingUniversity(models.Model):
 
     name = models.CharField('Seu nome', max_length=50)
     email = models.EmailField('Seu email para contato')
-    university_name = models.CharField('Nome ou sigla da universidade/faculdade', max_length=50)
+    university_name = models.CharField(
+        'Nome ou sigla da universidade/faculdade', max_length=50)
     university_id = models.CharField('ID acadêmica (RA, etc)', max_length=50)
     university_email = models.EmailField('Email acadêmico')
+
+
+def filename(instance, filename):
+    return f"uploads/student_proofs/{get_random_string()}.pdf"
+
+
+class StudentProof(models.Model):
+    """Proof of student enrollment"""
+
+    pending_status = 'pending'
+    approved_status = 'approved'
+    denied_status = 'denied'
+
+    status_choices = (
+        (pending_status, 'Pendente'),
+        (approved_status, 'Aprovado'),
+        (denied_status, 'Negado')
+    )
+
+    student = models.OneToOneField(
+        Student,
+        on_delete=models.CASCADE
+    )
+    proof = models.FileField(upload_to=filename, validators=[
+                             FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'png'])])
+    proof_scan_url = models.URLField(blank=True)
+    proof_scan_id = models.CharField(blank=True, max_length=300)
+    contact_email = models.EmailField()
+    created = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(default=pending_status, choices=status_choices, max_length=20)
+
+    @classmethod
+    def create(cls, student, email, proof):
+        sp = cls(
+            student=student,
+            contact_email=email,
+            proof=proof
+        )
+        sp.save()
+        if settings.VIRUS_TOTAL_API_KEY:
+            # Perform virus total scan
+            result = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', {
+                "apikey": settings.VIRUS_TOTAL_API_KEY,
+                "url": sp.proof.url
+            })
+            if result.status_code == requests.codes.ok:
+                sp.proof_scan_url = result.json()['permalink']
+                sp.proof_scan_id = result.json()['scan_id']
+                sp.save()
+        mail_admins(
+            subject='Novo pedido de aprovação de usuário',
+            message='Um novo usuário se cadastrou e pediu revisão manual de seu status de verificação'
+        )
+
+    @property
+    def scan_results(self):
+        if self.proof_scan_url == '':
+            return 'Indisponível'
+        result = requests.get('https://www.virustotal.com/vtapi/v2/url/report', {
+            "apikey": settings.VIRUS_TOTAL_API_KEY,
+            "resource": self.proof_scan_id
+        })
+        if result.status_code == requests.codes.ok and result.json()['response_code'] == 1:
+            data = result.json()
+            if data['positives'] == 0:
+                return 'Tudo ok'
+            return f"{data['positives']}/{data['total']} positivos"
+        return 'Erro'
+
+    def approve(self):
+        email_address, created = EmailAddress.objects.get_or_create(
+            user=self.student.user, email__iexact=self.contact_email, defaults={
+                "email": self.contact_email}
+        )
+        email_address.set_as_primary()
+        emails = EmailAddress.objects.filter(user=self.student.user)
+        emails.update(verified=True)
+        approved_student_proof_email(self.student.user)
+        self.status = self.approved_status
+        self.save()
+
+    def deny(self):
+        emails = EmailAddress.objects.filter(user=self.student.user)
+        emails.update(verified=False)
+        self.status = self.denied_status
+        self.save()

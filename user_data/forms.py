@@ -23,7 +23,7 @@ class CustomSignupForm(SignupForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].label = "Email acadêmico"
+        self.fields['email'].label = "Email acadêmico (se tiver)"
         self.fields['email2'].label = "Email acadêmico (novamente)"
         self.fields['email2'].widget = forms.TextInput(
             attrs={'type': 'email',
@@ -58,7 +58,7 @@ class CustomSignupForm(SignupForm):
         if not email:
             # If no email was provided, validation failed. Return
             return
-        UNIVERSITY_EMAIL_VALIDATORS[university](email, university)
+        UNIVERSITY_EMAIL_VALIDATORS[university](university, email, **cleaned_data)
         cleaned_data['university_email'] = email.lower()
 
         # Validate university ID
@@ -66,7 +66,7 @@ class CustomSignupForm(SignupForm):
         if not uid:
             # If no username was provided, validation failed. Return
             return
-        UNIVERSITY_ID_VALIDATORS[university](uid, university)
+        UNIVERSITY_ID_VALIDATORS[university](university, uid, **cleaned_data)
         cleaned_data['university_id'] = uid.lower()
         return cleaned_data
 
@@ -116,7 +116,7 @@ class CustomSocialSignupForm(SocialSignupForm):
         if not email:
             # If no email was provided, validation failed. Return
             return
-        UNIVERSITY_EMAIL_VALIDATORS[university](email, university)
+        UNIVERSITY_EMAIL_VALIDATORS[university](university, email, **cleaned_data)
         cleaned_data['university_email'] = email.lower()
 
         # Validate university ID
@@ -124,7 +124,7 @@ class CustomSocialSignupForm(SocialSignupForm):
         if not uid:
             # If no username was provided, validation failed. Return
             return
-        UNIVERSITY_ID_VALIDATORS[university](uid, university)
+        UNIVERSITY_ID_VALIDATORS[university](university, uid, **cleaned_data)
         cleaned_data['university_id'] = uid.lower()
         return cleaned_data
 

@@ -48,7 +48,7 @@
                 {% endfor %}
                 {% endfor %}
                 {% endif %}
-                <form class="signup ui form" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+                <form class="signup ui form" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
@@ -120,6 +120,21 @@
                         {{ form.email2 }}
                     </div>
                     <p id="confirm_email_check" class="hidden"><span class="ui red label">Atenção!</span> Tem <b><i>certeza</i></b> de que esse é seu email <b>acadêmico</b> e que ele está correto? Não há como mudar depois!</p>
+                    <br>
+                    <div class="ui field checkbox" id="is_alumni">
+                        <input type="checkbox" name="is_alumni">
+                        <label>Sou ex aluno sem acesso ao meu email acadêmico</label>
+                    </div>
+                    <br>
+                    <div class="field" id="student_proof">
+                        <label>{{ form.student_proof.label }}</label>
+                        {{ form.student_proof }}
+                    </div>
+                    <div class="field" id="contact_email">
+                        <label>{{ form.contact_email.label }}</label>
+                        {{ form.contact_email }}
+                    </div>
+                    <br>
                     <div class="two fields">
                         <div class="field">
                             <label>{{ form.course.label }}</label>
@@ -223,17 +238,52 @@
         add_search_query_form($(form));
     })
 
+    var unCheckableUniversities = [
+        'facamp'
+    ]
+
+    var ucu = false,
+        al = false;
 
     $("#id_gender").dropdown();
     $("#id_birthday_day").dropdown();
     $("#id_birthday_month").dropdown();
     $("#id_birthday_year").dropdown();
-    $("#id_university").dropdown();
+        $("#id_university").dropdown({
+        onChange: function(value, text, $selectedItem) {
+            if (unCheckableUniversities.indexOf(value) >= 0) {
+                ucu = true;
+            } else {
+                ucu = false;
+            }
+            if (!(ucu || al)) {
+                $('#student_proof').hide();
+            } else {
+                $('#student_proof').show();
+            }
+        }
+    });
     $("#id_likes_pets").dropdown();
     $("#id_likes_smoking").dropdown();
     $("#id_likes_music").dropdown();
     $("#id_likes_talking").dropdown();
     $('#confirm_email_check').hide();
+       $("#is_alumni").checkbox({
+        onChecked: function() {
+            al = true;
+            $('#student_proof').show();
+            $('#contact_email').show();
+        },
+        onUnchecked: function() {
+            al = false;
+            $('#contact_email').hide();
+            if (!(ucu || al)) {
+                $('#student_proof').hide();
+            }
+        }
+    });
+    $('#student_proof').hide();
+    $('#contact_email').hide();
 
     function captchaSpottedCallback() {
         $('#submit_button').prop("disabled", false);
@@ -281,7 +331,8 @@
 
     $.validate({
         lang: 'pt',
-        modules: 'brazil, logic'
+        modules: 'brazil, logic',
+        ignore: ':hidden'
     });
 
     function is_driver_func(attr) {

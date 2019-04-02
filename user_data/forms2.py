@@ -1,8 +1,9 @@
 from datetime import datetime
 from django import forms
+from django.core.validators import FileExtensionValidator
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
-from .models import Profile, Student, Driver, Preferences
+from .models import Profile, Student, Driver, Preferences, StudentProof
 from .models import GENDER_CHOICES, PET_CHOICES, SMOKING_CHOICES, TALKING_CHOICES, MUSIC_CHOICES, UNIVERSITY_CHOICES
 from phonenumber_field.formfields import PhoneNumberField
 
@@ -110,6 +111,24 @@ class ExtraSignupFields(forms.Form):
         required=False,
         choices=TALKING_CHOICES
     )
+    student_proof = forms.FileField(
+        label='Certificado de matrícula/diploma/foto da carteirinha/etc',
+        allow_empty_file=True,
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'png'])],
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                'data-validation': 'required',
+            })
+    )
+    contact_email = forms.EmailField(
+        label='Email para contato após verificação',
+        required=False,
+        widget=forms.EmailInput(
+            attrs={
+                'data-validation': 'required',
+            })
+    )
 
     # Captcha
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={"data-callback": "captchaSpottedCallback"}))
@@ -170,6 +189,12 @@ class ExtraSignupFields(forms.Form):
         # Process Notifications
         preferences = Preferences(user=user)
         preferences.save()
+
+        contact_email = cleaned_data.get('contact_email', cleaned_data['university_email'])
+
+        # Process Student Proof submission
+        if cleaned_data.get('student_proof', None):
+            StudentProof.create(student, contact_email, cleaned_data['student_proof'])
 
 
 class UniversityForm(forms.ModelForm):
