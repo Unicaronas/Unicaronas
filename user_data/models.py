@@ -339,11 +339,12 @@ Avalie em ''' + settings.ROOT_URL + reverse('admin:user_data_studentproof_change
         return 'Erro'
 
     def approve(self):
-        email_address, created = EmailAddress.objects.get_or_create(
-            user=self.student.user, email__iexact=self.contact_email, defaults={
-                "email": self.contact_email}
-        )
-        email_address.set_as_primary()
+        if self.contact_email:
+            email_address, created = EmailAddress.objects.get_or_create(
+                user=self.student.user, email__iexact=self.contact_email, defaults={
+                    "email": self.contact_email}
+            )
+            email_address.set_as_primary()
         emails = EmailAddress.objects.filter(user=self.student.user)
         emails.update(verified=True)
         approved_student_proof_email(self.student.user)

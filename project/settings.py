@@ -44,6 +44,18 @@ TEST_MODE = eval(os.environ.get('TEST_MODE', 'False').capitalize())
 
 ALLOWED_HOSTS = eval(os.environ.get('ALLOWED_HOSTS', '["*"]'))
 
+# Debug Toolbar
+SHOW_TOOLBAR_CALLBACK = eval(os.environ.get('SHOW_TOOLBAR_CALLBACK', 'DEBUG'))
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda r: SHOW_TOOLBAR_CALLBACK and r.user.is_superuser  # disables it
+}
+
+# Maintenance mode
+MAINTENANCE_MODE = eval(os.environ.get('MAINTENANCE_MODE', 'False'))
+MAINTENANCE_MODE_TEMPLATE = 'project/errors/503.html'
+MAINTENANCE_MODE_IGNORE_ADMIN_SITE = True
+MAINTENANCE_MODE_IGNORE_SUPERUSER = True
+
 # Sentry
 
 if not DEBUG and os.environ.get('SENTRY_DSN'):
@@ -82,10 +94,6 @@ INSTALLED_APPS = [
     'third_parties',
     'alarms',
 
-    'maintenance_mode',
-
-    'debug_toolbar',
-
     'oauth2_provider',
     'rest_framework',
     'rest_framework_filters',
@@ -97,8 +105,6 @@ INSTALLED_APPS = [
     'analytical',
 
     'drf_yasg',
-    'silk',
-    'nplusone.ext.django',
     'djcelery_email',
     'django_celery_beat',
     'phonenumber_field',
@@ -111,8 +117,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'silk.middleware.SilkyMiddleware',
-    'nplusone.ext.django.NPlusOneMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -121,10 +125,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'maintenance_mode.middleware.MaintenanceModeMiddleware',
     'crum.CurrentRequestUserMiddleware',
 ]
+if SHOW_TOOLBAR_CALLBACK:
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+if MAINTENANCE_MODE:
+    INSTALLED_APPS += ['maintenance_mode']
+    MIDDLEWARE += ['maintenance_mode.middleware.MaintenanceModeMiddleware']
 
 ROOT_URLCONF = 'project.urls'
 
@@ -285,20 +293,6 @@ ADMINS = [('Admin', os.environ.get('ADMIN_ACCOUNT')), ]
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
 
-# Debug Toolbar
-SHOW_TOOLBAR_CALLBACK = eval(os.environ.get('SHOW_TOOLBAR_CALLBACK', 'DEBUG'))
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda r: SHOW_TOOLBAR_CALLBACK and r.user.is_superuser  # disables it
-}
-
-
-# Maintenance mode
-MAINTENANCE_MODE = eval(os.environ.get('MAINTENANCE_MODE', 'False'))
-MAINTENANCE_MODE_TEMPLATE = 'project/errors/503.html'
-MAINTENANCE_MODE_IGNORE_ADMIN_SITE = True
-MAINTENANCE_MODE_IGNORE_SUPERUSER = True
-
-
 # OAuth2
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
@@ -430,16 +424,6 @@ GEOCODING_API_KEY = os.environ.get('GEOCODING_API_KEY')
 # Analytics
 GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID')
 GOOGLE_ANALYTICS_SITE_SPEED = True
-
-
-# Profiling
-SILKY_PYTHON_PROFILER = True
-SILKY_AUTHENTICATION = True
-SILKY_AUTHORISATION = True
-SILKY_PERMISSIONS = lambda user: user.is_superuser
-SILKY_META = True
-SILKY_MAX_RECORDED_REQUESTS = 10**3
-SILKY_INTERCEPT_PERCENT = 100 if DEBUG else 0
 
 
 # Watchman
