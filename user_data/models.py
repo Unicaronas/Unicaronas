@@ -1,5 +1,6 @@
 import requests
 from django.db import models
+from django.urls import reverse
 from django.conf import settings
 from django.core.mail import mail_admins
 from django.core.validators import FileExtensionValidator
@@ -318,7 +319,8 @@ class StudentProof(models.Model):
                 sp.save()
         mail_admins(
             subject='Novo pedido de aprovação de usuário',
-            message='Um novo usuário se cadastrou e pediu revisão manual de seu status de verificação'
+            message='''Um novo usuário se cadastrou e pediu revisão manual de seu status de verificação
+Avalie em ''' + settings.ROOT_URL + reverse('admin:user_data_studentproof_changelist')
         )
 
     @property
