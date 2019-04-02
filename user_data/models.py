@@ -312,7 +312,7 @@ class StudentProof(models.Model):
                 "apikey": settings.VIRUS_TOTAL_API_KEY,
                 "url": sp.proof.url
             })
-            if result.status_code == requests.codes.ok:
+            if result.status_code == requests.codes.ok and result.json()['response_code'] == 1:
                 sp.proof_scan_url = result.json()['permalink']
                 sp.proof_scan_id = result.json()['scan_id']
                 sp.save()
