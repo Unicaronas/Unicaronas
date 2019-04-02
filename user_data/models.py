@@ -317,6 +317,9 @@ class StudentProof(models.Model):
                 sp.proof_scan_url = result.json()['permalink']
                 sp.proof_scan_id = result.json()['scan_id']
                 sp.save()
+        user = student.user
+        user.is_active = False
+        user.save()
         mail_admins(
             subject='Novo pedido de aprovação de usuário',
             message='''Um novo usuário se cadastrou e pediu revisão manual de seu status de verificação
@@ -350,9 +353,15 @@ Avalie em ''' + settings.ROOT_URL + reverse('admin:user_data_studentproof_change
         approved_student_proof_email(self.student.user)
         self.status = self.approved_status
         self.save()
+        user = self.student.user
+        user.is_active = True
+        user.save()
 
     def deny(self):
         emails = EmailAddress.objects.filter(user=self.student.user)
         emails.update(verified=False)
         self.status = self.denied_status
         self.save()
+        user = self.student.user
+        user.is_active = False
+        user.save()
