@@ -42,7 +42,12 @@ class ExtraSignupFields(forms.Form):
     # Student
     university = forms.ChoiceField(
         label="Sua universidade",
-        choices=UNIVERSITY_CHOICES
+        choices=UNIVERSITY_CHOICES,
+        widget=forms.Select(
+            attrs={
+                'class': 'ui search selection dropdown'
+            }
+        )
     )
     university_id = forms.CharField(required=False, widget=forms.HiddenInput())
     university_email = forms.CharField(

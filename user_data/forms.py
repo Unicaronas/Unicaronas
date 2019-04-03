@@ -137,7 +137,7 @@ class CustomLoginForm(LoginForm):
         label="Sua universidade",
         widget=forms.Select(
             attrs={
-                "css": "ui fluid selection dropdown"
+                "css": "ui fluid search selection dropdown"
             }))
 
     def __init__(self, *args, **kwargs):
