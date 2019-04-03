@@ -84,7 +84,7 @@ class CustomSocialSignupForm(SocialSignupForm):
         label="Email universitário",
         widget=forms.TextInput(
             attrs={'type': 'email',
-                   'placeholder': 'Seu email na sua universidade',
+                   'placeholder': 'meu@email.com',
                    'data-validation': 'required email'}))
 
     def __init__(self, *args, **kwargs):
@@ -93,7 +93,7 @@ class CustomSocialSignupForm(SocialSignupForm):
         self.fields['email2'].label = "Email acadêmico (novamente)"
         self.fields['email2'].widget = forms.TextInput(
             attrs={'type': 'email',
-                   'placeholder': 'Confirme seu email universitário',
+                   'placeholder': 'meu@email.com',
                    'data-validation': 'required email confirmation',
                    'data-validation-confirm': 'email'})
         set_form_field_order(self, ['university'])
