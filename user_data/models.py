@@ -62,27 +62,27 @@ UNIVERSITY_CHOICES = (
 
 UNIVERSITY_EMAIL_VALIDATORS = {
     'unicamp': UniRegexValidator(
-        r'^([a-zA-Z\.-_]+@([a-zA-Z-_]+\.)*unicamp\.br)$',
+        r'^([a-zA-Z\.\-_]+@([a-zA-Z-_]+\.)*unicamp\.br)$',
         "Email inválido para {0}"
     ),
     'usp': UniRegexValidator(
-        r'^([a-zA-Z\.-_]+@([a-zA-Z-_]+\.)*usp\.br)$',
+        r'^([a-zA-Z\.\-_]+@([a-zA-Z-_]+\.)*usp\.br)$',
         "Email inválido para {0}"
     ),
     'unesp': UniRegexValidator(
-        r'^[a-zA-Z\.-_]+@unesp\.br$',
+        r'^[a-zA-Z\.\-_]+@unesp\.br$',
         "Email inválido para {0}"
     ),
     'unifesp': UniRegexValidator(
-        r'^[a-zA-Z\.-_]+@unifesp\.br$',
+        r'^[a-zA-Z\.\-_]+@unifesp\.br$',
         "Email inválido para {0}"
     ),
     'pucc': UniRegexValidator(
-        r'^[a-zA-Z\.-_]+@puccampinas\.edu\.br$',
+        r'^[a-zA-Z\.\-_]+@puccampinas\.edu\.br$',
         "Email inválido para {0}"
     ),
     'ifsp': UniRegexValidator(
-        r'^[a-zA-Z\.-_]+@ifsp\.edu\.br$',
+        r'^[a-zA-Z\.\-_]+@ifsp\.edu\.br$',
         "Email inválido para {0}"
     ),
     'facamp': FallbackUniRegexValidator(
