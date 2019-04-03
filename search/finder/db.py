@@ -14,7 +14,7 @@ class DBFinder(BaseFinder):
         # Only search for results that are not expired
         instance = self.find_instance(term)
         if instance is not None:
-            return Result(instance.query, instance.address, instance.point)
+            return Result(instance.query, instance.address, instance.point, instance.address_components)
         return None
 
     def _search(self, term):
