@@ -57,10 +57,11 @@
                     <div style="display: none" class="ui top attached tabular menu">
                         <a style="pointer-events: none" class="item active" data-tab="0" data-id="0">Básico</a>
                         <a style="pointer-events: none" class="item" data-tab="1" data-id="1">Universidade</a>
-                        <a style="pointer-events: none" class="item" data-tab="2" data-id="2">É motorista?</a>
-                        <a style="pointer-events: none" class="item" data-tab="3" data-id="3">Motorista</a>
-                        <a style="pointer-events: none" class="item" data-tab="4" data-id="4">Senha</a>
-                        <a style="pointer-events: none" class="item" data-tab="5" data-id="5">Captcha</a>
+                        <a style="pointer-events: none" class="item" data-tab="2" data-id="2">Seus dados na uni</a>
+                        <a style="pointer-events: none" class="item" data-tab="3" data-id="3">É motorista?</a>
+                        <a style="pointer-events: none" class="item" data-tab="4" data-id="4">Motorista</a>
+                        <a style="pointer-events: none" class="item" data-tab="5" data-id="5">Senha</a>
+                        <a style="pointer-events: none" class="item" data-tab="6" data-id="6">Captcha</a>
                     </div>
                     <div class="ui transition fade in top attached tab active" data-tab="0">
                         <h1>Nos fale um pouco sobre você</h1>
@@ -102,13 +103,27 @@
                     </div>
                 </div>
                 <div class="ui transition fade in top attached tab" data-tab="1">
-                    <h1>Agora sobre onde você estuda</h1>
-                    <p>Unicaronas é exclusivo para universitários, então precisamos saber se você é um(a)</p>
+                    <h1>Qual sua universidade?</h1>
                     <div class="field">
                         <label>{{ form.university.label }}</label>
                         {{ form.university }}
                         <span class="help-block"><a href="{% url 'missing_university' %}" target="_blank">Não achou a sua?</a></span>
                     </div>
+                    <br>
+                    <div class="ui field checkbox" id="is_alumni">
+                        <input type="checkbox" name="is_alumni">
+                        <label>Sou ex aluno sem acesso ao meu email acadêmico</label>
+                    </div>
+                    <br>
+                    <div class="ui divider"></div>
+                    <div style="text-align: right;">
+                        <button type="button" class="ui button red" onclick="previous_tab(1)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button green" onclick="next_tab(1)">Próximo<i class="icon angle right"></i></button>
+                    </div>
+                </div>
+                <div class="ui transition fade in top attached tab" data-tab="2">
+                    <h1>Fale um pouco mais sobre você na universidade</h1>
+                    <p>Unicaronas é exclusivo para universitários, então precisamos saber se você é um(a)</p>
                     <div class="field">
                         <label>{{ form.username.label }}</label>
                         {{ form.username }}
@@ -122,12 +137,6 @@
                         {{ form.email2 }}
                     </div>
                     <p id="confirm_email_check" class="hidden"><span class="ui red label">Atenção!</span> Tem <b><i>certeza</i></b> de que esse é seu email <b>acadêmico</b> e que ele está correto? Não há como mudar depois!</p>
-                    <br>
-                    <div class="ui field checkbox" id="is_alumni">
-                        <input type="checkbox" name="is_alumni">
-                        <label>Sou ex aluno sem acesso ao meu email acadêmico</label>
-                    </div>
-                    <br>
                     <div class="field" id="student_proof">
                         <label>{{ form.student_proof.label }}</label>
                         {{ form.student_proof }}
@@ -149,11 +158,11 @@
                     </div>
                     <div class="ui divider"></div>
                     <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(1)"><i class="icon angle left"></i>Anterior</button>
-                        <button type="button" class="ui button green" onclick="next_tab(1)">Próximo<i class="icon angle right"></i></button>
+                        <button type="button" class="ui button red" onclick="previous_tab(2)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button green" onclick="next_tab(2)">Próximo<i class="icon angle right"></i></button>
                     </div>
                 </div>
-                <div class="ui transition fade in top attached tab" data-tab="2">
+                <div class="ui transition fade in top attached tab" data-tab="3">
                     <h1>Você é motorista?</h1>
                     <br>
                     <div class="two fields">
@@ -165,10 +174,10 @@
                         </div>
                     </div>
                     <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(2)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
                     </div>
                 </div>
-                <div class="ui transition fade in top attached tab" data-tab="3">
+                <div class="ui transition fade in top attached tab" data-tab="4">
                     <h1>Como serão suas caronas?</h1>
                     <p>Essas infos só serão compartilhadas com quem confirmar caronas com você</p>
                     <input hidden id="is_driver" name="is_driver" type="checkbox" value="0">
@@ -206,11 +215,11 @@
                     </div>
                     <div class="ui divider"></div>
                     <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
-                        <button type="button" class="ui button green" onclick="next_tab(3)">Próximo<i class="icon angle right"></i></button>
+                        <button type="button" class="ui button red" onclick="previous_tab(4)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button green" onclick="next_tab(4)">Próximo<i class="icon angle right"></i></button>
                     </div>
                 </div>
-                <div class="ui transition fade in top attached tab" data-tab="4">
+                <div class="ui transition fade in top attached tab" data-tab="5">
                     <h1>Segurança!</h1>
                     <p>Não se preocupe, você vai poder associar sua conta do Facebook/Google a essa conta para não ter que lembrar dessa senha :)</p>
                     <div class="field">
@@ -223,11 +232,11 @@
                     </div>
                     <div class="ui divider"></div>
                     <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
-                        <button type="button" class="ui button green" onclick="next_tab(4)">Próximo<i class="icon angle right"></i></button>
+                        <button type="button" class="ui button red" onclick="previous_tab(4)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button green" onclick="next_tab(5)">Próximo<i class="icon angle right"></i></button>
                     </div>
                 </div>
-                <div class="ui transition fade in top attached tab" data-tab="5">
+                <div class="ui transition fade in top attached tab" data-tab="6">
                     <h1>Quase lá!</h1>
                     <p>Precisamos ter certeza de que você está mesmo aí</p>
                     <br>
@@ -235,7 +244,7 @@
                     <br><br>
                     <div class="ui divider"></div>
                     <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(5)"><i class="icon angle left"></i>Anterior</button>
+                        <button type="button" class="ui button red" onclick="previous_tab(6)"><i class="icon angle left"></i>Anterior</button>
                         <button id="submit_button" disabled class="ui button blue"><i class="send icon"></i> Criar conta</button>
                     </div>
                 </div>
@@ -288,6 +297,9 @@
     var ucu = false,
         al = false;
 
+    var initial_email_label = $('#id_email').prev().text(),
+        initial_email2_label = $('#id_email2').prev().text();
+
     $("#id_gender").dropdown();
     $("#id_birthday_day").dropdown();
     $("#id_birthday_month").dropdown();
@@ -296,11 +308,15 @@
         onChange: function(value, text, $selectedItem) {
             if (unCheckableUniversities.indexOf(value) >= 0) {
                 ucu = true;
+                $('#id_email').prev().text('Seu email');
+                $('#id_email2').prev().text('Seu email (novamente)');
             } else {
                 ucu = false;
             }
             if (!(ucu || al)) {
                 $('#student_proof').hide();
+                $('#id_email').prev().text(initial_email_label);
+                $('#id_email2').prev().text(initial_email2_label);
             } else {
                 $('#student_proof').show();
             }
@@ -316,12 +332,16 @@
             al = true;
             $('#student_proof').show();
             $('#contact_email').show();
+            $('#id_email').prev().text('Seu antigo email acadêmico');
+            $('#id_email2').prev().text('Seu antigo email acadêmico (novamente)');
         },
         onUnchecked: function() {
             al = false;
             $('#contact_email').hide();
             if (!(ucu || al)) {
                 $('#student_proof').hide();
+                $('#id_email').prev().text(initial_email_label);
+                $('#id_email2').prev().text(initial_email2_label);
             }
         }
     });
@@ -370,22 +390,24 @@
 
     //user is "finished typing," do something
     function doneTyping () {
-        $('#confirm_email_check').show();
+        if (!ucu) {
+            $('#confirm_email_check').show();
+        }
     }
 
     $.validate({
         lang: 'pt',
-        modules: 'brazil, logic',
+        modules: 'brazil, logic file',
         ignore: ':hidden'
     });
 
     function is_driver_func(attr) {
         $("#is_driver").prop('checked', attr);
         if (attr) {
-            next_tab(2);
+            next_tab(3);
         }
         else {
-            next_tab(3)
+            next_tab(4)
         }
     }
 </script>

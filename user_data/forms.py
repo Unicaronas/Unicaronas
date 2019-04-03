@@ -18,16 +18,16 @@ class CustomSignupForm(SignupForm):
         label="Email universitário",
         widget=forms.TextInput(
             attrs={'type': 'email',
-                   'placeholder': 'Seu email na sua universidade',
+                   'placeholder': 'meu@email.com',
                    'data-validation': 'required email'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].label = "Email acadêmico (se tiver)"
+        self.fields['email'].label = "Email acadêmico"
         self.fields['email2'].label = "Email acadêmico (novamente)"
         self.fields['email2'].widget = forms.TextInput(
             attrs={'type': 'email',
-                   'placeholder': 'Confirme seu email universitário',
+                   'placeholder': 'meu@email.com',
                    'data-validation': 'required email confirmation',
                    'data-validation-confirm': 'email'})
         self.fields['password1'].widget = forms.TextInput(

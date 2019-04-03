@@ -118,7 +118,9 @@ class ExtraSignupFields(forms.Form):
         required=False,
         widget=forms.FileInput(
             attrs={
-                'data-validation': 'required',
+                'data-validation': 'required size mime',
+                'data-validation-max-size': '5M',
+                'data-validation-allowing': 'jpg, png, pdf'
             })
     )
     contact_email = forms.EmailField(
@@ -126,7 +128,7 @@ class ExtraSignupFields(forms.Form):
         required=False,
         widget=forms.EmailInput(
             attrs={
-                'data-validation': 'required',
+                'data-validation': 'required email',
             })
     )
 
