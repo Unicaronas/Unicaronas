@@ -155,7 +155,7 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
         }
         url = unquote_plus(self.request._request.build_absolute_uri(
             self.path))
-        if 'https' not in settings.PRODUCTION_SERVER:
+        if 'https' not in url:
             url = url.replace('http', 'https')
         template_context = {
             "request_url": url,
