@@ -389,7 +389,7 @@ else:
 
 # Documentation settings
 SWAGGER_SETTINGS = {
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'project.swagger_schema.CustomTagAutoSchema',
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'project.swagger_schema.CustomServersAutoSchema',
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
         'OAuth2': {
@@ -413,6 +413,8 @@ Abaixo você encontrará os `scopes` disponíveis e suas descrições, além das
     },
 }
 
+PRODUCTION_SERVER = os.environ.get('PRODUCTION_SERVER', ROOT_URL)
+SANDBOX_SERVER = os.environ.get('SANDBOX_SERVER')
 
 # Phonenumbers
 PHONENUMBER_DB_FORMAT = 'NATIONAL'

@@ -2,6 +2,7 @@ from collections import OrderedDict
 from urllib.parse import urlencode, unquote_plus
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from django.conf import settings
 from django.template.loader import render_to_string
 from drf_yasg.inspectors.view import SwaggerAutoSchema, force_real_str
 from drf_yasg.generators import OpenAPISchemaGenerator
@@ -133,7 +134,8 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
         return type_map[param_type](parameter)
 
     def get_normalized_form_parameters(self):
-        parameters = self.get_request_form_parameters(self.get_request_serializer())
+        parameters = self.get_request_form_parameters(
+            self.get_request_serializer())
         return OrderedDict([
             (parameter.name, self.generate_example_value(parameter)) for parameter in parameters if getattr(parameter, 'required', False)
         ])
@@ -151,9 +153,12 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
             'Authorization': f'Bearer {get_random_string(30)}',
             'Accept': self.get_produces()[0]
         }
-
+        url = unquote_plus(self.request._request.build_absolute_uri(
+            self.path))
+        if 'https' in settings.PRODUCTION_SERVER:
+            url = url.replace('http', 'https')
         template_context = {
-            "request_url": unquote_plus(self.request._request.build_absolute_uri(self.path)),
+            "request_url": url,
             "method": self.method,
             "payload": payload,
             "query": query,
@@ -192,7 +197,8 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
         operation_id = self.get_operation_id(operation_keys)
         summary, description = self.get_summary_and_description()
         security = self.get_security()
-        assert security is None or isinstance(security, list), "security must be a list of securiy requirement objects"
+        assert security is None or isinstance(
+            security, list), "security must be a list of securiy requirement objects"
         deprecated = self.is_deprecated()
         tags = self.get_tags(operation_keys)
 
@@ -224,9 +230,35 @@ class CustomTagAutoSchema(XCodeSampleAutoSchema):
         return super().get_tags(operation_keys)
 
 
+class CustomServersAutoSchema(CustomTagAutoSchema):
+
+    def get_servers(self):
+        version = getattr(self.request, 'version', None)
+        prod = settings.PRODUCTION_SERVER + f'/api/{version}'
+        servers = [
+            {
+                'url': prod,
+                'description': 'Servidor Produção'
+            }
+        ]
+        if settings.SANDBOX_SERVER:
+            sand = settings.SANDBOX_SERVER + f'/api/{version}'
+            servers.append({
+                'url': sand,
+                'description': 'Servidor Sandbox'
+            })
+        return servers
+
+    def get_operation(self, operation_keys):
+        operation = super().get_operation(operation_keys)
+        setattr(operation, 'servers', self.get_servers())
+        return operation
+
+
 class TaggedDescriptionSchemaGenerator(OpenAPISchemaGenerator):
     def get_schema(self, *args, **kwargs):
         swagger = super().get_schema(*args, **kwargs)
-        tags = {tag for path in swagger.paths.items() for op in path[1].operations for tag in op[1].tags}
+        tags = {tag for path in swagger.paths.items()
+                for op in path[1].operations for tag in op[1].tags}
         swagger.tags = [tag_extra_data.get(tag, {'name': tag}) for tag in tags]
         return swagger
