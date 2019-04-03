@@ -1,5 +1,6 @@
 from django.urls import path, include
 from django.conf import settings
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -248,7 +249,7 @@ Se você continuar sem receber webhooks de um usuário em particular, significa 
         license=openapi.License(
             name="AGPL3", url="https://opensource.org/licenses/AGPL-3.0"),
         x_logo={
-            "url": "/static/project/img/social/og-image.jpg",
+            "url": static('project/img/social/og-image.jpg'),
             "backgroundColor": "#FFFFFF"
         }
     ),
