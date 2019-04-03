@@ -6,6 +6,7 @@ __pycache__/
 *.sublime-project
 *.sublime-workspace
 maintenance_mode_state.txt
+uploads/
 # C extensions
 
 
