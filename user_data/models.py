@@ -154,7 +154,7 @@ class Student(models.Model):
     )
     university = models.CharField(
         'Sua universidades',
-        max_length=100,
+        max_length=30,
         choices=UNIVERSITY_CHOICES
     )
     university_email = models.EmailField(

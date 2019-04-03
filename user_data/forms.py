@@ -7,13 +7,19 @@ from .models import UNIVERSITY_EMAIL_VALIDATORS, UNIVERSITY_ID_VALIDATORS, UNIVE
 
 class CustomSignupForm(SignupForm):
 
-    username = forms.CharField(label="ID acadêmica (RA, etc)",
-                               min_length=app_settings.USERNAME_MIN_LENGTH,
-                               widget=forms.TextInput(
-                                   attrs={'placeholder':
-                                          '123456',
-                                          'autofocus': 'autofocus',
-                                          'data-validation': 'required'}))
+    username = forms.CharField(
+        label="ID acadêmica (RA, etc)",
+        min_length=app_settings.USERNAME_MIN_LENGTH,
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder':
+                '123456',
+                'autofocus': 'autofocus',
+                'data-validation': 'required length',
+                'data-validation-length': 'max30'
+            }
+        ))
     email = forms.EmailField(
         label="Email universitário",
         widget=forms.TextInput(
@@ -58,7 +64,8 @@ class CustomSignupForm(SignupForm):
         if not email:
             # If no email was provided, validation failed. Return
             return
-        UNIVERSITY_EMAIL_VALIDATORS[university](university, email, **cleaned_data)
+        UNIVERSITY_EMAIL_VALIDATORS[university](
+            university, email, **cleaned_data)
         cleaned_data['university_email'] = email.lower()
 
         # Validate university ID
@@ -73,13 +80,19 @@ class CustomSignupForm(SignupForm):
 
 class CustomSocialSignupForm(SocialSignupForm):
 
-    username = forms.CharField(label="ID acadêmica (RA, etc)",
-                               min_length=app_settings.USERNAME_MIN_LENGTH,
-                               widget=forms.TextInput(
-                                   attrs={'placeholder':
-                                          '123456',
-                                          'autofocus': 'autofocus',
-                                          'data-validation': 'required'}))
+    username = forms.CharField(
+        label="ID acadêmica (RA, etc)",
+        min_length=app_settings.USERNAME_MIN_LENGTH,
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder':
+                '123456',
+                'autofocus': 'autofocus',
+                'data-validation': 'required length',
+                'data-validation-length': 'max30'
+            }
+        ))
     email = forms.EmailField(
         label="Email universitário",
         widget=forms.TextInput(
@@ -116,7 +129,8 @@ class CustomSocialSignupForm(SocialSignupForm):
         if not email:
             # If no email was provided, validation failed. Return
             return
-        UNIVERSITY_EMAIL_VALIDATORS[university](university, email, **cleaned_data)
+        UNIVERSITY_EMAIL_VALIDATORS[university](
+            university, email, **cleaned_data)
         cleaned_data['university_email'] = email.lower()
 
         # Validate university ID
@@ -142,9 +156,13 @@ class CustomLoginForm(LoginForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        login_widget = forms.TextInput(attrs={'placeholder':
-                                              'Seu RA, etc',
-                                              'autofocus': 'autofocus'})
+        login_widget = forms.TextInput(
+            attrs={
+                'placeholder':
+                'Seu RA, etc',
+                'autofocus': 'autofocus'
+            }
+        )
         login_field = forms.CharField(
             label="ID universitário",
             widget=login_widget)

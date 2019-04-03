@@ -12,13 +12,21 @@ class ExtraSignupFields(forms.Form):
     # Basic
     first_name = forms.CharField(
         label="Primeiro nome",
+        max_length=30,
         widget=forms.TextInput(
-            attrs={'data-validation': 'required'})
+            attrs={
+                'data-validation': 'required length',
+                'data-validation-length': 'max30'
+            })
     )
     last_name = forms.CharField(
         label="Sobrenome",
+        max_length=100,
         widget=forms.TextInput(
-            attrs={'data-validation': 'required'})
+            attrs={
+                'data-validation': 'required length',
+                'data-validation-length': 'max100'
+            })
     )
 
     # Profile
@@ -54,6 +62,8 @@ class ExtraSignupFields(forms.Form):
         required=False, widget=forms.HiddenInput())
     enroll_year = forms.IntegerField(
         label="Ano de ingresso",
+        max_value=datetime.now().year,
+        min_value=datetime.now().year - 25,
         widget=forms.TextInput(
             attrs={
                 'data-validation': 'number',
@@ -62,35 +72,45 @@ class ExtraSignupFields(forms.Form):
     )
     course = forms.CharField(
         label="Curso",
+        max_length=100,
         widget=forms.TextInput(
-            attrs={'data-validation': 'required'})
+            attrs={
+                'data-validation': 'required length',
+                'data-validation-length': 'max100'
+            })
     )
 
     # Driver info
     car_make = forms.CharField(
         label="Marca do carro",
         required=False,
+        max_length=50,
         widget=forms.TextInput(
             attrs={
-                'data-validation': 'required',
+                'data-validation': 'required length',
+                'data-validation-length': 'max50',
                 'data-validation-depends-on': 'is_driver'
             })
     )
     car_model = forms.CharField(
         label="Modelo do carro",
         required=False,
+        max_length=50,
         widget=forms.TextInput(
             attrs={
-                'data-validation': 'required',
+                'data-validation': 'required length',
+                'data-validation-length': 'max50',
                 'data-validation-depends-on': 'is_driver'
             })
     )
     car_color = forms.CharField(
         label="Cor do carro",
         required=False,
+        max_length=30,
         widget=forms.TextInput(
             attrs={
-                'data-validation': 'required',
+                'data-validation': 'required length',
+                'data-validation-length': 'max30',
                 'data-validation-depends-on': 'is_driver'
             })
     )
