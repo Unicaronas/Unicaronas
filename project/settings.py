@@ -168,13 +168,13 @@ DATABASES = {
 
 
 # Since the site is behind Cloudflare, manually set it to use https
-if eval(os.environ.get('USE_HTTPS', 'False')):
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    os.environ['wsgi.url_scheme'] = 'https'
-    os.environ['HTTPS'] = "on"
+# if eval(os.environ.get('USE_HTTPS', 'False')):
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#     SECURE_SSL_REDIRECT = True
+#     SESSION_COOKIE_SECURE = True
+#     CSRF_COOKIE_SECURE = True
+#     os.environ['wsgi.url_scheme'] = 'https'
+#     os.environ['HTTPS'] = "on"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -275,7 +275,7 @@ DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Email settings
