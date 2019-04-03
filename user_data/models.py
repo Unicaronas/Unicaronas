@@ -55,9 +55,9 @@ UNIVERSITY_CHOICES = (
     ('usp', 'USP'),
     ('unesp', 'Unesp'),
     ('unifesp', 'Unifesp'),
+    ('facamp', 'FACAMP'),
     ('pucc', 'PUC-Campinas'),
     ('ifsp', 'IFSP'),
-    ('facamp', 'FACAMP')
 )
 
 UNIVERSITY_EMAIL_VALIDATORS = {
