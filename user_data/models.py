@@ -55,6 +55,7 @@ UNIVERSITY_CHOICES = (
     ('usp', 'USP'),
     ('unesp', 'Unesp'),
     ('unifesp', 'Unifesp'),
+    ('ufscar', 'UFSCar'),
     ('facamp', 'FACAMP'),
     ('pucc', 'PUC-Campinas'),
     ('ifsp', 'IFSP'),
@@ -88,6 +89,10 @@ UNIVERSITY_EMAIL_VALIDATORS = {
     'facamp': FallbackUniRegexValidator(
         r'a^',
         "Alunos da {0} deve submeter seu atestado de matrícula/diploma"
+    ),
+    'ufscar': UniRegexValidator(
+        r'^([a-zA-Z0-9_.+-]+@([a-zA-Z-_]+\.)*ufscar\.br)$',
+        "Email inválido para {0}"
     )
 }
 
@@ -118,6 +123,10 @@ UNIVERSITY_ID_VALIDATORS = {
     ),
     'facamp': UniRegexValidator(
         r'^\d{7,12}$',
+        "RA inválido para {0}"
+    ),
+    'ufscar': UniRegexValidator(
+        r'^\d{5,10}$',
         "RA inválido para {0}"
     )
 }
