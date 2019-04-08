@@ -235,6 +235,9 @@ class Passenger(models.Model):
         self.status = 'denied'
         self.save()
         trips_webhooks.PassengerDeniedWebhook(self).send()
+        # if the trip was full and now it is not, send alarms
+        if self.trip.get_seats_left() == 1:
+            dispatch_alarms.delay(self.trip.id)
 
     def forfeit(self):
         if self.status == 'denied':
@@ -244,11 +247,17 @@ class Passenger(models.Model):
         self.status = 'denied'
         self.save()
         trips_webhooks.PassengerForfeitWebhook(self).send()
+        # if the trip was full and now it is not, send alarms
+        if self.trip.get_seats_left() == 1:
+            dispatch_alarms.delay(self.trip.id)
 
     def trip_deleted(self):
         trips_webhooks.TripDeletedWebhook(self).send()
 
     def give_up(self):
+        # if the trip was full and now it is not, send alarms
+        if self.trip.is_full:
+            dispatch_alarms.delay(self.trip.id)
         self.delete()
 
     def __str__(self):
