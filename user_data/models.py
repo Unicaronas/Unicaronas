@@ -90,7 +90,7 @@ UNIVERSITY_EMAIL_VALIDATORS = {
         r'a^',
         "Alunos da {0} deve submeter seu atestado de matrícula/diploma"
     ),
-    'ufscar': UniRegexValidator(
+    'ufscar': FallbackUniRegexValidator(
         r'^([a-zA-Z0-9_.+-]+@([a-zA-Z-_]+\.)*ufscar\.br)$',
         "Email inválido para {0}"
     )
