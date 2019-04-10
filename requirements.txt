@@ -44,7 +44,7 @@ drf-yasg==1.14.0
 django-allauth==0.39.1
 
 # oauth2
-https://github.com/Maronato/django-oauth-toolkit/archive/PKCE-support-with-oauthlib-3.zip
+https://github.com/Maronato/django-oauth-toolkit/archive/grace-rotation-fix.zip
 # django-oauth-toolkit
 cryptography==2.6.1
 
