@@ -5,9 +5,10 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Q, F, Prefetch
 from project.db.functions.aggregations import annotate_final_score
-from oauth2_provider.models import get_application_model, get_refresh_token_model, get_access_token_model
+from oauth2_provider.models import get_application_model
 from oauth.forms import ApplicationForm
 from oauth.models import ApplicationRating
+from oauth.tasks import revoke_tokens
 from ..tasks import new_app_published
 
 
@@ -68,22 +69,10 @@ class RevokeAccess(LoginRequiredMixin, generic.View):
 
     def post(self, request):
         app_id = request.POST.get('application_id', False)
+        revoke_tokens.delay(app_id, request.user.id)
         app = get_application_model().objects.filter(id=app_id)
         if app.exists():
-            app = app.first()
-            refresh_tokens = get_refresh_token_model().objects.filter(
-                user=request.user,
-                application=app
-            )
-            for token in refresh_tokens:
-                token.revoke()
-            access_tokens = get_access_token_model().objects.filter(
-                user=request.user,
-                application=app
-            )
-            for token in access_tokens:
-                token.revoke()
-            messages.add_message(request, messages.SUCCESS, f'Acesso de {app.name} revogado com sucesso')
+            messages.add_message(request, messages.SUCCESS, f'Estamos revogando o acesso de {app.first().name}. Isso pode levar alguns segundos.')
         return redirect('apps_connected')
 
 
