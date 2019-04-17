@@ -24,6 +24,7 @@ class DriverTripViewset(
         mixins.RetrieveModelMixin,
         mixins.ListModelMixin,
         mixins.CreateModelMixin,
+        mixins.UpdateModelMixin,
         mixins.DestroyModelMixin,
         viewsets.GenericViewSet):
     """Endpoint dos motoristas
@@ -168,6 +169,40 @@ class DriverTripViewset(
         headers = self.get_success_headers(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @swagger_auto_schema(
+        responses={
+            200: DriverTripCreateUpdateSerializer,
+            404: 'Carona não existe, já aconteceu, ou você não tem permissão para acessá-la',
+            400: 'Dados do pedido contém erros',
+        },
+        security=[
+            {'OAuth2': ['trips:driver:write']}
+        ]
+    )
+    def update(self, request, *args, **kwargs):
+        """Atualizar carona
+
+        Permite a alteração de dados de caronas que **ainda não aconteceram**. Caso a carona já tenha acontecido, a resposta desse endpoint será um erro *404*.
+        """
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={
+            200: DriverTripCreateUpdateSerializer,
+            400: 'Dados do pedido contém erros',
+            404: 'Carona não existe, já aconteceu, ou você não tem permissão para acessá-la',
+        },
+        security=[
+            {'OAuth2': ['trips:driver:write']}
+        ]
+    )
+    def partial_update(self, *args, **kwargs):
+        """Atualizar parcialmente carona
+
+        Permite a alteração de dados de caronas que **ainda não aconteceram**. Caso a carona já tenha acontecido, a resposta desse endpoint será um erro *404*.
+        """
+        return super().partial_update(*args, **kwargs)
 
     @swagger_auto_schema(
         responses={

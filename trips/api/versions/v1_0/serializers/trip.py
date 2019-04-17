@@ -1,5 +1,6 @@
 from django.db.models import F, Q, Sum
 from django.db.models.functions import Coalesce
+from django.utils import timezone
 from rest_framework import serializers
 from project.mixins import PrefetchMixin, QueryFieldsMixin
 from search.pipeline import RequestPipeline
@@ -20,6 +21,16 @@ class BaseTripCreateUpdateSerializer(serializers.HyperlinkedModelSerializer):
         validated_data['user'] = user
         validated_data['application'] = app
         return Trip.create_trip(**validated_data)
+
+    def validate_datetime(self, value):
+        if value <= timezone.now():
+            raise serializers.ValidationError('Caronas devem estar no futuro')
+        return value
+
+    def validate_max_seats(self, value):
+        if self.instance and value < self.instance.get_seats_taken():
+            raise serializers.ValidationError('Certifique-se de que max_seats é maior ou igual ao número de assentos reservados.')
+        return value
 
     def validate(self, data):
         data = super().validate(data)

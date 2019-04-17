@@ -85,14 +85,16 @@ class Trip(models.Model):
     def get_destination_adm_area_1(self, short=False):
         return self.get_address_component('administrative_area_level_1', 'destination_address_components', short)
 
+    def get_seats_taken(self):
+        return self.passengers.exclude(
+            status="denied"
+        ).aggregate(seats_taken=Coalesce(Sum('seats'), 0))['seats_taken']
+
     def get_seats_left(self):
         """Quantos assentos restam na carona
         Apenas passageiros em espera e confirmados são considerados
         """
-        seats_taken = self.passengers.exclude(
-            status="denied"
-        ).aggregate(seats_taken=Coalesce(Sum('seats'), 0))['seats_taken']
-        return max(0, self.max_seats - seats_taken)
+        return max(0, self.max_seats - self.get_seats_taken())
 
     @property
     def is_full(self):
