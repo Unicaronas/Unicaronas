@@ -9,7 +9,7 @@ from project.utils import import_current_version_module
 from alarms.tasks import dispatch_alarms
 from .exceptions import PassengerBookedError, TripFullError, PassengerNotBookedError, UserNotDriverError, PassengerApprovedError, PassengerDeniedError, PassengerPendingError, NotEnoughSeatsError
 from .utils import user_is_driver
-from .tasks import publish_new_trip_on_fb
+from .tasks import publish_new_trip_on_fb, unpublish_trip_from_fb
 # Create your models here.
 
 
@@ -63,6 +63,8 @@ class Trip(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
+
+    facebook_post_id = models.CharField(blank=True, max_length=200)
 
     def get_address_component(self, component, source, short=False):
         attr = 'short_name' if short else 'long_name'
@@ -168,6 +170,8 @@ class Trip(models.Model):
     def delete_trip(self):
         for passenger in self.passengers.exclude(status='denied'):
             passenger.trip_deleted()
+        # Unpublish from facebook
+        unpublish_trip_from_fb.delay(self.facebook_post_id)
         self.delete()
 
     @classmethod

@@ -38,8 +38,21 @@ def publish_new_trip_on_fb(trip_id):
 
         message, url = build_post(trip)
 
-        graph.put_object(
+        response = graph.put_object(
             parent_object="me",
             connection_name="feed",
             message=message,
             link=url)
+        trip.facebook_post_id = response.get('id', '')
+        trip.save()
+
+
+@shared_task
+def unpublish_trip_from_fb(post_id):
+    if post_id and settings.FACEBOOK_PAGE_ACCESS_TOKEN:
+        graph = facebook.GraphAPI(
+            access_token=settings.FACEBOOK_PAGE_ACCESS_TOKEN, version="3.1")
+        try:
+            graph.delete_object(post_id)
+        except facebook.GraphAPIError:
+            pass
