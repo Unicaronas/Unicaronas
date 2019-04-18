@@ -114,3 +114,38 @@ class DriverPassengerGiveUpWebhook(BaseDriverWebhook):
                 }
             )
         return payload, recipients
+
+
+class DriverReminderWebhook(BaseDriverWebhook):
+    """Driver Reminder Webhook
+
+    Webhook that sends notifications that
+    a new passenger is pending on a trip owned by the user
+    """
+
+    permissions = ['trips:driver:read']
+    event = 'driver_reminder'
+    passenger_allows_field = 'updates_notifications'
+
+    def __init__(self, trip):
+        if self.driver_allows(trip.user):
+            payload, recipients = self.get_payload_recipients(trip)
+        else:
+            payload, recipients = ([], [])
+        super(BaseDriverWebhook, self).__init__(self.event, payload, recipients)
+
+    def get_payload_recipients(self, trip):
+        recipients = []
+        payload = []
+        user = trip.user
+        for app in self.get_valid_apps(user):
+            recipients.append(app.webhook_url)
+            user_id = app.get_scoped_user_id(app, user)
+            payload.append(
+                {
+                    'user_id': user_id,
+                    'trip_id': trip.id,
+                    'resource_url': settings.ROOT_URL + reverse(local_versioned_url_name('api:driver-trips-detail', __file__, 2), kwargs={'id': trip.id})
+                }
+            )
+        return payload, recipients

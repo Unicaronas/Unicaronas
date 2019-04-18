@@ -132,3 +132,15 @@ class TripDeletedWebhook(BasePassengerWebhook):
                 }
             )
         return payload, recipients
+
+
+class PassengerReminderWebhook(BasePassengerWebhook):
+    """Passenger Reminder Webhook
+
+    Webhook that sends notifications a couple hours before
+    the trip to remind passengers
+    """
+
+    permissions = ['trips:passenger:read']
+    event = 'passenger_reminder'
+    passenger_allows_field = 'updates_notifications'

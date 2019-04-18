@@ -27,7 +27,7 @@ Clique no link pra reservar 👇"""
 
 @shared_task
 def publish_new_trip_on_fb(trip_id):
-    from .models import Trip
+    from ..models import Trip
     if settings.FACEBOOK_PAGE_ACCESS_TOKEN:
         graph = facebook.GraphAPI(
             access_token=settings.FACEBOOK_PAGE_ACCESS_TOKEN, version="3.1")

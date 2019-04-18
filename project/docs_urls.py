@@ -96,6 +96,7 @@ Abaixo está a lista de webhooks disponíveis com seus eventos ativadores e o co
 |`passenger_denied`|Seu usuário foi negado em uma carona pelo motorista|`trips:passenger:read`|
 |`passenger_forfeit`|Seu usuário foi removido de uma carona pelo motorista|`trips:passenger:read`|
 |`trip_deleted`|Uma viagem em que seu usuário era passageiro foi apagada pelo motorista|`trips:passenger:read`|
+|`passenger_reminder`|Lembrete de que seu usuário tem uma carona|`trips:passenger:read`|
 
 ### Formato de `passenger_pending`:
 ```json
@@ -153,12 +154,24 @@ Abaixo está a lista de webhooks disponíveis com seus eventos ativadores e o co
     }
 }
 ```
+### Formato de `passenger_reminder`:
+```json
+{
+    "event": "passenger_reminder",
+    "payload": {
+        "user_id": "abc123",                                // ID de usuário do passageiro (seu usuário)
+        "trip_id": "42",                                    // ID da carona
+        "resource_url": "https://unicaronas.com/api/..."    // URL da carona no endpoint Passageiro -> Detalhes de uma carona
+    }
+}
+```
 ## Webhooks para motoristas
 |Evento|Detalhes|Permissão necessária|
 |--|--|--|
 |`driver_passenger_pending`|Um passageiro está pendente em uma carona do seu usuário|`trips:driver:read`|
 |`driver_passenger_approved`|Um passageiro foi aprovado em uma carona do seu usuário|`trips:driver:read`|
 |`driver_passenger_give_up`|Um passageiro em uma carona do seu usuário desistiu da viagem|`trips:driver:read`|
+|`driver_reminder`|Lembrete de que seu usuário tem uma carona|`trips:driver:read`|
 
 ### Formato de `driver_passenger_pending`:
 ```json
@@ -194,6 +207,17 @@ Abaixo está a lista de webhooks disponíveis com seus eventos ativadores e o co
             "last_name": "de Tal"                           // Sobrenome do passageiro
         },
         "resource_url": "https://unicaronas.com/api/..."    // URL da carona no endpoint Motorista -> Detalhar carona
+    }
+}
+```
+### Formato de `driver_reminder`:
+```json
+{
+    "event": "driver_reminder",
+    "payload": {
+        "user_id": "abc123",                                // ID de usuário do motorista (seu usuário)
+        "trip_id": "42",                                    // ID da carona
+        "resource_url": "https://unicaronas.com/api/..."    // URL do passageiro no endpoint Motorista -> Detalhar passageiro
     }
 }
 ```

@@ -9,7 +9,7 @@ from project.utils import import_current_version_module
 from alarms.tasks import dispatch_alarms
 from .exceptions import PassengerBookedError, TripFullError, PassengerNotBookedError, UserNotDriverError, PassengerApprovedError, PassengerDeniedError, PassengerPendingError, NotEnoughSeatsError
 from .utils import user_is_driver
-from .tasks import publish_new_trip_on_fb, unpublish_trip_from_fb
+from .tasks import publish_new_trip_on_fb, unpublish_trip_from_fb, TripReminder
 # Create your models here.
 
 
@@ -174,6 +174,7 @@ class Trip(models.Model):
             passenger.trip_deleted()
         # Unpublish from facebook
         unpublish_trip_from_fb.delay(self.facebook_post_id)
+        TripReminder('driver_reminder', self).unschedule()
         self.delete()
 
     @classmethod
@@ -187,6 +188,7 @@ class Trip(models.Model):
         dispatch_alarms.delay(trip.id)
         # Publish on Facebook if enabled
         publish_new_trip_on_fb.delay(trip.id)
+        TripReminder('driver_reminder', trip).schedule()
         return trip
 
     def __str__(self):
@@ -232,6 +234,7 @@ class Passenger(models.Model):
         self.status = 'approved'
         self.save()
         trips_webhooks.PassengerApprovedWebhook(self).send()
+        TripReminder('passenger_reminder', self).schedule()
 
     def deny(self):
         if self.status == 'denied':
@@ -244,6 +247,7 @@ class Passenger(models.Model):
         # if the trip was full and now it is not, send alarms
         if self.trip.get_seats_left() == 1:
             dispatch_alarms.delay(self.trip.id)
+        TripReminder('passenger_reminder', self).unschedule()
 
     def forfeit(self):
         if self.status == 'denied':
@@ -256,14 +260,17 @@ class Passenger(models.Model):
         # if the trip was full and now it is not, send alarms
         if self.trip.get_seats_left() == 1:
             dispatch_alarms.delay(self.trip.id)
+        TripReminder('passenger_reminder', self).unschedule()
 
     def trip_deleted(self):
         trips_webhooks.TripDeletedWebhook(self).send()
+        TripReminder('passenger_reminder', self).unschedule()
 
     def give_up(self):
         # if the trip was full and now it is not, send alarms
         if self.trip.is_full:
             dispatch_alarms.delay(self.trip.id)
+        TripReminder('passenger_reminder', self).unschedule()
         self.delete()
 
     def __str__(self):
