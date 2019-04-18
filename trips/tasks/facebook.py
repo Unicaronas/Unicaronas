@@ -14,11 +14,17 @@ def build_post(trip):
     origin_state = trip.get_origin_adm_area_1(short=True)
     destination_state = trip.get_destination_adm_area_1(short=True)
 
+    origin_neighborhood = trip.get_origin_sublocality_level_1(short=True)
+    destination_neighborhood = trip.get_destination_sublocality_level_1(short=True)
+
+    origin_text = f"{origin_neighborhood}, {origin_city}" if origin_neighborhood else f"{origin_city}, {origin_state}"
+    destination_text = f"{destination_neighborhood}, {destination_city}" if destination_neighborhood else f"{destination_city}, {destination_state}"
+
     time = f"{naturalday(datetime, 'd/m')} às {datetime.strftime('%H:%M')}".capitalize()
 
     url = f"https://app.unicaronas.com/search/{trip.id}/"
     message = f"""[OFERECE]
-{origin_city}, {origin_state} >> {destination_city}, {destination_state}
+{origin_text} >> {destination_text}
 {time}
 R${trip.price}, {trip.max_seats} vagas
 Clique no link pra reservar 👇"""

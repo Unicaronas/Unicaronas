@@ -79,11 +79,17 @@ class Trip(models.Model):
     def get_origin_adm_area_1(self, short=False):
         return self.get_address_component('administrative_area_level_1', 'origin_address_components', short)
 
+    def get_origin_sublocality_level_1(self, short=False):
+        return self.get_address_component('sublocality_level_1', 'origin_address_components', short)
+
     def get_destination_adm_area_2(self, short=False):
         return self.get_address_component('administrative_area_level_2', 'destination_address_components', short)
 
     def get_destination_adm_area_1(self, short=False):
         return self.get_address_component('administrative_area_level_1', 'destination_address_components', short)
+
+    def get_destination_sublocality_level_1(self, short=False):
+        return self.get_address_component('sublocality_level_1', 'destination_address_components', short)
 
     def get_seats_taken(self):
         return self.passengers.exclude(
