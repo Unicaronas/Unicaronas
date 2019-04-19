@@ -10,6 +10,7 @@ from . import views
 router = DefaultRouter()
 
 router.register('application', views.ApplicationViewset)
+router.register('introspect', views.IntrospectViewset)
 
 urlpatterns = router.urls
 
@@ -19,11 +20,9 @@ app_name = 'oauth2_provider'
 urlpatterns += [
     path('authorize/', views.CustomAuthorizationView.as_view(), name="authorize"),
     path('token/', oauth2_views.TokenView.as_view(), name="token"),
+    path('revoke_token/', oauth2_views.RevokeTokenView.as_view(), name="revoke-token"),
 
     path('logout/', LogoutView.as_view(), {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
-
-    path('debug_token/', views.DebugToken.as_view(), name="debug_base"),
-    path('debug_token/<str:input_token>/', views.DebugToken.as_view(), name="debug"),
 ]
 
 if settings.DEBUG:
@@ -35,7 +34,6 @@ if settings.DEBUG:
         path('applications/<int:pk>/delete/', oauth2_views.ApplicationDelete.as_view(), name="delete"),
         path('applications/<int:pk>/update/', oauth2_views.ApplicationUpdate.as_view(), name="update"),
         path('management/', include((management_urlpatterns, 'oauth2_provider'))),
-        path('revoke-token/', oauth2_views.RevokeTokenView.as_view(), name="revoke-token"),
     ]
 
     # OAuth local API consumer

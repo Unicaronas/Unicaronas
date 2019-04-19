@@ -1,2 +1,2 @@
 from .application import ApplicationDetailSerializer, ApplicationListSerializer
-from .auth import DebugTokenSerializer
+from .auth import DebugTokenSerializer, DebugRefreshokenSerializer

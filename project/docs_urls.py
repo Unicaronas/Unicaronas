@@ -266,6 +266,82 @@ Para receber os eventos por webhooks, certifique-se de que:
 - Seu aplicativo contém pelo menos um token do seu usuário-alvo com as permissões necessárias
 
 Se você continuar sem receber webhooks de um usuário em particular, significa que esse usuário declarou que não deseja receber avisos de aplicativos
+
+# Ferramentas de tokens
+Disponibilizamos um endpoint para introspecção de tokens e um para revogar tokens
+## Introspecção de tokens
+Com a introspecção você poderá obter informações úteis sobre os seus tokens.
+Você precisará de um `access_token` válido e do token que você quer realizar introspecção.
+
+Se seu token for um `refresh_token`, adicione `token_type_hint=refresh_token` ao seu pedido.
+
+Para realizar a introspecção basta fazer um pedido GET ou POST no seguinte formato:
+```http
+POST https://unicaronas.com/o/introspect/ HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer <access-token-válido>
+
+token=<token-para-introspecção>&
+token_type_hint=refresh_token
+```
+ou, para fazer introspecção de um `access_token` por GET:
+```http
+GET https://unicaronas.com/o/introspect/?token=<token-para-introspecção> HTTP/1.1
+Authorization: Bearer <access-token-válido>
+```
+
+A resposta para `access_token` será no formato:
+```json
+{
+    "client_id": "2x6GaLZ5U84KjAXuihHS3vt3jSul2eOntvcCmGLp",
+    "application": "Meu App",
+    "expires_at": 1555656712,
+    "is_expired": false,
+    "issued_at": 1555653112,
+    "scopes": "profile:read email:read",
+    "user_id": "mnBD9g-Y-NsBxbzyLa2Njji9PTqR2k2Z5ptj0pv87MAa1t4B",
+    "metadata": {
+        "client_type": "public",
+        "grant_type": "authorization-code"
+    }
+}
+```
+E a resposta para `refresh_token` será no formato:
+```json
+{
+    "client_id": "2x6GaLZ5U84KjAXuihHS3vt3jSul2eOntvcCmGLp",
+    "application": "Meu App",
+    "is_revoked": false,
+    "issued_at": 1555653112,
+    "user_id": "mnBD9g-Y-NsBxbzyLa2Njji9PTqR2k2Z5ptj0pv87MAa1t4B"
+}
+```
+## Revogar tokens
+Você também poderá revogar seus tokens. Isso é útil caso algum deles vaze ou fique fora de seu controle.
+
+Você precisará do `client_id` do token a ser revogado e do próprio token. Se seu client for do tipo `confidential`, você também precisará do seu `client_secret`.
+
+Para revogar, basta enviar um POST como o a seguir:
+```http
+POST https://unicaronas.com/o/revoke_token/ HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+token=<access-token>&
+client_id=<client-id>&
+client_secret=<client-secret-se-disponível>
+```
+ou, se você quiser revogar um `refresh_token`:
+```http
+POST https://unicaronas.com/o/revoke_token/ HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+token=<access-token>&
+token_type_hint=refresh_token&
+client_id=<client-id>&
+client_secret=<client-secret-se-disponível>
+```
+
+Você receberá uma resposta 200 se conseguir revogar.
 """.replace('https://unicaronas.com', settings.ROOT_URL).replace('http://unicaronas.com', settings.ROOT_URL),
         terms_of_service="https://unicaronas.com/terms_and_conditions/",
         contact=openapi.Contact(
