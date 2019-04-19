@@ -253,7 +253,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=3)
     },
     'Clear old alarms': {
-        'task': 'alarms.tasks.clear_alarms',
+        'task': 'alarms.tasks.clear_alarms.clear_alarms',
         'schedule': crontab(minute=30, hour=3)
     }
 }
