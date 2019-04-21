@@ -1,12 +1,13 @@
 from django.contrib.auth.models import User
-from django.core.management import call_command
+from django.db import transaction
+from django.utils import timezone
 from celery import shared_task
-from oauth2_provider.models import get_application_model, get_refresh_token_model, get_access_token_model
+from oauth2_provider.models import get_application_model, get_refresh_token_model, get_access_token_model, clear_expired
 
 
 @shared_task
 def clear_oauth_tokens():
-    call_command('cleartokens')
+    clear_expired()
 
 
 @shared_task
@@ -15,15 +16,14 @@ def revoke_tokens(app_id, user_id):
     user = User.objects.get(pk=user_id)
     if app.exists():
         app = app.first()
-        refresh_tokens = get_refresh_token_model().objects.filter(
-            user=user,
-            application=app
-        )
-        for token in refresh_tokens:
-            token.revoke()
-        access_tokens = get_access_token_model().objects.filter(
-            user=user,
-            application=app
-        )
-        for token in access_tokens:
-            token.revoke()
+        with transaction.atomic():
+            access_tokens = get_access_token_model().objects.filter(
+                user=user,
+                application=app
+            )
+            refresh_tokens = get_refresh_token_model().objects.filter(
+                user=user,
+                application=app
+            )
+            access_tokens.delete()
+            refresh_tokens.update(revoked=timezone.now())
