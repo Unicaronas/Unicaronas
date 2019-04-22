@@ -112,6 +112,7 @@ INSTALLED_APPS = [
 
     'storages',
     'versatileimagefield',
+    'croppie',
     'admin_object_actions',
 ]
 
@@ -224,6 +225,7 @@ AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_AUTO_CREATE_BUCKET = True
+USE_AWS_STORAGE = eval(os.environ.get('USE_AWS_STORAGE', str(not DEBUG)).capitalize())
 
 FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.TemporaryFileUploadHandler']
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
@@ -233,11 +235,13 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-if not DEBUG and AWS_STORAGE_BUCKET_NAME:
+if USE_AWS_STORAGE and AWS_STORAGE_BUCKET_NAME:
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 else:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
@@ -298,7 +302,7 @@ OAUTH2_PROVIDER = {
     # this is the list of available scopes
     'SCOPES': {
         'basic:read': 'Seu primeiro e segundo nome',
-        'profile:read': 'Seu aniversário e gênero',
+        'profile:read': 'Seu aniversário, gênero e foto de perfil',
         'phone:read': 'Seu número de celular',
         'email:read': 'Seu endereço de email principal e acadêmico',
         'student:read': 'Seu perfil de aluno na sua universidade',
@@ -369,6 +373,16 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'user_data.forms2.ExtraSignupFields'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
 # ACCOUNT_ADAPTER = "project.adapters.AccountAdapter"
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'picture'
+        ]
+    }
+}
 
 
 def ACCOUNT_USER_DISPLAY(user):
@@ -473,3 +487,27 @@ CORS_URLS_REGEX = r'^(\/api\/.*|\/o\/token\/)$'
 
 # Total Virus API
 VIRUS_TOTAL_API_KEY = os.getenv('VIRUS_TOTAL_API_KEY')
+
+
+# Versatile Image Field Settings
+VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+    'app_logo': [
+        ('authorize', 'thumbnail__80x80'),
+        ('list', 'thumbnail__60x60'),
+        ('detail', 'thumbnail__150x150')
+    ],
+    'profile_picture': [
+        ('small_32', 'thumbnail__32x32'),
+        ('small_64', 'thumbnail__64x64'),
+        ('medium_128', 'thumbnail__128x128'),
+        ('medium_256', 'thumbnail__256x256'),
+        ('large_512', 'thumbnail__512x512'),
+        ('large_1024', 'thumbnail__1024x1024'),
+        ('original', 'url')
+    ]
+}
+
+VERSATILEIMAGEFIELD_SETTINGS = {
+    'create_images_on_demand': not USE_AWS_STORAGE,
+    'jpeg_resize_quality': 90
+}

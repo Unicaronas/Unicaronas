@@ -6,9 +6,28 @@
 <script src="{% static 'project/js/semantic_calendar.js' %}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 <script src="{% static 'project/js/manual_jquery_validator_security.js' %}"></script>
+<script src="{% static 'project/js/croppie.js' %}"></script>
 {% endblock %}
 {% block extend_style %}
 <link rel="stylesheet" type="text/css" href="{% static 'project/css/semantic_calendar.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.4/croppie.min.css">
+<style type="text/css">
+.cropper {
+    width: 100%;
+    height: 350px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    margin-bottom: 4em;
+}
+img.cropper {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    margin-bottom: 1em;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -55,11 +74,12 @@
                     {% endif %}
                     <div style="display: none" class="ui top attached tabular menu">
                         <a style="pointer-events: none" class="item active" data-tab="0" data-id="0">Básico</a>
-                        <a style="pointer-events: none" class="item" data-tab="1" data-id="1">Universidade</a>
-                        <a style="pointer-events: none" class="item" data-tab="2" data-id="2">Seus dados na uni</a>
-                        <a style="pointer-events: none" class="item" data-tab="3" data-id="3">É motorista?</a>
-                        <a style="pointer-events: none" class="item" data-tab="4" data-id="4">Motorista</a>
-                        <a style="pointer-events: none" class="item" data-tab="5" data-id="5">Captcha</a>
+                        <a style="pointer-events: none" class="item" data-tab="1" data-id="1">Foto</a>
+                        <a style="pointer-events: none" class="item" data-tab="2" data-id="2">Universidade</a>
+                        <a style="pointer-events: none" class="item" data-tab="3" data-id="3">Seus dados na uni</a>
+                        <a style="pointer-events: none" class="item" data-tab="4" data-id="4">É motorista?</a>
+                        <a style="pointer-events: none" class="item" data-tab="5" data-id="5">Motorista</a>
+                        <a style="pointer-events: none" class="item" data-tab="6" data-id="6">Captcha</a>
                     </div>
                     <div class="ui transition fade in top attached tab active" data-tab="0">
                         <h1>Nos fale um pouco sobre você</h1>
@@ -85,250 +105,270 @@
                             </div>
                         </div>
                         <div class="two fields">
-                        <div class="field">
-                            <label>{{ form.birthday.label }}</label>
-                            <div class="ui calendar" id="{{ form.birthday.auto_id }}">
-                                <div class="ui input left icon">
-                                    <i class="calendar icon"></i>
-                                    <input required value="{{ form.birthday.value }}" autocomplete="off" type="text" name="{{ form.birthday.name }}" placeholder="Data do seu aniversário">
+                            <div class="field">
+                                <label>{{ form.birthday.label }}</label>
+                                <div class="ui calendar" id="{{ form.birthday.auto_id }}">
+                                    <div class="ui input left icon">
+                                        <i class="calendar icon"></i>
+                                        <input required value="{{ form.birthday.value }}" autocomplete="off" type="text" name="{{ form.birthday.name }}" placeholder="Data do seu aniversário">
+                                    </div>
                                 </div>
                             </div>
-                      </div>
-                      </div>
-                      <div class="ui divider"></div>
-                      <div style="text-align: right;">
-                        <button type="button" class="ui button green" onclick="next_tab(0)">Próximo<i class="icon angle right"></i></button>
-                    </div>
-                </div>
-                <div class="ui transition fade in top attached tab" data-tab="1">
-                    <h1>Qual sua universidade?</h1>
-                    <div class="field">
-                        <label>{{ form.university.label }}</label>
-                        {{ form.university }}
-                        <span class="help-block"><a href="{% url 'missing_university' %}" target="_blank">Não achou a sua?</a></span>
-                    </div>
-                    <br>
-                    <div class="ui field checkbox" id="is_alumni">
-                        <input type="checkbox" name="is_alumni">
-                        <label>Sou ex aluno sem acesso ao meu email acadêmico</label>
-                    </div>
-                    <br>
-                    <div class="ui divider"></div>
-                    <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(1)"><i class="icon angle left"></i>Anterior</button>
-                        <button type="button" class="ui button green" onclick="next_tab(1)">Próximo<i class="icon angle right"></i></button>
-                    </div>
-                </div>
-                <div class="ui transition fade in top attached tab" data-tab="2">
-                    <h1>Fale um pouco mais sobre você na universidade</h1>
-                    <p>Unicaronas é exclusivo para universitários, então precisamos saber se você é um(a)</p>
-                    <div class="field">
-                        <label>{{ form.username.label }}</label>
-                        {{ form.username }}
-                    </div>
-                    <div class="field">
-                        <label>{{ form.email.label }}</label>
-                        {{ form.email }}
-                    </div>
-                    <div class="field">
-                        <label>{{ form.email2.label }}</label>
-                        {{ form.email2 }}
-                    </div>
-                    <p id="confirm_email_check" class="hidden"><span class="ui red label">Atenção!</span> Tem <b><i>certeza</i></b> de que esse é seu email <b>acadêmico</b> e que ele está correto? Não há como mudar depois!</p>
-                    <div class="field" id="student_proof">
-                        <label>{{ form.student_proof.label }}</label>
-                        {{ form.student_proof }}
-                    </div>
-                    <div class="field" id="contact_email">
-                        <label>{{ form.contact_email.label }}</label>
-                        {{ form.contact_email }}
-                    </div>
-                    <br>
-                    <div class="two fields">
-                        <div class="field">
-                            <label>{{ form.course.label }}</label>
-                            {{ form.course }}
                         </div>
-                        <div class="field">
-                            <label>{{ form.enroll_year.label }}</label>
-                            {{ form.enroll_year }}
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button type="button" class="ui button green" onclick="next_tab(0)">Próximo<i class="icon angle right"></i></button>
                         </div>
                     </div>
-                    <div class="ui divider"></div>
-                    <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(2)"><i class="icon angle left"></i>Anterior</button>
-                        <button type="button" class="ui button green" onclick="next_tab(2)">Próximo<i class="icon angle right"></i></button>
-                    </div>
-                </div>
-                <div class="ui transition fade in top attached tab" data-tab="3">
-                    <h1>Você é motorista?</h1>
-                    <br>
-                    <div class="two fields">
+                    <div class="ui transition fade in top attached tab" data-tab="1">
+                        <h1>Sua foto</h1>
+                        <p>Faça do seu sorriso a porta da sua carona</p>
                         <div class="field">
-                            <button type="button" class="ui button green fluid" onclick="is_driver_func(true)">Sim</button>
+                            <label>{{ form.picture.label }}</label>
+                            <img src="{{ form.picture.value.url }}" class="cropper" id="pre_cropper" style="display: none;">
+                            <div class="cropper" id="cropper"></div>
+                            {{ form.picture }}
                         </div>
-                        <div class="field">
-                            <button type="button" class="ui button blue fluid" onclick="is_driver_func(false)">Não</button>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button type="button" class="ui button red" onclick="previous_tab(1)"><i class="icon angle left"></i>Anterior</button>
+                            <button type="button" class="ui button green" onclick="next_tab(1)">Próximo<i class="icon angle right"></i></button>
                         </div>
                     </div>
-                    <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
-                    </div>
-                </div>
-                <div class="ui transition fade in top attached tab" data-tab="4">
-                    <h1>Como serão suas caronas?</h1>
-                    <p>Essas infos só serão compartilhadas com quem confirmar caronas com você</p>
-                    <input hidden id="is_driver" name="is_driver" type="checkbox" value="0">
-                    <div class="field">
-                        <label>{{ form.car_make.label }}</label>
-                        {{ form.car_make }}
-                    </div>
-                    <div class="field">
-                        <label>{{ form.car_model.label }}</label>
-                        {{ form.car_model }}
-                    </div>
-                    <div class="field">
-                        <label>{{ form.car_color.label }}</label>
-                        {{ form.car_color }}
-                    </div>
-                    <div class="two fields">
+                    <div class="ui transition fade in top attached tab" data-tab="2">
+                        <h1>Qual sua universidade?</h1>
                         <div class="field">
-                            <label>{{ form.likes_pets.label }}</label>
-                            {{ form.likes_pets }}
+                            <label>{{ form.university.label }}</label>
+                            {{ form.university }}
+                            <span class="help-block"><a href="{% url 'missing_university' %}" target="_blank">Não achou a sua?</a></span>
                         </div>
-                        <div class="field">
-                            <label>{{ form.likes_smoking.label }}</label>
-                            {{ form.likes_smoking }}
+                        <br>
+                        <div class="ui field checkbox" id="is_alumni">
+                            <input type="checkbox" name="is_alumni">
+                            <label>Sou ex aluno sem acesso ao meu email acadêmico</label>
+                        </div>
+                        <br>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button type="button" class="ui button red" onclick="previous_tab(2)"><i class="icon angle left"></i>Anterior</button>
+                            <button type="button" class="ui button green" onclick="next_tab(2)">Próximo<i class="icon angle right"></i></button>
                         </div>
                     </div>
-                    <div class="two fields">
+                    <div class="ui transition fade in top attached tab" data-tab="3">
+                        <h1>Fale um pouco mais sobre você na universidade</h1>
+                        <p>Unicaronas é exclusivo para universitários, então precisamos saber se você é um(a)</p>
                         <div class="field">
-                            <label>{{ form.likes_music.label }}</label>
-                            {{ form.likes_music }}
+                            <label>{{ form.username.label }}</label>
+                            {{ form.username }}
                         </div>
                         <div class="field">
-                            <label>{{ form.likes_talking.label }}</label>
-                            {{ form.likes_talking }}
+                            <label>{{ form.email.label }}</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="field">
+                            <label>{{ form.email2.label }}</label>
+                            {{ form.email2 }}
+                        </div>
+                        <p id="confirm_email_check" class="hidden"><span class="ui red label">Atenção!</span> Tem <b><i>certeza</i></b> de que esse é seu email <b>acadêmico</b> e que ele está correto? Não há como mudar depois!</p>
+                        <div class="field" id="student_proof">
+                            <label>{{ form.student_proof.label }}</label>
+                            {{ form.student_proof }}
+                        </div>
+                        <div class="field" id="contact_email">
+                            <label>{{ form.contact_email.label }}</label>
+                            {{ form.contact_email }}
+                        </div>
+                        <br>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>{{ form.course.label }}</label>
+                                {{ form.course }}
+                            </div>
+                            <div class="field">
+                                <label>{{ form.enroll_year.label }}</label>
+                                {{ form.enroll_year }}
+                            </div>
+                        </div>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
+                            <button type="button" class="ui button green" onclick="next_tab(3)">Próximo<i class="icon angle right"></i></button>
                         </div>
                     </div>
-                    <div class="ui divider"></div>
-                    <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(4)"><i class="icon angle left"></i>Anterior</button>
-                        <button type="button" class="ui button green" onclick="next_tab(4)">Próximo<i class="icon angle right"></i></button>
+                    <div class="ui transition fade in top attached tab" data-tab="4">
+                        <h1>Você é motorista?</h1>
+                        <br>
+                        <div class="two fields">
+                            <div class="field">
+                                <button type="button" class="ui button green fluid" onclick="is_driver_func(true)">Sim</button>
+                            </div>
+                            <div class="field">
+                                <button type="button" class="ui button blue fluid" onclick="is_driver_func(false)">Não</button>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <button type="button" class="ui button red" onclick="previous_tab(4)"><i class="icon angle left"></i>Anterior</button>
+                        </div>
                     </div>
-                </div>
-                <div class="ui transition fade in top attached tab" data-tab="5">
-                    <h1>Quase lá!</h1>
-                    <p>Precisamos ter certeza de que você está mesmo aí</p>
-                    <br>
-                    {{ form.captcha }}
-                    <br><br>
-                    <div class="ui divider"></div>
-                    <div style="text-align: right;">
-                        <button type="button" class="ui button red" onclick="previous_tab(4)"><i class="icon angle left"></i>Anterior</button>
-                        <button id="submit_button" disabled class="ui button blue"><i class="send icon"></i> Criar conta</button>
+                    <div class="ui transition fade in top attached tab" data-tab="5">
+                        <h1>Como serão suas caronas?</h1>
+                        <p>Essas infos só serão compartilhadas com quem confirmar caronas com você</p>
+                        <input hidden id="is_driver" name="is_driver" type="checkbox" value="0">
+                        <div class="field">
+                            <label>{{ form.car_make.label }}</label>
+                            {{ form.car_make }}
+                        </div>
+                        <div class="field">
+                            <label>{{ form.car_model.label }}</label>
+                            {{ form.car_model }}
+                        </div>
+                        <div class="field">
+                            <label>{{ form.car_color.label }}</label>
+                            {{ form.car_color }}
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>{{ form.likes_pets.label }}</label>
+                                {{ form.likes_pets }}
+                            </div>
+                            <div class="field">
+                                <label>{{ form.likes_smoking.label }}</label>
+                                {{ form.likes_smoking }}
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>{{ form.likes_music.label }}</label>
+                                {{ form.likes_music }}
+                            </div>
+                            <div class="field">
+                                <label>{{ form.likes_talking.label }}</label>
+                                {{ form.likes_talking }}
+                            </div>
+                        </div>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button type="button" class="ui button red" onclick="previous_tab(5)"><i class="icon angle left"></i>Anterior</button>
+                            <button type="button" class="ui button green" onclick="next_tab(5)">Próximo<i class="icon angle right"></i></button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                    <div class="ui transition fade in top attached tab" data-tab="6">
+                        <h1>Quase lá!</h1>
+                        <p>Precisamos ter certeza de que você está mesmo aí</p>
+                        <br>
+                        {{ form.captcha }}
+                        <br><br>
+                        <div class="ui divider"></div>
+                        <div style="text-align: right;">
+                            <button type="button" class="ui button red" onclick="previous_tab(5)"><i class="icon angle left"></i>Anterior</button>
+                            <button id="submit_button" disabled class="ui button blue"><i class="send icon"></i> Criar conta</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    var croppieUrl = "{{ forms.profile.picture.value.url }}";
+</script>
+<script src="{% static 'project/js/croppie_process.js' %}"></script>
 <script type="text/javascript" src="{% static 'project/js/tabs.js' %}"></script>
 <script type="text/javascript">
-    function add_search_query(event, element) {
-        event.preventDefault();
-        window.location = element.href + window.location.search;
-    }
-    function add_search_query_form(form) {
-        form.attr('action', form.attr('action') + window.location.search);
-    }
+function add_search_query(event, element) {
+    event.preventDefault();
+    window.location = element.href + window.location.search;
+}
+function add_search_query_form(form) {
+    form.attr('action', form.attr('action') + window.location.search);
+}
 
-    $("form").each(function(i, form) {
-        add_search_query_form($(form));
-    })
+$("form").each(function(i, form) {
+    add_search_query_form($(form));
+})
 
-    var unCheckableUniversities = [
-        'facamp',
-        'ufscar'
-    ]
+var unCheckableUniversities = [
+'facamp',
+'ufscar'
+]
 
-    var ucu = false,
-        al = false;
+var ucu = false,
+al = false;
 
-    var initial_email_label = $('#id_email').prev().text(),
-        initial_email2_label = $('#id_email2').prev().text();
+var initial_email_label = $('#id_email').prev().text(),
+initial_email2_label = $('#id_email2').prev().text();
 
-    $("#id_gender").dropdown();
-    $("#id_birthday_day").dropdown();
-    $("#id_birthday_month").dropdown();
-    $("#id_birthday_year").dropdown();
-    $("#id_university").dropdown({
-        onChange: function(value, text, $selectedItem) {
-            if (unCheckableUniversities.indexOf(value) >= 0) {
-                ucu = true;
-                $('#id_email').prev().text('Seu email');
-                $('#id_email2').prev().text('Seu email (novamente)');
-            } else {
-                ucu = false;
-            }
-            if (!(ucu || al)) {
-                $('#student_proof').hide();
-                $('#id_email').prev().text(initial_email_label);
-                $('#id_email2').prev().text(initial_email2_label);
-            } else {
-                $('#student_proof').show();
-            }
+$("#id_gender").dropdown();
+$("#id_birthday_day").dropdown();
+$("#id_birthday_month").dropdown();
+$("#id_birthday_year").dropdown();
+$("#id_university").dropdown({
+    onChange: function(value, text, $selectedItem) {
+        if (unCheckableUniversities.indexOf(value) >= 0) {
+            ucu = true;
+            $('#id_email').prev().text('Seu email');
+            $('#id_email2').prev().text('Seu email (novamente)');
+        } else {
+            ucu = false;
         }
-    });
-    $("#id_likes_pets").dropdown();
-    $("#id_likes_smoking").dropdown();
-    $("#id_likes_music").dropdown();
-    $("#id_likes_talking").dropdown();
-    $('#confirm_email_check').hide();
-    $("#is_alumni").checkbox({
-        onChecked: function() {
-            al = true;
+        if (!(ucu || al)) {
+            $('#student_proof').hide();
+            $('#id_email').prev().text(initial_email_label);
+            $('#id_email2').prev().text(initial_email2_label);
+        } else {
             $('#student_proof').show();
-            $('#contact_email').show();
-            $('#id_email').prev().text('Seu antigo email acadêmico');
-            $('#id_email2').prev().text('Seu antigo email acadêmico (novamente)');
-        },
-        onUnchecked: function() {
-            al = false;
-            $('#contact_email').hide();
-            if (!(ucu || al)) {
-                $('#student_proof').hide();
-                $('#id_email').prev().text(initial_email_label);
-                $('#id_email2').prev().text(initial_email2_label);
-            }
         }
-    });
-    $('#student_proof').hide();
-    $('#contact_email').hide();
-
-    function captchaSpottedCallback() {
-        $('#submit_button').prop("disabled", false);
     }
-
-    $('#id_birthday').calendar({
-        startMode: 'year',
-        type: 'date',
-        formatter: {
-            date: function (date, settings) {
-                if (!date) return '';
-                var day = date.getDate();
-                var month = date.getMonth() + 1;
-                var year = date.getFullYear();
-                return day + '/' + month + '/' + year;
-            }
-        },
-        popupOptions: {
-            position: 'top left',
-            lastResort: 'top right',
-            prefer: 'opposite',
-            hideOnScroll: false
+});
+$("#id_likes_pets").dropdown();
+$("#id_likes_smoking").dropdown();
+$("#id_likes_music").dropdown();
+$("#id_likes_talking").dropdown();
+$('#confirm_email_check').hide();
+$("#is_alumni").checkbox({
+    onChecked: function() {
+        al = true;
+        $('#student_proof').show();
+        $('#contact_email').show();
+        $('#id_email').prev().text('Seu antigo email acadêmico');
+        $('#id_email2').prev().text('Seu antigo email acadêmico (novamente)');
+    },
+    onUnchecked: function() {
+        al = false;
+        $('#contact_email').hide();
+        if (!(ucu || al)) {
+            $('#student_proof').hide();
+            $('#id_email').prev().text(initial_email_label);
+            $('#id_email2').prev().text(initial_email2_label);
         }
-    });
+    }
+});
+$('#student_proof').hide();
+$('#contact_email').hide();
+
+function captchaSpottedCallback() {
+    $('#submit_button').prop("disabled", false);
+}
+
+$('#id_birthday').calendar({
+    startMode: 'year',
+    type: 'date',
+    formatter: {
+        date: function (date, settings) {
+            if (!date) return '';
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            return day + '/' + month + '/' + year;
+        }
+    },
+    popupOptions: {
+        position: 'top left',
+        lastResort: 'top right',
+        prefer: 'opposite',
+        hideOnScroll: false
+    }
+});
 
 
     //setup before functions
@@ -362,11 +402,11 @@
     function is_driver_func(attr) {
         $("#is_driver").prop('checked', attr);
         if (attr) {
-            next_tab(3);
+            next_tab(4);
         }
         else {
-            next_tab(4)
+            next_tab(5)
         }
     }
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}

@@ -6,8 +6,9 @@ from django.contrib import messages
 from django import forms as django_forms
 from django.contrib.auth.models import User
 from project.generics import MultiModelFormsView
+from .forms import ProfileForm
 from .forms2 import UniversityForm
-from .models import Profile, Driver, Preferences
+from .models import Driver, Preferences
 # Create your views here.
 
 
@@ -20,7 +21,7 @@ class ProfileEdit(LoginRequiredMixin, MultiModelFormsView):
     success_url = reverse_lazy('profile_edit')
     form_classes = {
         'name': modelform_factory(User, fields=['first_name', 'last_name']),
-        'profile': modelform_factory(Profile, exclude=['user']),
+        'profile': ProfileForm,
         'university': UniversityForm,
         'driver': modelform_factory(Driver, fields='__all__', widgets={'user': django_forms.HiddenInput()}),
         'notifications': modelform_factory(Preferences, exclude=['user'])

@@ -1,8 +1,10 @@
 from django import forms
+from django.core.validators import FileExtensionValidator
 from allauth.account.forms import SignupForm, LoginForm, set_form_field_order, get_adapter
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from allauth.account.forms import app_settings
-from .models import UNIVERSITY_EMAIL_VALIDATORS, UNIVERSITY_ID_VALIDATORS, UNIVERSITY_CHOICES
+from .fields import SquareCroppieField
+from .models import UNIVERSITY_EMAIL_VALIDATORS, UNIVERSITY_ID_VALIDATORS, UNIVERSITY_CHOICES, Profile
 
 
 class CustomSignupForm(SignupForm):
@@ -173,3 +175,25 @@ class CustomLoginForm(LoginForm):
         login = super().clean_login()
         university = self.cleaned_data['university']
         return f"{login}@{university}"
+
+
+class ProfileForm(forms.ModelForm):
+    picture = SquareCroppieField(
+        label="Foto de perfil",
+        options={
+            "showZoomer": True,
+            "viewport": {
+                "width": 256,
+                "height": 256,
+                "type": 'circle'
+            },
+            "initialZoomMin": True,
+            "maxZoomedCropWidth": 257,
+            "minZoomedCropWidth": 2048
+        },
+        required=False
+    )
+
+    class Meta:
+        model = Profile
+        exclude = ('user',)

@@ -146,6 +146,10 @@ class BaseCacheFinder(BaseFinder):
         self.cache_engine.set(key, self.encode(value), self.timeout)
         self.add_to_index(key)
 
+    def delete_key(self, key):
+        """Removes a key from the index if it exists"""
+        self.cache_engine.delete(key)
+
     def find_exact(self, term):
         """Fast searching of term in cache"""
         return self.get_key(term.query)

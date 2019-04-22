@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from oauth.fields import ScopedUserIDField
 from project.mixins import QueryFieldsPermissionMixin, PrefetchMixin, QueryFieldsMixin
+from project.serializers import ProfilePictureSerializer
 from ....models import Driver, Student, Profile
 
 
@@ -67,6 +68,8 @@ class NotPermissionedProfileSerializer(
         QueryFieldsMixin,
         serializers.ModelSerializer):
 
+    picture = ProfilePictureSerializer(label='Foto de perfil')
+
     class Meta:
         model = Profile
         exclude = ['id', 'user']
@@ -75,25 +78,32 @@ class NotPermissionedProfileSerializer(
 class BasicProfileSerializer(
         QueryFieldsMixin,
         serializers.ModelSerializer):
+
+    picture = ProfilePictureSerializer(label='Foto de perfil')
+
     class Meta:
         model = Profile
-        fields = ['gender', 'birthday']
+        fields = ['gender', 'birthday', 'picture']
 
 
 class ProfileSerializer(
         QueryFieldsPermissionMixin,
         serializers.ModelSerializer):
+
+    picture = ProfilePictureSerializer(help_text="Requer `profile:read`", required=False)
+
     class Meta:
         model = Profile
         exclude = ['id', 'user']
         field_permissions = {
-            'profile:read': ['birthday', 'gender'],
+            'profile:read': ['birthday', 'gender', 'picture'],
             'phone:read': ['phone'],
         }
         extra_kwargs = {
             'birthday': {'help_text': "Requer `profile:read`", "required": False},
             'gender': {'help_text': "Requer `profile:read`", "required": False},
             'phone': {'help_text': "Requer `phone:read`", "required": False},
+            'picture': {'help_text': "Requer `profile:read`", "required": False},
         }
 
 

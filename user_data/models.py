@@ -8,9 +8,13 @@ from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from django.core.validators import MinValueValidator
+from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
+from versatileimagefield.fields import VersatileImageField
+from project.validators import MaxImageDimensionsValidator, MinImageDimensionsValidator, SquareImageValidator
 from allauth.account.models import EmailAddress
 from project.utils import import_current_version_module
+from project.tasks import refresh_profile_pics
 from .validators import UniRegexValidator, FallbackUniRegexValidator
 from .mailing import approved_student_proof_email
 # Create your models here.
@@ -132,6 +136,10 @@ UNIVERSITY_ID_VALIDATORS = {
 }
 
 
+def get_pic_path(instance, file_name):
+    return f"profile_pics/{instance.user.username}/{get_random_string(32)}.{file_name.split('.')[-1]}"
+
+
 class Profile(models.Model):
     """Basic profile information
     """
@@ -148,6 +156,16 @@ class Profile(models.Model):
     phone = PhoneNumberField(
         'Celular',
         help_text="Usado para contato"
+    )
+    picture = VersatileImageField(
+        "Foto de perfil",
+        blank=True,
+        upload_to=get_pic_path,
+        validators=[
+            MinImageDimensionsValidator(256, 256),
+            MaxImageDimensionsValidator(2048, 2048),
+            SquareImageValidator()
+        ]
     )
 
     def __str__(self):
@@ -306,7 +324,8 @@ class StudentProof(models.Model):
     proof_scan_id = models.CharField(blank=True, max_length=300)
     contact_email = models.EmailField()
     created = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(default=pending_status, choices=status_choices, max_length=20)
+    status = models.CharField(default=pending_status,
+                              choices=status_choices, max_length=20)
 
     @classmethod
     def create(cls, student, email, proof):
@@ -374,3 +393,16 @@ Avalie em ''' + settings.ROOT_URL + reverse('admin:user_data_studentproof_change
         user = self.student.user
         user.is_active = False
         user.save()
+
+
+@receiver(models.signals.post_save, sender=Profile, dispatch_uid="refresh_profile_pics")
+def refresh_pics(sender, instance, **kwargs):
+    refresh_profile_pics.delay(instance.pk)
+
+
+@receiver(models.signals.post_delete, sender=Profile, dispatch_uid="delete_profile_pics")
+def delete_profile_pics(sender, instance, **kwargs):
+    # Deletes Image Renditions
+    instance.picture.delete_all_created_images()
+    # Deletes Original Image
+    instance.picture.delete(save=False)
