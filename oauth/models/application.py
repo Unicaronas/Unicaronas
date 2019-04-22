@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.dispatch import receiver
 from versatileimagefield.fields import VersatileImageField
+from versatileimagefield.image_warmer import VersatileImageFieldWarmer
 from oauth2_provider import models as omodels
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.settings import oauth2_settings
@@ -18,6 +19,10 @@ from ..utils import Cipher
 from ..exceptions import InvalidScopedUserId
 
 # Create your models here.
+
+
+def get_user_apps(user):
+    return omodels.get_application_model().objects.filter(refreshtoken__user=user, refreshtoken__revoked=None).distinct()
 
 
 @property
@@ -140,7 +145,10 @@ class Application(omodels.AbstractApplication):
         return scopes
 
     def get_users(self):
-        return User.objects.filter(oauth2_provider_accesstoken__application=self).distinct()
+        return User.objects.filter(
+            oauth2_provider_refreshtoken__application=self,
+            oauth2_provider_refreshtoken__revoked=None
+        ).distinct()
 
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -223,6 +231,8 @@ class Application(omodels.AbstractApplication):
             app_id, user_id = c.decrypt(scoped_user_id).split(':==:')
             user = User.objects.get(id=user_id)
             app = Application.objects.get(id=app_id)
+            # Assert the user authorized the app
+            app.get_users().get(pk=user.pk)
         except Exception as e:
             raise InvalidScopedUserId(e)
         if get_app:
@@ -232,7 +242,14 @@ class Application(omodels.AbstractApplication):
 
 @receiver(models.signals.post_save, sender=Application, dispatch_uid="refresh_app_logos")
 def refresh_app_logos(sender, instance, **kwargs):
+    # Delete old generated images
     instance.logo.delete_all_created_images()
+    # Generate new warm
+    VersatileImageFieldWarmer(
+        instance_or_queryset=instance,
+        rendition_key_set='app_logo',
+        image_attr='logo'
+    ).warm()
 
 
 @receiver(models.signals.post_delete, sender=Application, dispatch_uid="delete_app_logos")

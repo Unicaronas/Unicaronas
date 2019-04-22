@@ -5,9 +5,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js" integrity="sha256-59IZ5dbLyByZgSsRE3Z0TjDuX7e1AiqW5bZ8Bg50dsU=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/pt-br.js" integrity="sha256-LosziN79TxO+Pb6NSpePf3lMaUeq8Iwg8adFrVaB2Sg=" crossorigin="anonymous"></script>
 <script src="{% static 'project/js/semantic_calendar.js' %}"></script>
+<script src="{% static 'project/js/croppie.js' %}"></script>
 {% endblock %}
 {% block extend_style %}
 <link rel="stylesheet" type="text/css" href="{% static 'project/css/semantic_calendar.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.4/croppie.min.css">
+<style type="text/css">
+    .cropper {
+        width: 100%;
+        height: 350px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 1em;
+        margin-bottom: 4em;
+    }
+    img.cropper {
+        width: 128px;
+        height: 128px;
+        border-radius: 50%;
+        margin-bottom: 1em;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -29,10 +48,18 @@
                     <a class="item" data-tab="3" data-id="3">Avisos</a>
                 </div>
                 <div class="ui transition fade in tab segment bottom attached active" data-tab="0">
-                    <form class="ui form" method="post" action="">
+                    <form class="ui form" method="post" action="" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="text" name="action" value="basic" hidden>
                         <h1>Informações básicas</h1>
+                        <div class="field {% if forms.profile.picture.errors.as_text %}error{% endif %}">
+                            <label>{{ forms.profile.picture.label}}</label>
+                            <span style="color: red" class="small">{{ forms.profile.picture.errors.as_text }}
+                            </span>
+                            <img src="{{ forms.profile.picture.value.url }}" class="cropper" id="pre_cropper" style="display: none;">
+                            <div class="cropper" id="cropper"></div>
+                            {{ forms.profile.picture }}
+                        </div>
                         <div class="two fields">
                             <div class="field {% if forms.name.first_name.errors.as_text %}error{% endif %}">
                                 <label>{{ forms.name.first_name.label}}</label>
@@ -214,6 +241,10 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    var croppieUrl = "{{ forms.profile.picture.value.url }}";
+</script>
+<script src="{% static 'project/js/croppie_process.js' %}"></script>
 <script type="text/javascript" src="{% static 'project/js/tabs.js' %}"></script>
 <script type="text/javascript">
     $("#id_gender").dropdown();

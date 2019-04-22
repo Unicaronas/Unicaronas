@@ -7,7 +7,7 @@ from django.db.models import Q, F, Prefetch
 from project.db.functions.aggregations import annotate_final_score
 from oauth2_provider.models import get_application_model
 from oauth.forms import ApplicationForm
-from oauth.models import ApplicationRating
+from oauth.models import ApplicationRating, get_user_apps
 from oauth.tasks import revoke_tokens
 from ..tasks import new_app_published
 
@@ -50,7 +50,7 @@ class ConnectedApplications(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         user = self.request.user
         search = self.request.GET.get('search', False)
-        connected_apps = self.model.objects.filter(accesstoken__user=user).distinct()
+        connected_apps = get_user_apps(user)
         connected_apps = connected_apps.select_related('user')
         connected_apps = connected_apps.prefetch_related(
             Prefetch(

@@ -3,6 +3,7 @@ from django import forms
 from django.core.validators import FileExtensionValidator
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
+from .fields import SquareCroppieField
 from .models import Profile, Student, Driver, Preferences, StudentProof
 from .models import GENDER_CHOICES, PET_CHOICES, SMOKING_CHOICES, TALKING_CHOICES, MUSIC_CHOICES, UNIVERSITY_CHOICES
 from phonenumber_field.formfields import PhoneNumberField
@@ -160,6 +161,22 @@ class ExtraSignupFields(forms.Form):
     # Captcha
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={"data-callback": "captchaSpottedCallback"}))
 
+    picture = SquareCroppieField(
+        label="Foto de perfil",
+        options={
+            "showZoomer": True,
+            "viewport": {
+                "width": 256,
+                "height": 256,
+                "type": 'circle'
+            },
+            "initialZoomMin": True,
+            "maxZoomedCropWidth": 257,
+            "minZoomedCropWidth": 2048
+        },
+        required=True
+    )
+
     def clean(self):
         cleaned_data = self.cleaned_data
 
@@ -184,7 +201,8 @@ class ExtraSignupFields(forms.Form):
             user=user,
             birthday=cleaned_data['birthday'],
             gender=cleaned_data['gender'],
-            phone=cleaned_data['phone']
+            phone=cleaned_data['phone'],
+            picture=cleaned_data['picture']
         )
         profile.save()
 

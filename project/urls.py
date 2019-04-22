@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.conf.urls.static import static
 import debug_toolbar
 from user_data.views import ProfileView, ProfileEdit
 from watchman import views as watchman_views
@@ -65,6 +66,10 @@ third_parties_patterns = [
     path('third_parties/', include('third_parties.urls')),
 ]
 
+static_content = [
+    path('<str:user_id>/picture/', views.PictureProxyView.as_view(), name='profile_picture_proxy')
+]
+
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
     path('terms_and_conditions/', views.TermsAndConditions.as_view(), name='terms_and_conditions'),
@@ -83,6 +88,7 @@ urlpatterns += third_parties_patterns
 urlpatterns += [
     path('status/', watchman_views.dashboard, name='watchman-dashboard'),
     path('status/ping', watchman_views.ping, name='watchman-ping'),
+    path('xstatic/', include((static_content, 'static_content')))
 ]
 
 if settings.SHOW_TOOLBAR_CALLBACK:
@@ -90,3 +96,6 @@ if settings.SHOW_TOOLBAR_CALLBACK:
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+
+if settings.DEBUG and not settings.USE_AWS_STORAGE:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
