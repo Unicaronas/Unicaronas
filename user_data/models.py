@@ -137,7 +137,7 @@ UNIVERSITY_ID_VALIDATORS = {
 
 
 def get_pic_path(instance, file_name):
-    return f"profile_pics/{instance.user.username}/{instance.user.username}.{file_name.split('.')[-1]}"
+    return f"profile_pics/{instance.user.username}/{get_random_string(32)}.{file_name.split('.')[-1]}"
 
 
 class Profile(models.Model):
