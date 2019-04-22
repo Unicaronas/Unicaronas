@@ -508,5 +508,6 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
 }
 
 VERSATILEIMAGEFIELD_SETTINGS = {
-    'create_images_on_demand': not USE_AWS_STORAGE
+    'create_images_on_demand': not USE_AWS_STORAGE,
+    'jpeg_resize_quality': 90
 }
