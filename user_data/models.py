@@ -11,7 +11,6 @@ from django.core.validators import MinValueValidator
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from versatileimagefield.fields import VersatileImageField
-from versatileimagefield.placeholder import OnStoragePlaceholderImage
 from project.validators import MaxImageDimensionsValidator, MinImageDimensionsValidator, SquareImageValidator
 from allauth.account.models import EmailAddress
 from project.utils import import_current_version_module

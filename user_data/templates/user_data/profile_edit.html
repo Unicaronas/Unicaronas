@@ -56,7 +56,7 @@
                             <label>{{ forms.profile.picture.label}}</label>
                             <span style="color: red" class="small">{{ forms.profile.picture.errors.as_text }}
                             </span>
-                            <img src="{{ forms.profile.picture.value.url }}" class="cropper" id="pre_cropper" style="display: none;">
+                            <img src="{% if forms.profile.picture.value.name %}{{ forms.profile.picture.value.url }}{% endif %}" class="cropper" id="pre_cropper" style="display: none;">
                             <div class="cropper" id="cropper"></div>
                             {{ forms.profile.picture }}
                         </div>
@@ -242,7 +242,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    var croppieUrl = "{{ forms.profile.picture.value.url }}";
+    var croppieUrl = "{% if forms.profile.picture.value.name %}{{ forms.profile.picture.value.url }}{% endif %}";
 </script>
 <script src="{% static 'project/js/croppie_process.js' %}"></script>
 <script type="text/javascript" src="{% static 'project/js/tabs.js' %}"></script>
