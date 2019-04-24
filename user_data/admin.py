@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.utils.html import format_html
+from django.urls import reverse
+from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from .models import Profile, Student, Driver, Preferences, MissingUniversity, StudentProof
 
@@ -164,3 +166,14 @@ class StudentProofAdmin(
 
     def deny(self, obj, form):
         obj.deny()
+
+    def get_object_action_redirect_url(self, request, obj, action, redirect_field_name='next'):
+        opts = self.model._meta
+        preserved_filters = self.get_preserved_filters(request)
+        next_student = StudentProof.objects.filter(status=StudentProof.pending_status).first()
+        if next_student:
+            url = reverse('admin:{}_{}_change'.format(opts.app_label, opts.model_name), current_app=self.admin_site.name, kwargs={'object_id': next_student.id})
+        else:
+            url = reverse('admin:{}_{}_changelist'.format(opts.app_label, opts.model_name), current_app=self.admin_site.name)
+        url = add_preserved_filters({'preserved_filters': preserved_filters, 'opts': opts}, url)
+        return url
