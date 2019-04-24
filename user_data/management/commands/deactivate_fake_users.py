@@ -16,7 +16,7 @@ def is_fake_id(data):
     return data[1] != u_id if u_id else False
 
 
-def inactivate_fake_users(commit=False, return_mistyped=False):
+def deactivate_fake_users(commit=False, return_mistyped=False):
     user_list = User.objects.filter(student__university='unicamp', emailaddress__verified=True).values_list('id', 'student__university_id', 'student__university_email')
     fake_users = []
     mistyped_users = []
@@ -54,4 +54,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        return inactivate_fake_users(options['commit'])
+        return deactivate_fake_users(options['commit'])

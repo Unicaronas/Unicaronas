@@ -259,6 +259,10 @@ CELERY_BEAT_SCHEDULE = {
     'Clear old alarms': {
         'task': 'alarms.tasks.clear_alarms.clear_alarms',
         'schedule': crontab(minute=30, hour=3)
+    },
+    'Deactivate fake users': {
+        'task': 'project.tasks.deactivate_fake_users.deactivate_fake_users',
+        'schedule': crontab(minute=0, hour=4)
     }
 }
 
