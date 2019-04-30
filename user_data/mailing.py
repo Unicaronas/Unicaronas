@@ -28,7 +28,7 @@ def fake_user_warn_email(user):
     data = {
         "title": "Tudo bem?",
         "subtitle": "",
-        "description": "Detectamos que você criou uma conta com um RA que não é seu: {user.student.university_id}. Isso fere a essência do Unicaronas e, por isso, desativamos sua conta. Caso você acredite que recebeu essa mensagem por engano, basta responder esse email explicando o que aconteceu."
+        "description": f"Detectamos que você criou uma conta com um RA que não é seu: {user.student.university_id}. Isso fere a essência do Unicaronas e, por isso, desativamos sua conta. Caso você acredite que recebeu essa mensagem por engano, basta responder esse email explicando o que aconteceu."
     }
 
     html = build_basic_html_message(**data)

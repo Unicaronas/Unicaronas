@@ -35,7 +35,7 @@ def deactivate_fake_users(commit=False, return_mistyped=False):
         if commit:
             fake_user_warn_email(fake)
             real.email = fake.student.university_email
-            real.active = False
+            real.is_active = False
             real.save()
             fake.delete()
     print(f'Pronto')
