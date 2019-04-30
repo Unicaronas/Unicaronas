@@ -30,6 +30,7 @@ celery==4.2.1
 redis==3.2.0
 django-celery-email==2.0.1
 requests-futures==0.9.9
+urllib3==1.24.2
 
 # REST
 djangorestframework==3.9.2
@@ -45,7 +46,7 @@ drf-yasg==1.14.0
 django-allauth==0.39.1
 
 # oauth2
-https://github.com/Maronato/django-oauth-toolkit/archive/grace-rotation-fix.zip
+https://github.com/Maronato/django-oauth-toolkit/archive/pkce-fix.zip
 # django-oauth-toolkit
 cryptography==2.6.1
 
