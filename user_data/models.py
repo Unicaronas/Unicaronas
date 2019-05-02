@@ -110,7 +110,7 @@ UNIVERSITY_ID_VALIDATORS = {
         "RA inválido para {0}"
     ),
     'unesp': UniRegexValidator(
-        r'^\d{7,11}$',
+        r'^([A-z]{3})?\d{6,11}$',
         "RA inválido para {0}"
     ),
     'unifesp': UniRegexValidator(
