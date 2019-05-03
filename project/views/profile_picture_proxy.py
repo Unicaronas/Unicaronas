@@ -31,18 +31,22 @@ class PictureProxyView(View):
 
     @property
     def proxy_url(self):
-        try:
-            user = get_application_model().recover_scoped_user_id(self.kwargs['user_id'])
-        except InvalidScopedUserId:
-            raise Http404
-        profile = user.profile
+        profile = self.get_scoped_user().profile
         profile
         try:
             return eval(self.picture_sizes.get(self.request.GET.get('size'), self.picture_sizes['medium_256'])).url
         except Exception:
             raise Http404
 
+    def get_scoped_user(self):
+        try:
+            return get_application_model().recover_scoped_user_id(self.kwargs['user_id'])
+        except InvalidScopedUserId:
+            return None
+
     def get(self, request, *args, **kwargs):
+        if self.get_scoped_user() is None:
+            raise Http404
         cache_url = request.get_full_path()
         cache = RedisFinder(timeout=60 * 60 * 24)
         res = cache.get_key(cache_url)
