@@ -68,18 +68,29 @@ class TripReminder(object):
         return encode_task_uuid(self.reminder_type, str(self.object.id), str(time))
 
     def schedule_execution(self, time):
+        print('SCHEDULING EXECUTION TIME', time)
         encoded_id = self.get_task_id(time)
         eta = self.trip.datetime - timedelta(hours=time)
+        print('APPLYING ASYNC WITH PARAMS', [self.object.id], encoded_id, eta)
         self.task.apply_async(args=[self.object.id], task_id=encoded_id, eta=eta)
+        print('ASYNC APPLIED')
 
     def schedule(self):
         now = timezone.now()
         hours_to_trip = (self.trip.datetime - now).total_seconds() / 3600
-
+        print('SCHEDULING TRIP REMINDERS')
         for _, timeout in filter(lambda x: x[0] < hours_to_trip, self.reminder_hour_timeouts):
+            print('SCHEDULING REMINDER', timeout)
             self.schedule_execution(timeout)
 
+        print('TRIP REMINDERS SCHEDULED')
+
     def unschedule(self):
+        print('UNSCHEDULING TRIP REMINDERS')
         for _, timeout in self.reminder_hour_timeouts:
             task_id = self.get_task_id(timeout)
+            print('UNSCHEDULING TRIP REMINDER', timeout, task_id)
             celery_app.control.revoke(task_id, terminate=True)
+            print('TRIP REMINDER REVOKED')
+
+        print('TRIP REMINDERS UNSCHEDULED')
